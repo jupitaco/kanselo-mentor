@@ -1,4 +1,5 @@
 import { BookingActions } from "@/components/main/booking/bookingActions";
+import { StarRatings } from "@/components/ui/starRatings";
 import {
   AvatarCard,
   OrderStatus,
@@ -427,7 +428,7 @@ export const bookingAssets: BookingType[] = [
   },
 ];
 
-export const bookingColData: Column<BookingType & { action?: ReactNode }>[] = [
+export const newBookingColData: Column<BookingType & { action?: ReactNode }>[] = [
   {
     title: "MENTOR",
     key: "name",
@@ -469,6 +470,88 @@ export const bookingColData: Column<BookingType & { action?: ReactNode }>[] = [
     cellClassName: "min-w-40 max-w-80 text-grey-300",
     render: (_, record) => <BookingActions data={record} />,
   },
+];
+
+export const completedBookingColData: Column<BookingType & { action?: ReactNode }>[] = [
+  {
+    title: "MENTOR",
+    key: "name",
+    render: (_, record) => (
+      <AvatarCard
+        image={record?.avatar}
+        label={`${record?.name}`}
+        subtext={`${record?.location?.city} ${record?.location?.country}`}
+      />
+    ),
+  },
+  {
+    title: "DATE & TIME",
+    key: "date",
+    cellClassName: "text-grey-300",
+    render: (_, record) => (
+      <>
+        {record.date} <br />
+        {record.time}
+      </>
+    ),
+  },
+
+  {
+    title: "SESSION",
+    key: "sessions",
+    render: (_, record) => <>{record?.sessions} </>,
+  },
+
+  {
+    title: "MESSAGE",
+    key: "review",
+    cellClassName: "min-w-40 max-w-40 text-grey-300",
+    render: (_, record) => <>{record?.review}</>,
+  },
+  {
+    title: "RATINGS",
+    key: "rating",
+    render: (_, record) => <StarRatings rating={record?.rating} />,
+  },
+];
+
+export const cancelledBookingColData: Column<BookingType>[] = [
+  {
+    title: "MENTOR",
+    key: "name",
+    render: (_, record) => (
+      <AvatarCard
+        image={record?.avatar}
+        label={`${record?.name}`}
+        subtext={`${record?.location?.city} ${record?.location?.country}`}
+      />
+    ),
+  },
+  {
+    title: "DATE & TIME",
+    key: "date",
+    cellClassName: "text-grey-300",
+    render: (_, record) => (
+      <>
+        {record.date} <br />
+        {record.time}
+      </>
+    ),
+  },
+
+  {
+    title: "SESSION",
+    key: "sessions",
+    render: (_, record) => <>{record?.sessions} </>,
+  },
+
+  {
+    title: "MESSAGE",
+    key: "review",
+    cellClassName: "min-w-40 max-w-40 text-grey-300",
+    render: (_, record) => <>{record?.review}</>,
+  },
+
 ];
 
 

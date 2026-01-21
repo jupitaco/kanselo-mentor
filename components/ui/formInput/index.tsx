@@ -17,12 +17,12 @@ export interface IFormInputProps extends React.InputHTMLAttributes<
   value?: string | number | readonly string[] | undefined;
   DateTimeValue?: Date | undefined;
   type?:
-    | React.HTMLInputTypeAttribute
-    | "textarea"
-    | "select"
-    | "shadSelect"
-    | "date"
-    | "time";
+  | React.HTMLInputTypeAttribute
+  | "textarea"
+  | "select"
+  | "shadSelect"
+  | "date"
+  | "time";
   inputClassName?: string;
   labelClassName?: string;
   className?: string;
@@ -132,6 +132,7 @@ const FormInput = ({
           onChange={handleShadSelectChange}
           className={`${error ? "errors m-0!" : ""} w-full ${inputClassName}`}
           required={required}
+          disabled={disabled}
         />
       ) : type === "checkbox" || type === "radio" ? (
         <>
@@ -156,9 +157,8 @@ const FormInput = ({
             name={name}
             type={showPassword[id] ? "text" : "password"}
             onChange={onChange}
-            className={`${
-              error ? "errors" : ""
-            } form-controls ${inputClassName}`}
+            className={`${error ? "errors" : ""
+              } form-controls ${inputClassName}`}
             placeholder={placeholder}
             value={value}
             disabled={disabled}

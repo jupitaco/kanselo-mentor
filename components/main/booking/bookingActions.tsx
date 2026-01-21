@@ -23,9 +23,7 @@ export const BookingActions = ({ data }: { data: BookingType }) => {
     case "completed":
       activeAction = <CompletedBookingActions data={data} />;
       break;
-    case "cancelled":
-      activeAction = <CancelledBookingActions data={data} />;
-      break;
+
     default:
       activeAction = <AllBookingActions data={data} />;
       break;
@@ -51,7 +49,7 @@ export const AllBookingActions = ({ data }: { data: BookingType }) => {
       <li>
         <Button
           link
-          href={`/mentor/book-a-call/${data?.id}?mentorName=${encodeURIComponent(data?.name)}`}
+          href={`/reschedule-call/${data?.id}?mentorName=${encodeURIComponent(data?.name)}`}
           className="alt-btn border-grey-200 w-full border px-2!"
         >
           Reschedule
@@ -65,21 +63,8 @@ export const AllBookingActions = ({ data }: { data: BookingType }) => {
 };
 
 export const CompletedBookingActions = ({ data }: { data: BookingType }) => {
-  const { isOpen, openModal } = useModalContext();
-  const ratingId = `rate-${data?.id}`;
-  return (
-    <>
-      {data?.rating > 0 ? (
-        <StarRatings rating={data?.rating} />
-      ) : (
-        <Button className="pry-btn" onClick={() => openModal(ratingId)}>
-          Rate
-        </Button>
-      )}
 
-      {isOpen[ratingId] && <RateCall id={ratingId} data={data} />}
-    </>
-  );
+  return (<StarRatings rating={data?.rating} />);
 };
 
 export const CancelledBookingActions = ({ data }: { data: BookingType }) => {

@@ -94,10 +94,10 @@ export const SearchMentor = () => {
   );
 };
 
-export const MentorAvatar = ({ image, name, location }: Mentor) => {
+export const MenteeAvatar = ({ image, name, location }: Mentor) => {
   return (
-    <div className="border-grey-200 space-y-3 overflow-hidden rounded-xl border bg-white">
-      <figure className="relative h-60 w-full overflow-hidden">
+    <div className="flex items-center gap-4 space-y-3 overflow-hidden   bg-white">
+      <figure className="relative size-26! w-full overflow-hidden">
         <Image
           src={image}
           alt={name}
@@ -106,7 +106,7 @@ export const MentorAvatar = ({ image, name, location }: Mentor) => {
           className="object-cover"
         />
       </figure>
-      <div className="space-y-2 p-4">
+      <div className="space-y-2 p-4 flex-1">
         <h5 className="font-semibold">{name}</h5>
         <small className="text-grey-300 font-medium">{location}</small>
       </div>
@@ -157,87 +157,86 @@ export const BookCallForm = () => {
   };
 
   return (
-    <aside className="flex-1 space-y-5 rounded-xl bg-white p-5">
-      <h4 className="font-semibold">Call Information</h4>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-        <FormInput
-          id="message"
-          label="Message to Mentor"
-          type="textarea"
-          inputClassName="rounded!"
-          placeholder="Enter reason for call"
-          error={errors.message?.message}
-          {...register("message")}
-        />
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      <FormInput
+        id="message"
+        label="Message to Mentor"
+        type="textarea"
+        inputClassName="rounded!"
+        placeholder="Enter reason for call"
+        error={errors.message?.message}
+        {...register("message")}
+      />
 
-        <Controller
-          name="session"
-          control={control}
-          render={({ field }) => (
-            <FormInput
-              id="session"
-              type="shadSelect"
-              label="Session"
-              placeholder="Select Session"
-              shadcnSelectData={sessionData}
-              error={errors.session?.message}
-              value={field.value}
-              onSelectItem={field.onChange}
-              inputClassName="rounded!"
-            />
-          )}
-        />
+      <Controller
+        name="session"
+        control={control}
+        render={({ field }) => (
+          <FormInput
+            id="session"
+            type="shadSelect"
+            label="Session"
+            placeholder="Select Session"
+            shadcnSelectData={sessionData}
+            error={errors.session?.message}
+            value={field.value}
+            onSelectItem={field.onChange}
+            inputClassName="rounded!"
+            disabled
+          />
+        )}
+      />
 
-        <h4>Available Times</h4>
-        <Controller
-          name="date"
-          control={control}
-          render={({ field }) => (
-            <FormInput
-              id="date"
-              type="date"
-              label="Date"
-              placeholder={formatDate(new Date())}
-              error={errors.date?.message}
-              DateTimeValue={field.value ? new Date(field.value) : undefined}
-              onDateChange={(date) => {
-                field.onChange(date?.toISOString().split("T").at(0));
-              }}
-              inputClassName="rounded!"
-            />
-          )}
-        />
+      <h4>Available Times</h4>
+      <Controller
+        name="date"
+        control={control}
+        render={({ field }) => (
+          <FormInput
+            id="date"
+            type="date"
+            label="Date"
+            placeholder={formatDate(new Date())}
+            error={errors.date?.message}
+            DateTimeValue={field.value ? new Date(field.value) : undefined}
+            onDateChange={(date) => {
+              field.onChange(date?.toISOString().split("T").at(0));
+            }}
+            inputClassName="rounded!"
+          />
+        )}
+      />
 
-        <Controller
-          name="time"
-          control={control}
-          render={({ field }) => (
-            <RadioGroup
-              onValueChange={field.onChange}
-              value={field.value}
-              className="grid grid-cols-1 gap-3 md:grid-cols-2"
-            >
-              {bookingTimeData.map(({ id, time, value }) => (
-                <label
-                  htmlFor={value}
-                  key={id}
-                  className={`${errors.time ? "errors" : "border-grey-200"} flex cursor-pointer items-center justify-between gap-4 rounded border p-4`}
-                >
-                  {time}
+      <Controller
+        name="time"
+        control={control}
+        render={({ field }) => (
+          <RadioGroup
+            onValueChange={field.onChange}
+            value={field.value}
+            className="grid grid-cols-1 gap-3 md:grid-cols-2"
+          >
+            {bookingTimeData.map(({ id, time, value }) => (
+              <label
+                htmlFor={value}
+                key={id}
+                className={`${errors.time ? "errors" : "border-grey-200"} flex cursor-pointer items-center justify-between gap-4 rounded border p-4`}
+              >
+                {time}
 
-                  <RadioGroupItem value={value} id={value} />
-                </label>
-              ))}
-            </RadioGroup>
-          )}
-        />
-        {errors.time && <ErrorMessage message={errors.time.message} />}
+                <RadioGroupItem value={value} id={value} />
+              </label>
+            ))}
+          </RadioGroup>
+        )}
+      />
+      {errors.time && <ErrorMessage message={errors.time.message} />}
 
-        <Button className="pry-btn w-full" type="submit">
-          Book Now
-        </Button>
-      </form>
-    </aside>
+      <Button className="pry-btn w-full" type="submit">
+        Book Now
+      </Button>
+    </form>
+
   );
 };
