@@ -31,6 +31,8 @@ export type Template = {
   image: string;
   size: string;
   price: number;
+  createdAt: string;
+  totalSales: string
 };
 
 export type BookingTime = {

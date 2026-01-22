@@ -1,4 +1,5 @@
 import { BookingActions } from "@/components/main/booking/bookingActions";
+import { TemplateAction } from "@/components/main/templates/templateAction";
 import { StarRatings } from "@/components/ui/starRatings";
 import {
   AvatarCard,
@@ -209,30 +210,6 @@ export const reviewsData: Review[] = [
   },
 ];
 
-export const templateData: Template[] = [
-  {
-    id: "1",
-    title: "5 secrets to marketing",
-    image: "/images/template1.png",
-    size: "12 MB",
-    price: 2500,
-  },
-  {
-    id: "2",
-    title: "How to land a marketing job",
-    image: "/images/template2.png",
-    size: "5MB",
-    price: 2500,
-  },
-  {
-    id: "3",
-    title: "Best marketing tools",
-    image: "/images/template3.png",
-    size: "3MB",
-    price: 2500,
-  },
-];
-
 export const sessionData = [
   {
     label: "1 (30 minutes - $10)",
@@ -245,6 +222,80 @@ export const sessionData = [
   {
     label: "3 (90 minutes - $30)",
     value: 90,
+  },
+];
+
+export const templateData: Template[] = [
+  {
+    id: "1",
+    title: "5 secrets to marketing",
+    image: "/images/template1.png",
+    size: "12 MB",
+    price: 20,
+    createdAt: "03 Jan 2023",
+    totalSales: "25"
+  },
+  {
+    id: "2",
+    title: "How to land a marketing job",
+    image: "/images/template2.png",
+    size: "5MB",
+    price: 20,
+    createdAt: "03 Jan 2023",
+    totalSales: "25"
+  },
+  {
+    id: "3",
+    title: "Best marketing tools",
+    image: "/images/template3.png",
+    size: "3MB",
+    price: 20,
+    createdAt: "03 Jan 2023",
+    totalSales: "25"
+  },
+];
+
+export const templateColData: Column<Template & { action?: ReactNode }>[] = [
+  {
+    title: "MENTOR",
+    key: "title",
+    render: (_, record) => (
+      <AvatarCard
+        image={record?.image}
+        label={`${record?.title}`}
+      />
+    ),
+  },
+  {
+    title: "DATE ADDED",
+    key: "createdAt",
+    cellClassName: "text-grey-300",
+    render: (_, record) => (
+      <>
+        {record.createdAt} <br />
+
+      </>
+    ),
+  },
+
+  {
+    title: "PRICE",
+    key: "price",
+    render: (_, record) => <>${formatNumInThousands(record?.price)} </>,
+  },
+
+  {
+    title: "AMOUNT SOLD",
+    key: "totalSales",
+    cellClassName: " text-center",
+
+    render: (_, record) => <>{record?.totalSales}</>,
+  },
+  {
+    title: "ACTION",
+    key: "action",
+    cellClassName: "min-w-40 max-w-80 text-grey-300",
+    render: (_, record) => <TemplateAction data={record} />,
   },
 ];
 

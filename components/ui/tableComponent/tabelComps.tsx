@@ -28,15 +28,15 @@ export const AvatarCard = ({
   subtext,
 }: {
   label: string;
-  subtext: string;
+  subtext?: string;
   image: string;
 }) => {
   return (
-    <div className="flex flex-1 gap-3">
+    <div className="flex flex-1 gap-3 items-center">
       <figure className="relative size-12 overflow-hidden rounded-xl">
         <Image src={image} alt="" sizes="100%" fill />
       </figure>
-      <div className="flex flex-col justify-between">
+      <div className="flex-1">
         <p className="text-sm font-semibold">{label}</p>
         <p className="text-grey-300 text-xs font-medium">{subtext}</p>
       </div>
