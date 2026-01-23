@@ -6,8 +6,9 @@ import {
   OrderStatus,
 } from "@/components/ui/tableComponent/tabelComps";
 import { Column } from "@/components/ui/tableComponent/tableComponent";
-import { BookingType, TransactionType } from "@/types/booking";
+import { BookingType, } from "@/types/booking";
 import { Mentor, Review, Template, BookingTime } from "@/types/global";
+import { TransactionType } from "@/types/payout";
 import { formatNumInThousands } from "@/utils/helper";
 import { ReactNode } from "react";
 export const filterData = [
@@ -673,113 +674,122 @@ export const transactionAssets: TransactionType[] = [
     date: "03 Jan 2023",
     time: "11:30 AM",
     status: "Successful",
-    amount: 10000,
-    type: "Deposit",
+    amount: 20,
+    type: "Template sale",
   },
   {
     id: "2",
     date: "03 Jan 2023",
     time: "11:30 AM",
     status: "Pending",
-    amount: 10000,
-    type: "Deposit",
+    amount: 20,
+    type: "Template sale",
   },
   {
     id: "3",
     date: "03 Jan 2023",
     time: "11:30 AM",
     status: "Failed",
-    amount: 10000,
-    type: "Deposit",
+    amount: 20,
+    type: "Withdrawal",
   },
   {
     id: "4",
     date: "03 Jan 2023",
     time: "11:30 AM",
     status: "Failed",
-    amount: 10000,
-    type: "Deposit",
+    amount: 20,
+    type: "Withdrawal",
   },
   {
     id: "5",
     date: "03 Jan 2023",
     time: "11:30 AM",
     status: "Failed",
-    amount: 10000,
-    type: "Deposit",
+    amount: 20,
+    type: "Withdrawal",
   },
   {
     id: "6",
     date: "03 Jan 2023",
     time: "11:30 AM",
     status: "Pending",
-    amount: 10000,
-    type: "Deposit",
+    amount: 20,
+    type: "Template sale",
   },
   {
     id: "7",
     date: "03 Jan 2023",
     time: "11:30 AM",
     status: "Pending",
-    amount: 10000,
-    type: "Deposit",
+    amount: 20,
+    type: "Withdrawal",
   },
   {
     id: "8",
     date: "03 Jan 2023",
     time: "11:30 AM",
     status: "Successful",
-    amount: 10000,
-    type: "Deposit",
+    amount: 20,
+    type: "Consultation",
   },
   {
     id: "9",
     date: "03 Jan 2023",
     time: "11:30 AM",
     status: "Successful",
-    amount: 10000,
-    type: "Deposit",
+    amount: 20,
+    type: "Withdrawal",
   },
   {
     id: "10",
     date: "03 Jan 2023",
     time: "11:30 AM",
     status: "Successful",
-    amount: 10000,
-    type: "Deposit",
+    amount: 20,
+    type: "Consultation",
   },
 ];
 
 export const transactionolData: Column<TransactionType>[] = [
   {
-    title: "DATE & TIME",
+    title: "AMOUNT",
+    key: "amount",
+    render: (_, record) => <>{record?.type === "withdrawl" ? "-" : "+"}${formatNumInThousands(record?.amount)}</>,
+  },
+  {
+    title: "DATE",
     key: "date",
     render: (_, record) => (
       <>
-        {record.date} <br />
-        {record.time}
+        {record.date}
       </>
     ),
   },
   {
-    title: "STATUS",
-    key: "status",
-    render: (_, record) => <OrderStatus status={record?.status} />,
+    title: "TIME",
+    key: "time",
+    render: (_, record) => (
+      <>
+        {record.time}
+      </>
+    ),
   },
   {
     title: "TYPE",
     key: "type",
     render: (_, record) => <>{record?.type}</>,
   },
-
   {
-    title: "AMOUNT",
-    key: "amount",
-    render: (_, record) => <>₦{formatNumInThousands(record?.amount)}</>,
+    title: "STATUS",
+    key: "status",
+    render: (_, record) => <OrderStatus status={record?.status} />,
   },
+
 ];
 
 export const walletFilterData = [
   { label: "Last 7 Days", value: "last7days" },
   { label: "Last 30 days", value: "last30days" },
 ];
+
