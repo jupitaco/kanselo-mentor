@@ -2,7 +2,7 @@ import { EditTemplate } from '@/components/main/templates/templateForm'
 import GoBackBtn from '@/components/ui/goBackBtn'
 import React, { use } from 'react'
 
-export default function page({ params }: { params: Promise<{ id: string }> }) {
+export default function Page({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params)
     return (
         <main className="p-5 space-y-7">
