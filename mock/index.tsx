@@ -6,7 +6,7 @@ import {
   OrderStatus,
 } from "@/components/ui/tableComponent/tabelComps";
 import { Column } from "@/components/ui/tableComponent/tableComponent";
-import { BookingType, } from "@/types/booking";
+import { BookingType, OfficeDay, } from "@/types/booking";
 import { Mentor, Review, Template, BookingTime } from "@/types/global";
 import { TransactionType } from "@/types/payout";
 import { formatNumInThousands } from "@/utils/helper";
@@ -793,3 +793,59 @@ export const walletFilterData = [
   { label: "Last 30 days", value: "last30days" },
 ];
 
+
+
+export const WeeklyHours = [
+  {
+    day: "Sunday",
+    time: []
+  },
+  {
+    day: "Monday",
+    time: ["09:00 - 12:00", "13:00 - 17:00"]
+  },
+  {
+    day: "Tuesday",
+    time: ["09:00 - 12:00", "13:00 - 17:00"]
+  },
+  {
+    day: "Wednesday",
+    time: ["09:00 - 12:00", "13:00 - 17:00"]
+  },
+  {
+    day: "Thursday",
+    time: ["09:00 - 12:00", "13:00 - 17:00"]
+  },
+  {
+    day: "Friday",
+    time: ["09:00 - 12:00", "13:00 - 17:00"]
+  },
+  {
+    day: "Saturday",
+    time: []
+  },
+]
+
+export const officeHours: OfficeDay[] = [
+  {
+    title: "Sunday", checked: false, time: []
+  },
+  {
+    title: "Monday", checked: true, time: [{ startTime: "09:00", endTime: "12:00" }, { startTime: "09:00", endTime: "12:00" }]
+  },
+  {
+    title: "Tuesday", checked: true, time: [{ startTime: "09:00", endTime: "12:00" }]
+  },
+  {
+    title: "Wednesday", checked: true, time: [{ startTime: "09:00", endTime: "12:00" }]
+  },
+  {
+    title: "Thursday", checked: true, time: [{ startTime: "09:00", endTime: "12:00" }]
+  },
+  {
+    title: "Friday", checked: true, time: [{ startTime: "09:00", endTime: "12:00" }]
+  },
+  {
+    title: "Saturday", checked: false, time: []
+  },
+];

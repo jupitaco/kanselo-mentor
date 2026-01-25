@@ -45,7 +45,7 @@ export default function Pages({
         <div className="flex justify-end">
           <Button
             link
-            href="schedule-setting"
+            href="/appointments/schedule-settings"
             className="outline-btn min-h-[38px]! bg-grey-100 text-grey-500! py-0! text-xs! w-full lg:w-fit">
             <IoSettingsOutline />
             Schedule setting
