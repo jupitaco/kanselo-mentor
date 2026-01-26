@@ -40,7 +40,7 @@ export const AllBookingActions = ({ data }: { data: BookingType }) => {
       <li>
         <Button
           onClick={() => openModal(data?.id)}
-          className="alt-btn w-full px-2!"
+          className="alt-btn w-full px-2! min-h-9! text-xs! py-0!"
         >
           Cancel
         </Button>
@@ -50,13 +50,13 @@ export const AllBookingActions = ({ data }: { data: BookingType }) => {
         <Button
           link
           href={`/reschedule-call/${data?.id}?mentorName=${encodeURIComponent(data?.name)}`}
-          className="alt-btn border-grey-200 w-full border px-2!"
+          className="alt-btn border-grey-200 w-full border px-2! min-h-9! text-xs! py-0!"
         >
           Reschedule
         </Button>
       </li>
       <li>
-        <Button className="pry-btn w-full px-2!">Join Call</Button>
+        <Button className="pry-btn w-full px-2! min-h-9! text-xs! py-0!">Join Call</Button>
       </li>
     </ul>
   );

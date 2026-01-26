@@ -16,7 +16,7 @@ const Sidebar = () => {
         <BrandLogo />
       </article>
 
-      <article className="custom-scrollbar h-[calc(100vh-var(--main-header-height))] overflow-y-auto pb-10">
+      <article className="no-scrollbar h-[calc(100vh-var(--main-header-height))] overflow-y-auto pb-10">
         <ul className="flex flex-col gap-3">
           <SidebarLink linkList={SidebarData} />
 
@@ -55,11 +55,10 @@ export const SidebarLink = ({ linkList }: { linkList: sidebarTypes[] }) => {
             <div className="w-full">
               <button
                 key={idx}
-                className={`${
-                  currentPath.includes(url)
+                className={`${currentPath.includes(url)
                     ? "sidebarActive"
                     : "sidebarNotActive"
-                } flex w-full items-center justify-between`}
+                  } flex w-full items-center justify-between`}
                 onClick={() => setIsClicked(!isClicked)}
               >
                 <span className="flex items-center gap-2 text-sm">
@@ -82,11 +81,10 @@ export const SidebarLink = ({ linkList }: { linkList: sidebarTypes[] }) => {
                     <Link
                       key={idx}
                       href={url}
-                      className={`${
-                        currentPath.includes(url)
+                      className={`${currentPath.includes(url)
                           ? "sidebarActive bg-[#F9F9FB]!"
                           : "sidebarNotActive"
-                      } px-10!`}
+                        } px-10!`}
                       onClick={() => setToggle(false)}
                     >
                       <span className="flex items-center gap-2 text-sm">
