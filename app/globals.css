@@ -78,14 +78,15 @@
   }
 
   textarea,
+  input::placeholder {
+    @apply text-grey-300 text-sm;
+  }
+
+  textarea,
   input {
     @apply text-grey-500 text-sm;
   }
 
-  textarea,
-  input::placeholder {
-    @apply text-grey-300 text-sm;
-  }
 
   h1 {
     @apply text-2xl font-bold lg:text-4xl;
@@ -157,7 +158,7 @@
   letter-spacing: 0.112px;
 }
 
-.btn:disabled {
+.btn:disabled, button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
@@ -189,11 +190,15 @@
 .sidebarActive {
   background: var(--color-white);
   color: var(--color-primary);
-  border-left: solid 1px var(--color-white);
+}
+
+
+.sidebarActive span svg  {
+   stroke: transparent ;
 }
 
 .sidebarNotActive {
-  color: var(--color-grey-400) !important;
+  color: var(--color-grey-400) ;
 }
 
 .sidebarActive,
@@ -202,6 +207,14 @@
   border-radius: 10px;
   font-weight: 600;
 }
+
+.sidebarNotActive span svg  {
+  color: transparent !important;
+  stroke: var(--color-grey-400) ;
+  stroke-width: 1.5px;
+
+}
+
 
 .closeSidebar {
   position: fixed;

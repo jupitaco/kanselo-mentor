@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Button from "../ui/button";
 import { handleError, handleSuccess } from "@/utils/helper";
+import { logoutAction } from "@/libs/actions/auth.actions";
 
 const LogoutBtn = () => {
   const { push } = useRouter();
@@ -11,7 +12,7 @@ const LogoutBtn = () => {
   const handleLogout = async () => {
     try {
       setLoading(true);
-      // await logoutAction();
+      await logoutAction();
       localStorage.clear();
       handleSuccess("Logout Successfull", push, "/");
     } catch (error) {

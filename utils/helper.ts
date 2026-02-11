@@ -97,3 +97,15 @@ export const getStatusColors = (status: string) => {
 
   return "fall-back";
 };
+
+
+
+
+export const queryBuilder = (query: { [key: string]: string }) => {
+
+  const filteredParams = Object.entries(query).filter(([_, v]) => v !== undefined && v !== "undefined" && v !== null && v !== "",)
+
+  const params = new URLSearchParams(filteredParams)
+  return params
+
+}

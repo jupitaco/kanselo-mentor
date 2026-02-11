@@ -72,15 +72,14 @@ const CustomUploadToCloudinary = ({
         onDragLeave={handleDragLeave}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
-        className={`${className} ${
-          isDragging ? "border-primary! bg-primary/10" : ""
-        } card flex min-h-24 w-full cursor-pointer flex-col items-center justify-center p-6 text-center transition-colors duration-200`}
+        className={`${className} ${isDragging ? "border-primary! bg-primary/10" : ""
+          } card flex min-h-24 w-full cursor-pointer flex-col items-center justify-center p-6 text-center transition-colors duration-200`}
       >
         {loading ? (
           <Spinner />
         ) : (
           <>
-            <IoCameraOutline />
+            <IoCameraOutline size={20} />
           </>
         )}
       </div>

@@ -3,11 +3,13 @@ import { z } from "zod";
 export const SignupSchema = z
   .object({
     fullName: z.string().min(1, "Please enter full name"),
-    profileImg: z.string().optional(),
+    profilePhoto: z.string().optional(),
     email: z.email("Invalid email"),
     country: z.string().min(1, "Please select country"),
     state: z.string().min(1, "Please select state"),
     city: z.string().min(1, "Please enter city"),
+    consent: z
+      .string().min(1, "You must agree to the terms and conditions"),
     phoneNumber: z.string().optional(),
     password: z.string().min(1, "Please enter password"),
     confirmPassword: z.string().min(1, "Please enter confirm password"),
