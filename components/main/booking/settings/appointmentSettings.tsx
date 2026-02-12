@@ -1,220 +1,201 @@
-'use client'
-import Button from '@/components/ui/button'
-import FormInput from '@/components/ui/formInput'
-import { officeHours, WeeklyHours } from '@/mock'
-import { DayOfWeek, OfficeDay } from '@/types/booking'
-import React, { useState } from 'react'
-import { BsX } from 'react-icons/bs'
-import { FaCirclePlus } from 'react-icons/fa6'
-import { IoSettingsOutline } from 'react-icons/io5'
-
+"use client";
+import Button from "@/components/ui/button";
+import FormInput from "@/components/ui/formInput";
+import { useAuthContext } from "@/context/authContext";
+import { useBookings } from "@/hooks/useBookings";
+import { updateBooingSettingsActions } from "@/libs/actions/bookings.actions";
+import {
+  AvailableHoursType,
+  MentorAvailableHoursType,
+  UserData,
+} from "@/types/auths";
+import { DayOfWeek, OfficeDay } from "@/types/bookings";
+import React, { useMemo, useState, useTransition } from "react";
+import { BsX } from "react-icons/bs";
+import { FaCirclePlus } from "react-icons/fa6";
+import { IoSettingsOutline } from "react-icons/io5";
 
 export const isDayOfWeek = (day: string): day is DayOfWeek => {
-    return [
-        "monday",
-        "tuesday",
-        "wednesday",
-        "thursday",
-        "friday",
-        "saturday",
-        "sunday",
-    ].includes(day);
+  return [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday",
+  ].includes(day);
 };
 
+const DAYS: DayOfWeek[] = [
+  "sunday",
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+];
 
 export const AppointmentSettings = () => {
-    const [isClicked, setIsClicked] = useState(false)
+  const { officeHoursData, isClicked, handleToggle } = useBookings();
 
-    const handleToggle = () => {
-        setIsClicked(!isClicked)
-    }
+  return (
+    <section className="w-full max-w-2xl space-y-6 rounded-2xl bg-white p-5">
+      <header className="flex flex-wrap justify-between gap-4">
+        <h4>Weekly hours</h4>
 
-
-    return (
-        <section className='rounded-2xl bg-white p-5 w-full max-w-2xl space-y-6'>
-            <div className='flex justify-between flex-wrap gap-4'>
-                <h4>Weekly hours</h4>
-
-                {!isClicked && <Button
-                    className="outline-btn min-h-[38px]! bg-grey-100 text-grey-500! py-0! text-xs! w-full lg:w-fit"
-                    onClick={handleToggle}>
-                    <IoSettingsOutline />
-                    Edit Schedule
-                </Button>
-                }
-            </div>
-            <>
-                {
-                    !isClicked ?
-                        <ul className='space-y-10'>
-                            {
-                                WeeklyHours.map(({ day, time }, idx) => (
-                                    <li key={idx} className='flex justify-between'>
-                                        <p className='flex-1'>{day}</p>
-                                        <div className='flex-1'>
-
-                                            {
-                                                time?.length > 0 ? <ul className='text-grey-400 flex items-center gap-4'>
-                                                    {
-                                                        time.map((i) => (
-                                                            <li key={i}>{i}</li>
-                                                        ))
-                                                    }
-                                                </ul> : <p className='text-grey-400 '>Unavailable</p>
-                                            }
-                                        </div>
-                                    </li>
-                                ))
-                            }
-                        </ul> :
-                        <EditAppointmentSettings action={handleToggle} />
-                }
-
-            </>
-        </section>
-    )
-}
-
-
-export const EditAppointmentSettings = ({ action }: { action: () => void }) => {
-    const [officeHoursData, setOfficeHoursData] =
-        useState<OfficeDay[]>(officeHours);
-
-
-    const handleOfficeHoursChange = (dayTitle: string, checked: boolean) => {
-        setOfficeHoursData((prev) => prev.map((day) => day.title === dayTitle ?
-            { ...day, checked, time: checked ? day.time?.length ? day?.time : [{ startTime: "9:00", endTime: "12:00" }] : [] } : day))
-    };
-
-    const handleTimeChange = (dayTitle: string, timeIndex: number, name: "startTime" | "endTime", value: string) => {
-
-        setOfficeHoursData((prev) => prev.map((day) => {
-            if (day.title !== dayTitle) return day
-
-            const updatedTime = day.time.map((t, i) => (i === timeIndex ? { ...t, [name]: value } : t))
-            return { ...day, time: updatedTime }
-        }))
-    };
-
-    const addMoreTimeInput = (idx: number) => {
-        setOfficeHoursData((prev) => prev.map((day, index) => index === idx ? { ...day, time: [...day.time, { startTime: "09:00", endTime: "12:00" }] } : day))
-    };
-
-
-    const removeTimeRange = (dayTitle: string, timeIndex: number) => {
-        setOfficeHoursData(prev =>
-            prev.map(day => {
-                if (day.title !== dayTitle) return day;
-
-                const updatedTimes = day.time.filter((_, i) => i !== timeIndex);
-
-                return { ...day, checked: timeIndex === 0 ? false : true, time: updatedTimes };
-            })
-        );
-    };
-
-
-    return (
-
-        <ul className="divide-grey-200 divide-y">
-            {officeHoursData.map(({ title, checked, time }, idx) => (
-                <li
-                    key={idx}
-                    className="flex flex-col  justify-between gap-3 gap-y-2 py-3 lg:flex-row  "
-                >
-                    <div className="flex items-center gap-3 h-fit">
-                        <FormInput
-                            id=''
-                            type="checkbox"
-                            value={title}
-                            checkValue={checked}
-                            onChecked={(e) => handleOfficeHoursChange(title, e)}
-                            className="m-0!"
-                        />
-                        <label
-                            htmlFor={title}
-                            className="text-grey-400">
-                            {title}
-                        </label>
-                    </div>
-
-                    <div className="flex   gap-3">
-                        {time?.length > 0 ? (
-                            <div className='flex-1 flex gap-2'>
-
-                                <div className='space-y-2'>
-
-                                    {
-                                        time.map(({ startTime, endTime }, i) => (
-
-                                            <div key={i} className='flex items-center gap-3 '>
-                                                <input
-                                                    id="startTime"
-                                                    type='time'
-                                                    value={startTime}
-                                                    onChange={(e) => handleTimeChange(title, i, 'startTime', e.target.value)}
-                                                    className="form-controls py-0! px-2!"
-                                                />
-                                                <small>-</small>
-                                                <input
-                                                    id='endTime'
-                                                    type='time'
-                                                    value={endTime}
-                                                    onChange={(e) => handleTimeChange(title, i, 'endTime', e.target.value)}
-                                                    className="form-controls py-0! px-2!"
-                                                />
-                                                <button onClick={() => removeTimeRange(title, i)}
-                                                >
-                                                    <BsX />
-                                                </button>
-                                            </div>
-                                        ))
-                                    }
-                                </div>
-
-
-                                <div>
-
-                                    <button onClick={() => addMoreTimeInput(idx)}
-                                    >
-                                        <FaCirclePlus className="text-secondary" />
-                                    </button>
-                                </div>
-                            </div>
-                        ) : (
-                            <small className="font-pretendard text-Grey7 text-base">
-                                Unavailable
-                            </small>
-                        )}
-
-                    </div>
-                </li>
+        {!isClicked && (
+          <Button
+            className="outline-btn bg-grey-100 text-grey-500! min-h-[38px]! w-full py-0! text-xs! lg:w-fit"
+            onClick={handleToggle}
+          >
+            <IoSettingsOutline />
+            Edit Schedule
+          </Button>
+        )}
+      </header>
+      <section>
+        {!isClicked ? (
+          <ul className="space-y-10">
+            {DAYS.map((day) => (
+              <AvailableDateCard
+                key={day}
+                day={day}
+                slots={officeHoursData[day]?.slots ?? []}
+              />
             ))}
+          </ul>
+        ) : (
+          <EditAppointmentSettings  />
+        )}
+      </section>
+    </section>
+  );
+};
 
+export const EditAppointmentSettings = ( ) => {
+  const {
+    officeHoursData,
+    handleOfficeHoursChange,
+    handleTimeChange,
+    removeTimeRange,
+    addMoreTimeInput,
+    handleSubmit,
+    isPending,
+    handleToggle } = useBookings();
 
-            <div className="mt-9 flex items-center justify-end pt-5">
+  return (
+    <ul className="divide-grey-200 divide-y">
+      {DAYS.map((day) => {
 
-                <div className="flex gap-3">
-                    <Button
-                        className="outline-btn"
-                        type="button"
-                        onClick={action}
-                    >
-                        Cancel
-                    </Button>
-                    <Button
-                        className="pry-btn"
-                        // type="submit"
-                        onClick={action}
-                    // loading={isPending}
-                    >
-                        Save Changes
-                    </Button>
-                </div>
-
+        const {available,slots} = officeHoursData[day]||{} as MentorAvailableHoursType
+        return (
+            <li key={day} className="flex flex-col justify-between gap-3 gap-y-2 py-3 lg:flex-row">
+            <div className="flex h-fit items-center gap-3">
+              <FormInput
+                id=""
+                type="checkbox"
+                value={day}
+                checkValue={available}
+                onChecked={(e) => handleOfficeHoursChange(day, e)}
+                className="m-0!"
+              />
+              <label htmlFor={day} className="text-grey-400 capitalize">
+                {day}
+              </label>
             </div>
-        </ul>
 
+            <div className="flex gap-3">
+              {slots?.length > 0 ? (
+                <div className="flex flex-1 gap-2">
+                  <div className="space-y-2">
+                    {slots.map(({ start, end }, i) => (
+                      <div key={i} className="flex items-center gap-3">
+                        <input
+                          id="start"
+                          type="time"
+                          value={start}
+                          onChange={(e) =>
+                            handleTimeChange(day, i, "start", e.target.value)
+                          }
+                          className="form-controls px-2! py-0!"
+                        />
+                        <small>-</small>
+                        <input
+                          id="end"
+                          type="time"
+                          value={end}
+                          onChange={(e) =>
+                            handleTimeChange(day, i, "end", e.target.value)
+                          }
+                          className="form-controls px-2! py-0!"
+                        />
+                        <button onClick={() => removeTimeRange(day, i)}>
+                          <BsX />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
 
-    )
-}
+                  <div>
+                    <button onClick={() => addMoreTimeInput(day)}>
+                      <FaCirclePlus className="text-secondary" />
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <small className="font-pretendard text-Grey7 text-base">
+                  Unavailable
+                </small>
+              )}
+            </div>
+          </li>
+      )})}
+
+      <div className="mt-9 flex items-center justify-end pt-5">
+        <div className="flex gap-3">
+          <Button className="outline-btn" type="button" onClick={handleToggle}>
+            Cancel
+          </Button>
+          <Button
+            className="pry-btn"
+            type="button"
+            onClick={handleSubmit}
+            loading={isPending}
+          >
+            Save Changes
+          </Button>
+        </div>
+      </div>
+    </ul>
+  );
+};
+
+export const AvailableDateCard = ({
+  day,
+  slots,
+}: {
+  day: string;
+  slots: { start: string; end: string }[];
+}) => {
+  return (
+    <li className="flex justify-between">
+      <p className="w-50 capitalize font-medium">{day}</p>
+      <div className="flex-1">
+        {slots?.length > 0 ? (
+          <ul className="text-grey-400 flex flex-wrap gap-3">
+            {slots.map(({ start, end }, index) => (
+              <li key={index} className="w-fit">
+                {start} - {end}{index===slots?.length-1 ?  "":","}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-grey-400">Unavailable</p>
+        )}
+      </div>
+    </li>
+  );
+};
+

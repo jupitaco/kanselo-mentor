@@ -2,66 +2,104 @@
 
 import Button from "@/components/ui/button";
 import FormInput from "@/components/ui/formInput";
-import { allImages } from "@/public/images/images";
-import Image from "next/image";
-import React from "react";
-import { useState } from "react";
+import { updateUserAction, } from "@/libs/actions/auth.actions";
+import {  UserDataAndAccessToken } from "@/types/auths";
+import { ActionFormStatus } from "@/types/global";
+import { handleError, handleSuccess } from "@/utils/helper";
+import React, { FormEvent, useActionState, useEffect, useMemo } from "react";
+import countries from "@/utils/countriesminified.json";
+import states from "@/utils/statesminified.json";
+import { useSettingsContext } from "@/context/settingsContext";
+
 
 export const Basic = () => {
-  // const [formData, setFormData] = useState({
-  //   fullName: userData?.fullName || '',
-  //   email: userData?.email || '',
-  // });
-  const [edit, setEdit] = useState(false);
+  const { edit, setEdit, formData, setFormData } = useSettingsContext();
 
-  // const handleChange = (
-  //   e: FormEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
-  // ) => {
-  //   const { id, value } = e.target as HTMLInputElement;
-  //   setFormData((prev) => ({ ...prev, [id]: value }));
-  // };
+  const handleChange = (
+    e: FormEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
+  ) => {
+    const { id, value } = e.target as HTMLInputElement;
+    setFormData((prev) => ({ ...prev, [id]: value }));
+  };
 
-  // const initialStatus: ActionFormStatus & { data: UserDataAndAccessToken } = {
-  //   error: false,
-  //   message: '',
-  //   data: {} as UserDataAndAccessToken,
-  // };
+  const handleSelectChange = (field: 'country' | 'state') => (value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
 
-  // const updateUserWithId = (state: ActionFormStatus, payload: FormData) => {
-  //   return updateUserAction(state, userData?._id as string, payload);
-  // };
+  const initialStatus: ActionFormStatus & { data: UserDataAndAccessToken } = {
+    error: false,
+    message: '',
+    data: {} as UserDataAndAccessToken,
+  };
 
-  // const [state, formAction, isPending] = useActionState(
-  //   updateUserWithId,
-  //   initialStatus,
-  //   '/',
-  // );
+  const [state, formAction, isPending] = useActionState(
+    updateUserAction,
+    initialStatus,
+    '/',
+  );
 
-  // useEffect(() => {
-  //   if (state?.error) {
-  //     handleError('Profile Update', state?.message);
-  //   } else if (state?.message) {
-  //     handleSuccess('Profile Update', state?.message);
-  //     setTimeout(() => {
-  //       setEdit(false);
-  //     }, 10);
-  //   }
-  // }, [state, edit]);
+  useEffect(() => {
+    if (state?.error) {
+      handleError(state?.message);
+    } else if (state?.message) {
+      handleSuccess(state?.message);
+      setTimeout(() => {
+        setEdit(false);
+      }, 10);
+    }
+  }, [state, edit, setEdit]);
+
+
+  const modifiedCountries = useMemo(
+    () =>
+      countries.map((item) => {
+        return {
+          label: item?.name,
+          value: item?.name,
+        };
+      }),
+    [],
+  );
+
+  const stateList = useMemo(() => {
+    let stateData;
+    const countryId = countries.find((i) => i.name === formData?.country)?.id;
+    const matched = states.find((i) => i.id === countryId)?.states;
+
+    if (matched) {
+      stateData = matched.map(({ name }) => {
+        return {
+          label: name,
+          value: name,
+        };
+      });
+    }
+
+    return stateData;
+  }, [formData?.country]);
+
 
   return (
     <form
-      // action={formAction}
+      action={formAction}
       className="w-full space-y-4"
     >
       <section className="space-y-4">
+        <FormInput
+          id="profilePhoto"
+          name="profilePhoto"
+          type="hidden"
+          value={formData?.profilePhoto}
+
+        />
         <FormInput
           id="fullName"
           name="fullName"
           type="text"
           label="Full Name"
           placeholder="Enter"
-          // defaultValue={formData?.fullName}
-          // onChange={handleChange}
+          value={formData?.fullName}
+          onChange={handleChange}
           disabled={!edit}
         />
 
@@ -71,40 +109,52 @@ export const Basic = () => {
           type="email"
           label="Email Address"
           placeholder="Enter"
-          // defaultValue={userData?.email}
+          value={formData?.email}
           disabled
         />
 
         <FormInput
           id="phoneNumber"
           name="phoneNumber"
-          type="text"
+          type="tel"
           label="Phone Number"
           placeholder="Enter"
-          // defaultValue={formData?.fullName}
-          // onChange={handleChange}
+          value={formData?.phoneNumber}
+          onChange={handleChange}
           disabled={!edit}
         />
 
         <FormInput
           id="country"
           name="country"
-          type="text"
+          type="shadSelect"
           label="Country"
-          placeholder="Enter"
-          // defaultValue={formData?.country}
-          // onChange={handleChange}
+          placeholder="Select"
+          value={formData?.country}
+          shadcnSelectData={modifiedCountries}
+          onSelectItem={handleSelectChange('country')}
           disabled={!edit}
         />
 
         <FormInput
+          id="state"
+          name="state"
+          type="shadSelect"
+          label="State"
+          placeholder="Select"
+          value={formData?.state}
+          shadcnSelectData={stateList}
+          onSelectItem={handleSelectChange('state')}
+          disabled={!edit}
+        />
+        <FormInput
           id="city"
           name="city"
           type="text"
-          label="Ciy"
-          placeholder="Enter"
-          // defaultValue={formData?.city}
-          // onChange={handleChange}
+          label="City"
+          placeholder="Enter city"
+          value={formData?.city}
+          onChange={handleChange}
           disabled={!edit}
         />
 
@@ -121,7 +171,7 @@ export const Basic = () => {
               <Button
                 className="pry-btn"
                 type="submit"
-                // loading={isPending}
+                loading={isPending}
               >
                 Save Changes
               </Button>
@@ -140,19 +190,5 @@ export const Basic = () => {
         </div>
       </section>
     </form>
-  );
-};
-
-export const ChangeUserProfile = () => {
-  return (
-    <figure className="relative size-40 overflow-hidden rounded-full">
-      <Image
-        src={allImages.avatar}
-        alt=""
-        fill
-        sizes="100%"
-        className="object-cover"
-      />
-    </figure>
   );
 };

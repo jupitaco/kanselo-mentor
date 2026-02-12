@@ -129,12 +129,13 @@ export class Api {
     base_url = this.base_url,
     options,
     auth = false,
-    customHeader = 'application/json',
+    customHeader = 'application/json',tags
   }: {
     base_url?: string;
     options: OptionsType<T>;
     auth?: boolean;
     customHeader?: string;
+    tags?:string[]
   }): Promise<ResponseType<R>> {
     const headers = await this.getHeaders({ auth, customHeader });
     const body = this.getRequestBody(options, headers);
@@ -146,6 +147,7 @@ export class Api {
         method: options.method,
         headers,
         body,
+        next:{tags}
       });
 
       return this.handleResponse<R>(response);
@@ -154,10 +156,11 @@ export class Api {
     }
   }
 
-  static async get<R>(url: string, auth?: boolean) {
+  static async get<R>(url: string, auth?: boolean, tags?:string[]) {
     return this.request<void, R>({
       options: { method: 'GET', url },
       auth,
+      tags
     });
   }
 

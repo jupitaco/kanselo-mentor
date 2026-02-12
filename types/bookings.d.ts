@@ -31,8 +31,10 @@ export type TimeRange = {
   endTime: string;
 };
 
+
+
 export type OfficeDay = {
-  title: string;
-  checked: boolean;
-  time: TimeRange[];
+  day: string;
+  available: boolean;
+  slots: { start: string; end: string }[];
 };

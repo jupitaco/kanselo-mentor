@@ -41,7 +41,6 @@ export const useAuth = () => {
   const country = watch("country");
 
   const onSubmit = async (data: SignupTypeValues) => {
-    console.log('data>>', data);
 
     const signupData = {
       fullName: data.fullName,

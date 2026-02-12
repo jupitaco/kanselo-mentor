@@ -13,37 +13,34 @@ import { FaChevronDown, FaX } from "react-icons/fa6";
 import { Checkbox } from "../ui/formInput/checkbox/checkbox";
 
 const Onboarding = () => {
-  const { push } = useRouter()
+  const { push } = useRouter();
   const [industries, setIndustries] = useState<string[]>([]);
 
   const [formData, setFormData] = useState({
     consultationTitle: "",
     yearsOfExperience: "",
     bio: "",
-    consultationFee: ""
-
+    consultationFee: "",
   });
 
-  const [isPending, startTransition] = useTransition()
+  const [isPending, startTransition] = useTransition();
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-
-    const { name, value } = e.target as HTMLInputElement
-    setFormData(prev => ({ ...prev, [name]: value }))
-  }
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
+  ) => {
+    const { name, value } = e.target as HTMLInputElement;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleSelectIndurstires = (value: string) => {
-
     setIndustries((prev) => {
-
-      const isExist = prev?.includes(value)
-      return isExist ? prev.filter((text) => text !== value) : [...prev, value]
-    })
-
-  }
+      const isExist = prev?.includes(value);
+      return isExist ? prev.filter((text) => text !== value) : [...prev, value];
+    });
+  };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+    e.preventDefault();
 
     const payload = {
       consultationTitle: formData?.consultationTitle,
@@ -51,20 +48,19 @@ const Onboarding = () => {
       bio: formData?.bio,
       consultationFee: Number(formData?.consultationFee),
       industries,
-    }
+    };
 
     startTransition(async () => {
-      const rsp = await onboardUserAction(payload)
+      const rsp = await onboardUserAction(payload);
 
       if (rsp?.error) {
         handleError(rsp?.message);
-        return
+        return;
       } else {
         handleSuccess(rsp?.message, push, "/dashboard");
       }
-    })
-  }
-
+    });
+  };
 
   const removeItem = (value: string) => {
     setIndustries((prev) => prev?.filter((i) => i !== value));
@@ -85,47 +81,43 @@ const Onboarding = () => {
           required
         />
 
-
         <div className="w-full">
-
-          <label htmlFor="industries">   Industry (s)</label>
+          <label htmlFor="industries"> Industry (s)</label>
 
           <PopoverWrapper
             className="form-controls mt-2"
             triggerChildren={
               <button className="flex items-center justify-between gap-0.5">
                 <>
-
-                  {
-                    industries?.length > 0 &&
-                    <ul className="flex flex-wrap flex-1 gap-2">
-                      {
-                        industries?.map((item, idx) => (
-                          <li
-                            key={idx}
-                            className="bg-primary flex cursor-pointer items-center gap-2 rounded-md p-2 text-grey-100 text-xs capitalize"
-                            onClick={() => removeItem(item)}
-                          >
-                            {item} <FaX />
-                          </li>
-                        ))
-                      }
+                  {industries?.length > 0 && (
+                    <ul className="flex flex-1 flex-wrap gap-2">
+                      {industries?.map((item, idx) => (
+                        <li
+                          key={idx}
+                          className="bg-primary text-grey-100 flex cursor-pointer items-center gap-2 rounded-md p-2 text-xs capitalize"
+                          onClick={() => removeItem(item)}
+                        >
+                          {item} <FaX />
+                        </li>
+                      ))}
                     </ul>
-                  }
-                </>  Select <FaChevronDown className="text-grey-400" />
+                  )}
+                </>{" "}
+                Select <FaChevronDown className="text-grey-400" />
               </button>
             }
             contentClassName="w-[var(--radix-popover-trigger-width)] card"
           >
-            <ul className="space-y-3 max-h-60 overflow-y-auto ">
+            <ul className="max-h-60 space-y-3 overflow-y-auto">
               {filterData.map(({ label, value }, idx) => {
                 return (
-
-                  <li key={idx} className="flex items-center gap-2 hover:bg-grey-100 p-2 rounded-md cursor-pointer text-sm w-full"
-                    onClick={() => handleSelectIndurstires(value)} >
+                  <li
+                    key={idx}
+                    className="hover:bg-grey-100 flex w-full cursor-pointer items-center gap-2 rounded-md p-2 text-sm"
+                    onClick={() => handleSelectIndurstires(value)}
+                  >
                     <Checkbox checked={industries.includes(value)} /> {label}
                   </li>
-
                 );
               })}
             </ul>
@@ -170,11 +162,7 @@ const Onboarding = () => {
       </article>
 
       <article className="mt-8">
-        <Button
-          type="submit"
-          className="pry-btn w-full"
-          loading={isPending}
-        >
+        <Button type="submit" className="pry-btn w-full" loading={isPending}>
           Submit
         </Button>
       </article>

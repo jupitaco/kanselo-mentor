@@ -40,7 +40,7 @@ export const updateUserApi = async (body: UserData) => {
 
 export const getCurrentUserApi = async () => {
   const session = await getUser();
-  return Api.get<{ data: UserData }>(`/user/user-id/${session?._id}`);
+  return Api.get<{ data: UserData }>(`/user/user-id/${session?._id}`, true, );
 };
 
 export const currentUserUpdatePasswordApi = async (body: PasswordUpdate) => {
@@ -50,6 +50,7 @@ export const currentUserUpdatePasswordApi = async (body: PasswordUpdate) => {
     `/user/${session?._id}/change-password/dashboard`,
     body,
     true,
+
   );
 };
 
@@ -73,6 +74,7 @@ export const passwordResetApi = (body: ResetPassword) => {
     body,
   );
 };
+
 
 
 export const fileUploadApi = (body: FormData) => {

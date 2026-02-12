@@ -1,7 +1,7 @@
 "use client";
 import TableComponent, { Column } from "@/components/ui/tableComponent/tableComponent";
 import { bookingAssets, newBookingColData, completedBookingColData, cancelledBookingColData } from "@/mock";
-import { BookingType } from "@/types/booking";
+import { BookingType } from "@/types/bookings";
 import { useSearchParams } from "next/navigation";
 import React from "react";
 

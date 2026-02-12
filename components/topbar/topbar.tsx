@@ -1,24 +1,19 @@
 "use client";
- import Image from "next/image";
+import Image from "next/image";
 import { allImages } from "@/public/images/images";
 import Hambugger from "./hambugger";
 import "./navbar.css";
 import { usePathname, useSearchParams } from "next/navigation";
 import { RenderNotifs } from "./notifications/notifications";
+import { useAuthContext } from "@/context/authContext";
+
 
 const TopBar = () => {
+
+  const {currentUserData}=useAuthContext()
   const searchParams = useSearchParams();
-  // const rsp = await getCurrentUserApi();
-  // const userData = rsp?.ok ? rsp?.body?.user : null;
 
   const mentorName = searchParams.get("mentorName");
-
-  const userData = {
-    firstName: "Richard ",
-    lastName: "Hederson",
-    email: "richardhederson@gmail.com",
-  };
-
   const path = usePathname();
 
   const cleanedPath = path
@@ -42,7 +37,7 @@ const TopBar = () => {
             <div className="flex items-center justify-end gap-2 rounded-full! px-3 py-2">
               <figure className="relative size-12 overflow-hidden rounded-xl">
                 <Image
-                  src={allImages.avatar}
+                  src={currentUserData?.profilePhoto ?? allImages.noAvatar}
                   alt="profile"
                   className="h-full w-full object-cover"
                   fill
@@ -51,9 +46,9 @@ const TopBar = () => {
               </figure>
               <div className="flex-1">
                 <h5 className="text-sm font-medium">
-                  {userData?.firstName} {userData?.lastName}
+                  {currentUserData?.fullName}
                 </h5>
-                <small className="text-grey-400">{userData?.email}</small>
+                <small className="text-grey-400">{currentUserData?.email}</small>
               </div>
             </div>
           </article>

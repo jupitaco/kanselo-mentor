@@ -7,7 +7,7 @@ import ModalWrapper from "@/components/ui/modals/modalWrapper";
 import { StarRatings } from "@/components/ui/starRatings";
 import { useModalContext } from "@/context/modalContext";
 import { callRatings } from "@/mock";
-import { BookingType } from "@/types/booking";
+import { BookingType } from "@/types/bookings";
 import { useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 
