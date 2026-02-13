@@ -1,16 +1,10 @@
 "use client";
 import Button from "@/components/ui/button";
 import FormInput from "@/components/ui/formInput";
-import { useAuthContext } from "@/context/authContext";
 import { useBookings } from "@/hooks/useBookings";
-import { updateBooingSettingsActions } from "@/libs/actions/bookings.actions";
-import {
-  AvailableHoursType,
-  MentorAvailableHoursType,
-  UserData,
-} from "@/types/auths";
-import { DayOfWeek, OfficeDay } from "@/types/bookings";
-import React, { useMemo, useState, useTransition } from "react";
+import { MentorAvailableHoursType } from "@/types/auths";
+import { DayOfWeek } from "@/types/bookings";
+import React from "react";
 import { BsX } from "react-icons/bs";
 import { FaCirclePlus } from "react-icons/fa6";
 import { IoSettingsOutline } from "react-icons/io5";
@@ -67,14 +61,14 @@ export const AppointmentSettings = () => {
             ))}
           </ul>
         ) : (
-          <EditAppointmentSettings  />
+          <EditAppointmentSettings />
         )}
       </section>
     </section>
   );
 };
 
-export const EditAppointmentSettings = ( ) => {
+export const EditAppointmentSettings = () => {
   const {
     officeHoursData,
     handleOfficeHoursChange,
@@ -83,15 +77,19 @@ export const EditAppointmentSettings = ( ) => {
     addMoreTimeInput,
     handleSubmit,
     isPending,
-    handleToggle } = useBookings();
+    handleToggle,
+  } = useBookings();
 
   return (
     <ul className="divide-grey-200 divide-y">
       {DAYS.map((day) => {
-
-        const {available,slots} = officeHoursData[day]||{} as MentorAvailableHoursType
+        const { available, slots } =
+          officeHoursData[day] || ({} as MentorAvailableHoursType);
         return (
-            <li key={day} className="flex flex-col justify-between gap-3 gap-y-2 py-3 lg:flex-row">
+          <li
+            key={day}
+            className="flex flex-col justify-between gap-3 gap-y-2 py-3 lg:flex-row"
+          >
             <div className="flex h-fit items-center gap-3">
               <FormInput
                 id=""
@@ -151,7 +149,8 @@ export const EditAppointmentSettings = ( ) => {
               )}
             </div>
           </li>
-      )})}
+        );
+      })}
 
       <div className="mt-9 flex items-center justify-end pt-5">
         <div className="flex gap-3">
@@ -181,13 +180,14 @@ export const AvailableDateCard = ({
 }) => {
   return (
     <li className="flex justify-between">
-      <p className="w-50 capitalize font-medium">{day}</p>
+      <p className="w-50 font-medium capitalize">{day}</p>
       <div className="flex-1">
         {slots?.length > 0 ? (
           <ul className="text-grey-400 flex flex-wrap gap-3">
             {slots.map(({ start, end }, index) => (
               <li key={index} className="w-fit">
-                {start} - {end}{index===slots?.length-1 ?  "":","}
+                {start} - {end}
+                {index === slots?.length - 1 ? "" : ","}
               </li>
             ))}
           </ul>
@@ -198,4 +198,3 @@ export const AvailableDateCard = ({
     </li>
   );
 };
-

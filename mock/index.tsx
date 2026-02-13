@@ -285,13 +285,13 @@ export const templateColData: Column<TemplateType & { action?: ReactNode }>[] =
       render: (_, record) => <>${formatNumInThousands(record?.price)} </>,
     },
 
-    // {
-    //   title: "AMOUNT SOLD",
-    //   key: "totalSales",
-    //   cellClassName: " text-center",
+    {
+      title: "AMOUNT SOLD",
+      key: "totalSold",
+      cellClassName: " text-center",
 
-    //   render: (_, record) => <>{record?.totalSales}</>,
-    // },
+      render: (_, record) => <>{record?.totalSold}</>,
+    },
     {
       title: "ACTION",
       key: "action",

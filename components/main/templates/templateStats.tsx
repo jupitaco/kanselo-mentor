@@ -56,8 +56,8 @@ export const TemplateStatSkeleton = () => {
         <IncomeIcon />
         <div className="space-y-3">
           <small className="text-grey-300">Income</small>
-          <div className="font-semibold">
-            $ <Skeleton className="h-4!" />
+          <div className="flex items-center gap-4 font-semibold">
+            $ <Skeleton className="h-4! w-20!" />
           </div>
         </div>
       </li>

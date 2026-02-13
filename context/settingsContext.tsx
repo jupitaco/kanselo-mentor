@@ -29,6 +29,10 @@ export const SettingsProvider: FC<{
     country: userData?.country || "",
     state: userData?.state || "",
     city: userData?.city || "",
+    bio: userData?.bio || "",
+    consultationFee: userData?.consultationFee || 0,
+    consultationTitle: userData?.consultationTitle || "",
+    yearsOfExperience: userData?.yearsOfExperience || 0,
   });
 
   return (

@@ -2,6 +2,7 @@
 
 import {
   createTemplatesApi,
+  deleteTemplatesApi,
   editTemplatesApi,
 } from "@/services/apis/template.api";
 import { CreateTemplateType } from "@/types/template";
@@ -49,7 +50,32 @@ export const EditTemplateAction = async (
     revalidatePath("/templates");
     return {
       error: false,
-      message: rsp?.body.message || "Template created successfully",
+      message: rsp?.body.message || "Template updated successfully",
+    };
+  } catch (err) {
+    console.log(err);
+    return {
+      error: true,
+      message: "Something went wrong",
+    };
+  }
+};
+
+export const DeleteTemplateAction = async (templateId: string) => {
+  try {
+    const rsp = await deleteTemplatesApi(templateId);
+
+    if (!rsp?.ok) {
+      return {
+        error: true,
+        message: rsp?.body.message || "Something went wrong",
+      };
+    }
+
+    revalidatePath("/templates");
+    return {
+      error: false,
+      message: rsp?.body.message || "Template deleted successfully",
     };
   } catch (err) {
     console.log(err);

@@ -1,6 +1,7 @@
 import {
   CreateTemplateType,
   TemplateRsp,
+  TemplatesRsp,
   TemplateStatRsp,
 } from "@/types/template";
 import { Api } from "./api";
@@ -10,9 +11,13 @@ import { queryBuilder } from "@/utils/helper";
 
 export const getAllTemplates = async (page = "1", limit = "10") => {
   const user = await getUser();
-  return Api.get<TemplateRsp>(
+  return Api.get<TemplatesRsp>(
     `/templates/user/${user?._id}?${queryBuilder({ page, limit })}`,
   );
+};
+
+export const getTemplateById = async (templateId: string) => {
+  return Api.get<TemplateRsp>(`/templates/find-by-id/${templateId}`);
 };
 
 export const getTemplateStats = async () => {
@@ -30,9 +35,19 @@ export const editTemplatesApi = (
   templateId: string,
   body: CreateTemplateType,
 ) => {
-  return Api.post<CreateTemplateType, ApiResponse>(
+  return Api.patch<CreateTemplateType, ApiResponse>(
     `/templates/${templateId}`,
     body,
+    true,
+  );
+};
+
+export const deleteTemplatesApi = async (templateId: string) => {
+  const user = await getUser();
+
+  return Api.delete<void, ApiResponse>(
+    `/templates/${user?._id}/${templateId}`,
+    undefined,
     true,
   );
 };

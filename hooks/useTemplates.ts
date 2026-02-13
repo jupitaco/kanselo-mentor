@@ -1,17 +1,17 @@
-import { useAuthContext } from "@/context/authContext";
-import { updateBooingSettingsActions } from "@/libs/actions/bookings.actions";
-import { AvailableHoursType, MentorAvailableHoursType } from "@/types/auths";
 import { handleError, handleSuccess } from "@/utils/helper";
-import { useEffect, useState, useTransition } from "react";
-import { useGlobalHooks } from "./globalHooks";
+import { useState } from "react";
 import { uploadFilesAction } from "@/libs/actions/auth.actions";
 import { TemplateSchema, TemplateTypeValues } from "@/schemas/bookcall.schemas";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CreateTemplateAction } from "@/libs/actions/template.actions";
+import {
+  CreateTemplateAction,
+  EditTemplateAction,
+} from "@/libs/actions/template.actions";
 import { useRouter } from "next/navigation";
+import { TemplateType } from "@/types/template";
 
-export const useTemplates = () => {
+export const useTemplates = (templateData?: TemplateType) => {
   const { back } = useRouter();
   const [loading, setLoading] = useState<{ [key: string | number]: boolean }>(
     {},
@@ -20,10 +20,10 @@ export const useTemplates = () => {
   const [file, setFile] = useState<File>();
 
   const initialValues: TemplateTypeValues = {
-    fileUrl: "",
-    coverImage: "",
-    title: "",
-    price: 0,
+    fileUrl: templateData?.fileUrl || "",
+    coverImage: templateData?.coverImage || "",
+    title: templateData?.title || "",
+    price: templateData?.price || 0,
   };
 
   const {
@@ -85,9 +85,21 @@ export const useTemplates = () => {
     }
   };
 
+  const onSubmitUpdate = async (data: TemplateTypeValues) => {
+    if (!templateData) return;
+    const rsp = await EditTemplateAction(templateData?._id, data);
+    if (rsp?.error) {
+      handleError(rsp?.message);
+    } else {
+      handleSuccess(rsp?.message);
+      back();
+    }
+  };
+
   return {
     register,
     handleSubmit: handleSubmit(onSubmit),
+    handleSubmitUpdate: handleSubmit(onSubmitUpdate),
     getValues,
     formState,
     reset,

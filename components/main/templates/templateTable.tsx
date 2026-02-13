@@ -3,7 +3,7 @@ import TableComponent from "@/components/ui/tableComponent/tableComponent";
 import TablePagination from "@/components/ui/tableComponent/tablePagination";
 import TableSkeleton from "@/components/ui/tableComponent/tableSkeleton";
 import { usePaginationContext } from "@/context/paginateContext";
-import { templateColData, templateData } from "@/mock";
+import { templateColData } from "@/mock";
 import { TemplateType } from "@/types/template";
 import React from "react";
 

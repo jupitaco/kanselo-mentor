@@ -7,6 +7,7 @@ export type TemplateType = {
   title: string;
   coverImage: string;
   fileUrl: string;
+  totalSold: string;
   createdAt: string;
   updatedAt: string;
 };
@@ -37,7 +38,7 @@ export type TemplateStatRsp = ApiResponse & {
   };
 };
 
-export type TemplateRsp = ApiResponse & {
+export type TemplatesRsp = ApiResponse & {
   data: {
     page: 1;
     limit: 10;
@@ -45,4 +46,8 @@ export type TemplateRsp = ApiResponse & {
     totalPages: 1;
     templates: TemplateType[];
   };
+};
+
+export type TemplateRsp = ApiResponse & {
+  data: TemplateType;
 };

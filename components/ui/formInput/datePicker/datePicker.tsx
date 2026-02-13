@@ -53,7 +53,7 @@ export function DatePicker({
           >
             {value ? (
               <>
-                {formatDate(value)}
+                {formatDate(value?.toISOString())}
                 <BsCalendar3 size={18} />
               </>
             ) : (

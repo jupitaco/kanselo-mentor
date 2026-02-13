@@ -16,7 +16,6 @@ export const TemplateSchema = z.object({
   price: z
     .number()
     .min(1, "Must be 1 or more")
-    .int("Must be an integer")
     .positive("Must be a positive number"),
 });
 

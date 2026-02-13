@@ -7,7 +7,7 @@ import Button from "@/components/ui/button";
 import ErrorMessage from "@/components/ui/errorMessage";
 import FormInput from "@/components/ui/formInput";
 import { useTemplates } from "@/hooks/useTemplates";
-import { templateData } from "@/mock";
+import { TemplateType } from "@/types/template";
 import React from "react";
 
 export const CreateTemplate = () => {
@@ -61,6 +61,7 @@ export const CreateTemplate = () => {
         label="Price"
         placeholder="Enter price"
         className="w-full"
+        step="0.01"
         {...register("price", { valueAsNumber: true })}
         error={errors?.price?.message}
       />
@@ -89,30 +90,32 @@ export const CreateTemplate = () => {
   );
 };
 
-export const EditTemplate = ({ id }: { id: string }) => {
+export const EditTemplate = ({
+  templateData,
+}: {
+  templateData: TemplateType;
+}) => {
   const {
     formState: { errors, isSubmitting },
     register,
     watch,
-    handleSubmit,
-    control,
-    setValue,
+    handleSubmitUpdate,
     loading,
     handleUploadFiles,
     removeUploadedFile,
-  } = useTemplates();
+    file,
+  } = useTemplates(templateData);
 
   const coverImage = watch("coverImage");
   const fileUrl = watch("fileUrl");
 
-  const temp = templateData?.find((i) => i.id === id);
-
   return (
-    <form className="mx-auto max-w-md space-y-8">
+    <form onSubmit={handleSubmitUpdate} className="mx-auto max-w-md space-y-8">
       <article className="flex w-full flex-col gap-3">
         <h5 className="text-grey-500 text-sm font-medium">Cover Image</h5>
+
         <ImageFileUpload
-          id="profileImg"
+          id="coverImage"
           loading={loading}
           uploadFiles={(e) => handleUploadFiles(e, "coverImage")}
           uploaddedFileUrl={coverImage}
@@ -120,6 +123,7 @@ export const EditTemplate = ({ id }: { id: string }) => {
           imgClassName="object-cover"
           singleUpload
         />
+
         {errors?.coverImage?.message && (
           <ErrorMessage message={errors?.coverImage?.message} />
         )}
@@ -131,7 +135,8 @@ export const EditTemplate = ({ id }: { id: string }) => {
         label="Title"
         placeholder="Enter title"
         className="w-full"
-        value={temp?.title}
+        {...register("title")}
+        error={errors?.title?.message}
       />
 
       <FormInput
@@ -140,20 +145,31 @@ export const EditTemplate = ({ id }: { id: string }) => {
         label="Price"
         placeholder="Enter price"
         className="w-full"
-        value={temp?.price}
-        min={0}
+        step="0.01"
+        {...register("price", { valueAsNumber: true })}
+        error={errors?.price?.message}
       />
 
       <article className="flex w-full flex-col gap-3">
         <h5 className="text-grey-500 text-sm font-medium">Upload File (PDF)</h5>
-        <FileUpload id="profileImg" loading={loading} />
+        <FileUpload
+          id="fileUrl"
+          loading={loading}
+          uploaddedFileUrl={fileUrl}
+          uploadFiles={(e) => handleUploadFiles(e, "fileUrl")}
+          removeFile={() => removeUploadedFile("fileUrl")}
+          title={file?.name}
+          fileSize={file?.size}
+        />
 
         {errors?.fileUrl?.message && (
           <ErrorMessage message={errors?.fileUrl?.message} />
         )}
       </article>
 
-      <Button className="pry-btn w-full">Save Template</Button>
+      <Button type="submit" loading={isSubmitting} className="pry-btn w-full">
+        Save Template
+      </Button>
     </form>
   );
 };

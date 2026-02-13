@@ -10,7 +10,7 @@ export default async function Payouts({
 }: {
   params: SearchPageParams;
 }) {
-  const rsp = await getPayoutAccounts();
+  const rsp = await getPayoutAccounts(params?.page || "1");
 
   if (!rsp?.ok) {
     return <EmptyState title="Error" subTitle={rsp?.body?.message} />;

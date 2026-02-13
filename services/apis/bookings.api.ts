@@ -1,9 +1,7 @@
-import { OfficeDay } from '@/types/bookings';
-import { Api } from './api';
-import { queryBuilder } from '@/utils/helper';
-import { AuthResponse, AvailableHoursType } from '@/types/auths';
-import { getUser } from '../session';
-
+import { Api } from "./api";
+import { ApiResponse, AuthResponse, AvailableHoursType } from "@/types/auths";
+import { getUser } from "../session";
+import { bookingStatsType } from "@/types/bookings";
 
 // export const getAllMentorsApi = (
 //   {
@@ -22,13 +20,19 @@ import { getUser } from '../session';
 //   );
 // };
 
-
+export const getBookingStatsApi = async () => {
+  const rsp = await getUser();
+  return Api.get<bookingStatsType>(
+    `/booking/mentor-dashboard/${rsp?._id}/metrics`,
+    true,
+  );
+};
 
 export const updateBooingSettingsApi = async (body: AvailableHoursType) => {
-  const rsp =await getUser()
+  const rsp = await getUser();
   return Api.patch<AvailableHoursType, AuthResponse>(
     `/user/${rsp?._id}/available-hours`,
     body,
-    true
+    true,
   );
 };

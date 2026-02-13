@@ -96,7 +96,7 @@ export const SearchMentor = () => {
 
 export const MenteeAvatar = ({ image, name, location }: Mentor) => {
   return (
-    <div className="flex items-center gap-4 space-y-3 overflow-hidden   bg-white">
+    <div className="flex items-center gap-4 space-y-3 overflow-hidden bg-white">
       <figure className="relative size-26! w-full overflow-hidden">
         <Image
           src={image}
@@ -106,7 +106,7 @@ export const MenteeAvatar = ({ image, name, location }: Mentor) => {
           className="object-cover"
         />
       </figure>
-      <div className="space-y-2 p-4 flex-1">
+      <div className="flex-1 space-y-2 p-4">
         <h5 className="font-semibold">{name}</h5>
         <small className="text-grey-300 font-medium">{location}</small>
       </div>
@@ -157,7 +157,6 @@ export const BookCallForm = () => {
   };
 
   return (
-
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
       <FormInput
         id="message"
@@ -197,7 +196,9 @@ export const BookCallForm = () => {
             id="date"
             type="date"
             label="Date"
-            placeholder={formatDate(new Date())}
+            placeholder={formatDate(
+              new Date()?.toISOString()?.split("T")?.at(0) || "",
+            )}
             error={errors.date?.message}
             DateTimeValue={field.value ? new Date(field.value) : undefined}
             onDateChange={(date) => {
@@ -237,6 +238,5 @@ export const BookCallForm = () => {
         Book Now
       </Button>
     </form>
-
   );
 };

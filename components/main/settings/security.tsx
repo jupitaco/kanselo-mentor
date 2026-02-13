@@ -6,7 +6,7 @@ import StrongPassword from "@/components/ui/strongPassword";
 import { currentUserUpdatePasswordAction } from "@/libs/actions/auth.actions";
 import { ActionFormStatus } from "@/types/global";
 import { handleError, handleSuccess } from "@/utils/helper";
-import React, { FormEvent, useActionState, useEffect } from "react";
+import React, { SyntheticEvent, useActionState, useEffect } from "react";
 import { useState } from "react";
 
 export const Security = () => {
@@ -18,16 +18,14 @@ export const Security = () => {
     confirmPassword: "",
   });
 
-  const handleChange = (
-    e: FormEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
-  ) => {
+  const handleChange = (e: SyntheticEvent<HTMLElement>) => {
     const { id, value } = e.target as HTMLInputElement;
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
   const initialStatus: ActionFormStatus = {
     error: false,
-    message: '',
+    message: "",
   };
 
   const [state, formAction, isPending] = useActionState(
@@ -44,9 +42,9 @@ export const Security = () => {
       // Defer state updates to avoid synchronous cascading renders in React effects
       setTimeout(() => {
         setFormData({
-          oldPassword: '',
-          newPassword: '',
-          confirmPassword: '',
+          oldPassword: "",
+          newPassword: "",
+          confirmPassword: "",
         });
         setEdit(false);
       }, 0);
@@ -54,10 +52,7 @@ export const Security = () => {
   }, [state]);
 
   return (
-    <form
-      action={formAction}
-      className="space-y-4"
-    >
+    <form action={formAction} className="space-y-4">
       <section className="space-y-4">
         <FormInput
           id="oldPassword"
@@ -67,6 +62,7 @@ export const Security = () => {
           placeholder="Enter"
           defaultValue={formData?.oldPassword}
           onChange={handleChange}
+          required
           disabled={!edit}
         />
         <FormInput
@@ -77,6 +73,7 @@ export const Security = () => {
           placeholder="Enter"
           onChange={handleChange}
           defaultValue={formData?.newPassword}
+          required
           disabled={!edit}
         />
 
@@ -92,6 +89,7 @@ export const Security = () => {
           placeholder="Enter"
           defaultValue={formData?.confirmPassword}
           onChange={handleChange}
+          required
           disabled={!edit}
         />
 
@@ -105,11 +103,7 @@ export const Security = () => {
               >
                 Cancel
               </Button>
-              <Button
-                className="pry-btn"
-                type="submit"
-                loading={isPending}
-              >
+              <Button className="pry-btn" type="submit" loading={isPending}>
                 Save Changes
               </Button>
             </div>

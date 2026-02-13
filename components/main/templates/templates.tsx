@@ -1,6 +1,4 @@
-import TableComponent from "@/components/ui/tableComponent/tableComponent";
 import { PaginationProvider } from "@/context/paginateContext";
-import { templateColData, templateData } from "@/mock";
 import { TemplateTable } from "./templateTable";
 import { getAllTemplates } from "@/services/apis/template.api";
 import { SearchPageParams } from "@/types/global";
@@ -18,13 +16,13 @@ export default async function Templates({
   }
 
   const { templates, page, limit, total } = rsp?.body?.data;
-
   const templateData = {
     page,
     total,
     limit,
     assets: templates,
   };
+
   return (
     <PaginationProvider data={templateData}>
       <TemplateTable />

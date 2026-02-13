@@ -91,6 +91,7 @@ export type UserData = {
   role: string;
   industries: string[];
   yearsOfExperience: number;
+  bio: string;
   consultationTitle: string;
   consultationFee: number;
   isSuperAdmin: boolean;
