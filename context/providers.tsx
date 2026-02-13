@@ -7,15 +7,13 @@ import { UserData } from "@/types/auths";
 
 const queryClient = new QueryClient();
 export const Providers = ({
-  user,
   children,
 }: Readonly<{
-  user:UserData
   children: React.ReactNode;
 }>) => {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider user={user}>
+      <AuthProvider>
         <ModalProvider>
           <Suspense fallback={null}>{children}</Suspense>
         </ModalProvider>

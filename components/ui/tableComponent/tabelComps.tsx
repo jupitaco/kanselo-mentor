@@ -1,7 +1,7 @@
 import Image from "next/image";
 import CopyToClipboardBtn from "../copyToClipboardBtn";
 import { GoDotFill } from "react-icons/go";
-import { getStatusColors } from "@/utils/helper";
+import { formatDate, getStatusColors } from "@/utils/helper";
 
 export const OrderedID = ({ id }: { id: string }) => {
   return (
@@ -22,6 +22,38 @@ export const OrderStatus = ({ status }: { status: string }) => {
   );
 };
 
+export const TableDate = ({
+  date,
+  className,
+  time,
+}: {
+  className?: string;
+  date: string;
+  time?: boolean;
+}) => {
+  return (
+    <div className={`${className} flex flex-col gap-1`}>
+      {formatDate(date)}
+      {time && (
+        <span className="text-grey-300 text-xs">{formatDate(date, true)}</span>
+      )}
+    </div>
+  );
+};
+export const TableTime = ({
+  date,
+  className,
+}: {
+  className?: string;
+  date: string;
+}) => {
+  return (
+    <div className={`${className} flex flex-col gap-1`}>
+      {formatDate(date, true)}
+    </div>
+  );
+};
+
 export const AvatarCard = ({
   image,
   label,
@@ -32,7 +64,7 @@ export const AvatarCard = ({
   image: string;
 }) => {
   return (
-    <div className="flex flex-1 gap-3 items-center">
+    <div className="flex flex-1 items-center gap-3">
       <figure className="relative size-12 overflow-hidden rounded-xl">
         <Image src={image} alt="" sizes="100%" fill />
       </figure>

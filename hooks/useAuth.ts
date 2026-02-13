@@ -33,7 +33,8 @@ export const useAuth = () => {
     formState,
     watch,
     reset,
-    control, setValue,
+    control,
+    setValue,
   } = useForm<SignupTypeValues>({
     resolver: zodResolver(SignupSchema),
     defaultValues: initialValues,
@@ -41,7 +42,6 @@ export const useAuth = () => {
   const country = watch("country");
 
   const onSubmit = async (data: SignupTypeValues) => {
-
     const signupData = {
       fullName: data.fullName,
       profilePhoto: data.profilePhoto || "",
@@ -53,7 +53,7 @@ export const useAuth = () => {
       password: data.password,
     };
 
-    const rsp = await signupAction(signupData)
+    const rsp = await signupAction(signupData);
     if (rsp?.error) {
       handleError(rsp?.message);
     } else if (!rsp?.error && rsp?.message) {
@@ -68,9 +68,7 @@ export const useAuth = () => {
         `/verify-email?email=${rsp?.data?.user?.email}`,
       );
     }
-
   };
-
 
   const modifiedCountries = useMemo(
     () =>
@@ -100,12 +98,11 @@ export const useAuth = () => {
     return stateData;
   }, [country]);
 
-
   useEffect(() => {
     if (stateList && stateList?.length > 0) {
-      setValue('state', stateList?.[0]?.value);
+      setValue("state", stateList?.[0]?.value);
     }
-  }, [stateList])
+  }, [stateList]);
 
   return {
     register,
@@ -114,6 +111,9 @@ export const useAuth = () => {
     formState,
     reset,
     watch,
-    control, setValue, stateList, modifiedCountries
+    control,
+    setValue,
+    stateList,
+    modifiedCountries,
   };
 };

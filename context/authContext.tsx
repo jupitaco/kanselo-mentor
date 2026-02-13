@@ -21,14 +21,16 @@ type AuthContextType = {
   setUserData: React.Dispatch<React.SetStateAction<userDataType>>;
   currentUserData: UserData;
   setCurrentUserData: React.Dispatch<React.SetStateAction<UserData>>;
-  isClicked:boolean;
-  handleToggle: ()=>void
+  isClicked: boolean;
+  handleToggle: () => void;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: FC<{user?:UserData; children: ReactNode }> = ({user, children }) => {
-  const [currentUserData, setCurrentUserData] = useState<UserData>(user as UserData);
+export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
+  const [currentUserData, setCurrentUserData] = useState<UserData>(
+    {} as UserData,
+  );
   const [isClicked, setIsClicked] = useState(false);
 
   const [userData, setUserData] = useState<userDataType>(() => {
@@ -43,19 +45,21 @@ export const AuthProvider: FC<{user?:UserData; children: ReactNode }> = ({user, 
     localStorage.setItem("userData", JSON.stringify(userData));
   }, [userData]);
 
-
-  useEffect(() => {
-    if(!user)return
-   setCurrentUserData(user)
-  }, [user]);
-
   const handleToggle = () => {
     setIsClicked(!isClicked);
   };
 
-
   return (
-    <AuthContext.Provider value={{ userData, setUserData,currentUserData, setCurrentUserData, isClicked,handleToggle }}>
+    <AuthContext.Provider
+      value={{
+        userData,
+        setUserData,
+        currentUserData,
+        setCurrentUserData,
+        isClicked,
+        handleToggle,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

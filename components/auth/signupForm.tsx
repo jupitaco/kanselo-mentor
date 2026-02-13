@@ -5,7 +5,7 @@ import FormInput from "../ui/formInput";
 import StrongPassword from "../ui/strongPassword";
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
-import ImageContainer from "../cloudinary/imageContainer";
+import { ImageFileUpload } from "../fileUpload/fileUpload";
 import { useGlobalHooks } from "@/hooks/globalHooks";
 
 import { Controller } from "react-hook-form";
@@ -20,7 +20,10 @@ const SignupForm = () => {
     register,
     watch,
     handleSubmit,
-    control, setValue, modifiedCountries, stateList
+    control,
+    setValue,
+    modifiedCountries,
+    stateList,
   } = useAuth();
 
   const { loading, setLoading } = useGlobalHooks();
@@ -28,13 +31,12 @@ const SignupForm = () => {
   const password = watch("password");
   const profilePhoto = watch("profilePhoto");
 
-
   const handleUploadFiles = async (
     e: React.ChangeEvent<HTMLInputElement> | DragEvent,
   ) => {
     const target = e.target as HTMLInputElement;
 
-    setLoading({ ['profilePhoto']: true })
+    setLoading({ ["profilePhoto"]: true });
 
     if (target.files && target.files.length > 0) {
       const imageFIle = target.files[0];
@@ -48,14 +50,12 @@ const SignupForm = () => {
         }
 
         if (!rsp?.error && rsp?.data) {
-
-          setValue("profilePhoto", rsp?.data[0],);
+          setValue("profilePhoto", rsp?.data[0]);
         }
       } catch (error) {
         console.log(error);
       } finally {
-        setLoading({ ['profilePhoto']: false })
-
+        setLoading({ ["profilePhoto"]: false });
       }
     }
   };
@@ -63,7 +63,6 @@ const SignupForm = () => {
   const removeImage = () => {
     setValue("profilePhoto", "");
   };
-
 
   return (
     <form onSubmit={handleSubmit}>
@@ -82,14 +81,14 @@ const SignupForm = () => {
           <h5 className="text-grey-500 text-sm font-medium">
             Profile Photo (Optional)
           </h5>
-          <ImageContainer
+          <ImageFileUpload
             id="profilePhoto"
             loading={loading}
             uploadFiles={handleUploadFiles}
-            images={profilePhoto}
-            removeImage={removeImage}
+            uploaddedFileUrl={profilePhoto}
+            removeFile={removeImage}
             imgClassName="object-cover"
-            singleImage
+            singleUpload
           />
 
           {errors?.profilePhoto?.message && (
@@ -121,7 +120,6 @@ const SignupForm = () => {
               error={errors.country?.message}
               value={field.value}
               onSelectItem={field.onChange}
-
             />
           )}
         />
@@ -193,9 +191,7 @@ const SignupForm = () => {
           {...register("confirmPassword")}
         />
 
-
-        <div className={`${errors.consent ? "errors rounded-md  p-4" : ""}`}>
-
+        <div className={`${errors.consent ? "errors rounded-md p-4" : ""}`}>
           <Controller
             name="consent"
             control={control}
@@ -209,29 +205,22 @@ const SignupForm = () => {
                 <label htmlFor="consent">
                   <span className="text-grey-400">
                     By creating your account, you agree to our{" "}
-                    <span className="text-grey-500">Terms and Conditions</span> &{" "}
-                    <span className="text-grey-500">Privacy Policy</span>
+                    <span className="text-grey-500">Terms and Conditions</span>{" "}
+                    & <span className="text-grey-500">Privacy Policy</span>
                   </span>
                 </label>
-
               </RadioGroup>
-
             )}
-
           />
         </div>
 
-        {
-          errors.consent?.message && <ErrorMessage message={errors.consent?.message} />
-        }
+        {errors.consent?.message && (
+          <ErrorMessage message={errors.consent?.message} />
+        )}
       </article>
 
       <article className="mt-8">
-        <Button
-          type="submit"
-          className="pry-btn w-full"
-          loading={isSubmitting}
-        >
+        <Button type="submit" className="pry-btn w-full" loading={isSubmitting}>
           Sign Up
         </Button>
       </article>

@@ -1,3 +1,5 @@
+import { PayoutType } from "./payout";
+
 export type ResetPassword = {
   email: string;
   code: string;
@@ -43,13 +45,13 @@ export type SocialAuth = {
 
 export type SignUpType = {
   fullName: string;
-  profilePhoto: string,
-  email: string,
-  country: string,
-  state: string,
-  city: string,
-  phoneNumber: string,
-  password: string
+  profilePhoto: string;
+  email: string;
+  country: string;
+  state: string;
+  city: string;
+  phoneNumber: string;
+  password: string;
 };
 
 export type Login = {
@@ -57,27 +59,24 @@ export type Login = {
   password: string;
 };
 
-
-
 export type MentorAvailableHoursType = {
-  available: boolean,
+  available: boolean;
   slots: {
-    start: string,
-    end: string
-  }[]
-}
+    start: string;
+    end: string;
+  }[];
+};
 
 export type AvailableHoursType = {
-  monday: MentorAvailableHoursType,
-  tuesday: MentorAvailableHoursType,
-  wednesday: MentorAvailableHoursType,
-  thursday: MentorAvailableHoursType,
-  friday: MentorAvailableHoursType,
-  saturday: MentorAvailableHoursType,
-  sunday: MentorAvailableHoursType,
-  _id: string
-}
-
+  monday: MentorAvailableHoursType;
+  tuesday: MentorAvailableHoursType;
+  wednesday: MentorAvailableHoursType;
+  thursday: MentorAvailableHoursType;
+  friday: MentorAvailableHoursType;
+  saturday: MentorAvailableHoursType;
+  sunday: MentorAvailableHoursType;
+  _id: string;
+};
 
 export type UserData = {
   _id: string;
@@ -106,7 +105,8 @@ export type UserData = {
   walletBalance: number;
   displayWalletBalance: boolean;
   goals: string[];
-  availableHours: AvailableHoursType
+  availableHours: AvailableHoursType;
+  payoutAccount: PayoutType;
   createdAt: string;
   updatedAt: string;
 };

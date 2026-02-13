@@ -87,7 +87,6 @@
     @apply text-grey-500 text-sm;
   }
 
-
   h1 {
     @apply text-2xl font-bold lg:text-4xl;
   }
@@ -158,7 +157,8 @@
   letter-spacing: 0.112px;
 }
 
-.btn:disabled, button:disabled {
+.btn:disabled,
+button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
@@ -183,6 +183,11 @@
   color: var(--color-primary);
 }
 
+.delete-btn {
+  background: var(--color-error-300);
+  color: var(--color-white);
+}
+
 /* ====Btns==== */
 
 /* ====SIDEBAR ==== */
@@ -192,13 +197,12 @@
   color: var(--color-primary);
 }
 
-
-.sidebarActive span svg  {
-   stroke: transparent ;
+.sidebarActive span svg {
+  stroke: transparent;
 }
 
 .sidebarNotActive {
-  color: var(--color-grey-400) ;
+  color: var(--color-grey-400);
 }
 
 .sidebarActive,
@@ -208,13 +212,11 @@
   font-weight: 600;
 }
 
-.sidebarNotActive span svg  {
+.sidebarNotActive span svg {
   color: transparent !important;
-  stroke: var(--color-grey-400) ;
+  stroke: var(--color-grey-400);
   stroke-width: 1.5px;
-
 }
-
 
 .closeSidebar {
   position: fixed;

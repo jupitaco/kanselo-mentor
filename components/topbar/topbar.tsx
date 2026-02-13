@@ -6,11 +6,11 @@ import "./navbar.css";
 import { usePathname, useSearchParams } from "next/navigation";
 import { RenderNotifs } from "./notifications/notifications";
 import { useAuthContext } from "@/context/authContext";
+import { useEffect } from "react";
+import { UserData } from "@/types/auths";
 
-
-const TopBar = () => {
-
-  const {currentUserData}=useAuthContext()
+const TopBar = ({ user }: { user: UserData }) => {
+  const { setCurrentUserData } = useAuthContext();
   const searchParams = useSearchParams();
 
   const mentorName = searchParams.get("mentorName");
@@ -23,6 +23,11 @@ const TopBar = () => {
     ?.replace(/-/g, " ");
 
   const title = cleanedPath + `${mentorName ? ` - ${mentorName}` : ""}`;
+
+  useEffect(() => {
+    if (!user) return;
+    setCurrentUserData(user);
+  }, [user]);
 
   return (
     <>
@@ -37,7 +42,7 @@ const TopBar = () => {
             <div className="flex items-center justify-end gap-2 rounded-full! px-3 py-2">
               <figure className="relative size-12 overflow-hidden rounded-xl">
                 <Image
-                  src={currentUserData?.profilePhoto ?? allImages.noAvatar}
+                  src={user?.profilePhoto ?? allImages.noAvatar}
                   alt="profile"
                   className="h-full w-full object-cover"
                   fill
@@ -45,10 +50,8 @@ const TopBar = () => {
                 />
               </figure>
               <div className="flex-1">
-                <h5 className="text-sm font-medium">
-                  {currentUserData?.fullName}
-                </h5>
-                <small className="text-grey-400">{currentUserData?.email}</small>
+                <h5 className="text-sm font-medium">{user?.fullName}</h5>
+                <small className="text-grey-400">{user?.email}</small>
               </div>
             </div>
           </article>

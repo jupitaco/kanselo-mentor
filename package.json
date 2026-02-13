@@ -1,5 +1,5 @@
 {
-  "name": "kanselo-mentee",
+  "name": "kanselo-mentor",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -18,7 +18,6 @@
     "@radix-ui/react-select": "^2.2.6",
     "@radix-ui/react-toast": "^1.2.15",
     "@tanstack/react-query": "^5.90.16",
-    "animate.css": "^4.1.1",
     "class-variance-authority": "^0.7.1",
     "jose": "^6.1.3",
     "next": "15.5.9",

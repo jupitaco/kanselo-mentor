@@ -57,14 +57,21 @@ export const formatNumInThousands = (number: number | string) => {
   return formattedVal + "." + Number(decimalPart);
 };
 
-export const formatDate = (date: Date) => {
-  return new Date(date).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+export const formatDate = (date: string, time?: boolean) => {
+  return date && time
+    ? new Date(date).toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      })
+    : date
+      ? new Date(date).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })
+      : "N/A";
 };
-
 export const getStatusColors = (status: string) => {
   const statusLower = status?.toLowerCase();
 
@@ -98,14 +105,11 @@ export const getStatusColors = (status: string) => {
   return "fall-back";
 };
 
-
-
-
 export const queryBuilder = (query: { [key: string]: string }) => {
+  const filteredParams = Object.entries(query).filter(
+    ([_, v]) => v !== undefined && v !== "undefined" && v !== null && v !== "",
+  );
 
-  const filteredParams = Object.entries(query).filter(([_, v]) => v !== undefined && v !== "undefined" && v !== null && v !== "",)
-
-  const params = new URLSearchParams(filteredParams)
-  return params
-
-}
+  const params = new URLSearchParams(filteredParams);
+  return params;
+};

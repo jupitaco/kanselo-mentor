@@ -3,11 +3,11 @@ import TableComponent from "@/components/ui/tableComponent/tableComponent";
 import TablePagination from "@/components/ui/tableComponent/tablePagination";
 import TableSkeleton from "@/components/ui/tableComponent/tableSkeleton";
 import { usePaginationContext } from "@/context/paginateContext";
-import { templateColData, templateData } from "@/mock";
-import { TemplateType } from "@/types/template";
+import { payoutColData } from "@/mock";
+import { PayoutWithdrawalType } from "@/types/payout";
 import React from "react";
 
-export const TemplateTable = () => {
+export const PayoutTable = () => {
   const { data, isPending } = usePaginationContext();
 
   return (
@@ -16,9 +16,9 @@ export const TemplateTable = () => {
         <TableSkeleton columns={6} />
       ) : (
         <TableComponent
-          title="Templates"
-          columns={templateColData}
-          data={data?.assets as TemplateType[]}
+          title="Payouts"
+          columns={payoutColData}
+          data={data?.assets as PayoutWithdrawalType[]}
           containerClassName="!p-0"
         />
       )}
