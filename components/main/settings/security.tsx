@@ -3,7 +3,10 @@
 import Button from "@/components/ui/button";
 import FormInput from "@/components/ui/formInput";
 import StrongPassword from "@/components/ui/strongPassword";
-import React, { FormEvent } from "react";
+import { currentUserUpdatePasswordAction } from "@/libs/actions/auth.actions";
+import { ActionFormStatus } from "@/types/global";
+import { handleError, handleSuccess } from "@/utils/helper";
+import React, { SyntheticEvent, useActionState, useEffect } from "react";
 import { useState } from "react";
 
 export const Security = () => {
@@ -15,56 +18,51 @@ export const Security = () => {
     confirmPassword: "",
   });
 
-  const handleChange = (
-    e: FormEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
-  ) => {
+  const handleChange = (e: SyntheticEvent<HTMLElement>) => {
     const { id, value } = e.target as HTMLInputElement;
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
-  // const initialStatus: ActionFormStatus & { data: UserDataAndAccessToken } = {
-  //   error: false,
-  //   message: '',
-  //   data: {} as UserDataAndAccessToken,
-  // };
+  const initialStatus: ActionFormStatus = {
+    error: false,
+    message: "",
+  };
 
-  // const [state, formAction, isPending] = useActionState(
-  //   currentUserUpdatePasswordAction,
-  //   initialStatus,
-  // );
+  const [state, formAction, isPending] = useActionState(
+    currentUserUpdatePasswordAction,
+    initialStatus,
+  );
 
-  // useEffect(() => {
-  //   if (state?.error) {
-  //     handleError('Change Password', state?.message);
-  //   } else if (!state?.error && state?.message) {
-  //     handleSuccess('Change Password', state?.message);
+  useEffect(() => {
+    if (state?.error) {
+      handleError(state?.message);
+    } else if (!state?.error && state?.message) {
+      handleSuccess(state?.message);
 
-  //     // Defer state updates to avoid synchronous cascading renders in React effects
-  //     setTimeout(() => {
-  //       setFormData({
-  //         oldPassword: '',
-  //         newPassword: '',
-  //         confirmPassword: '',
-  //       });
-  //       setEdit(false);
-  //     }, 0);
-  //   }
-  // }, [state]);
+      // Defer state updates to avoid synchronous cascading renders in React effects
+      setTimeout(() => {
+        setFormData({
+          oldPassword: "",
+          newPassword: "",
+          confirmPassword: "",
+        });
+        setEdit(false);
+      }, 0);
+    }
+  }, [state]);
 
   return (
-    <form
-      // action={formAction}
-      className="space-y-4"
-    >
+    <form action={formAction} className="space-y-4">
       <section className="space-y-4">
         <FormInput
           id="oldPassword"
           name="oldPassword"
-          type="text"
+          type="password"
           label="Old Password"
           placeholder="Enter"
           defaultValue={formData?.oldPassword}
           onChange={handleChange}
+          required
           disabled={!edit}
         />
         <FormInput
@@ -75,6 +73,7 @@ export const Security = () => {
           placeholder="Enter"
           onChange={handleChange}
           defaultValue={formData?.newPassword}
+          required
           disabled={!edit}
         />
 
@@ -90,6 +89,7 @@ export const Security = () => {
           placeholder="Enter"
           defaultValue={formData?.confirmPassword}
           onChange={handleChange}
+          required
           disabled={!edit}
         />
 
@@ -103,11 +103,7 @@ export const Security = () => {
               >
                 Cancel
               </Button>
-              <Button
-                className="pry-btn"
-                type="submit"
-                // loading={isPending}
-              >
+              <Button className="pry-btn" type="submit" loading={isPending}>
                 Save Changes
               </Button>
             </div>

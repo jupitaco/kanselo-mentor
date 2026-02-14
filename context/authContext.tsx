@@ -1,4 +1,5 @@
 "use client";
+import { UserData } from "@/types/auths";
 import {
   createContext,
   FC,
@@ -18,11 +19,20 @@ type userDataType = {
 type AuthContextType = {
   userData: userDataType;
   setUserData: React.Dispatch<React.SetStateAction<userDataType>>;
+  currentUserData: UserData;
+  setCurrentUserData: React.Dispatch<React.SetStateAction<UserData>>;
+  isClicked: boolean;
+  handleToggle: () => void;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
+  const [currentUserData, setCurrentUserData] = useState<UserData>(
+    {} as UserData,
+  );
+  const [isClicked, setIsClicked] = useState(false);
+
   const [userData, setUserData] = useState<userDataType>(() => {
     // Load user data from localStorage if available
     const storedUserData =
@@ -35,8 +45,21 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
     localStorage.setItem("userData", JSON.stringify(userData));
   }, [userData]);
 
+  const handleToggle = () => {
+    setIsClicked(!isClicked);
+  };
+
   return (
-    <AuthContext.Provider value={{ userData, setUserData }}>
+    <AuthContext.Provider
+      value={{
+        userData,
+        setUserData,
+        currentUserData,
+        setCurrentUserData,
+        isClicked,
+        handleToggle,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

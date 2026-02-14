@@ -1,7 +1,6 @@
 "use client";
 
 import { usePaginationContext } from "@/context/paginateContext";
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa6";
 
 export default function TablePagination() {
   const {
@@ -12,8 +11,6 @@ export default function TablePagination() {
     goToPageNumber,
     previousBtnState,
     nextBtnState,
-    pageSize,
-    totalCount,
   } = usePaginationContext();
 
   if (totalPages <= 0) {
@@ -26,21 +23,21 @@ export default function TablePagination() {
   }
 
   return (
-    <div className="border-grey-50 border-t">
+    <div className="">
       <section className="container flex flex-wrap items-center justify-between gap-3 py-2 text-sm">
-        <p className="text-Grey1 text-sm font-medium">
-          Page {pageSize} of {totalCount}
+        <p className="text-grey-300 text-xs font-medium">
+          Page {currentPage} of {totalPages}
         </p>
-        <nav aria-label="Pagination" className="w-full max-w-sm">
-          <article className="text-Grey1 flex items-center justify-between gap-2">
+        <nav aria-label="Pagination" className="w-full max-w-xs">
+          <article className="text-grey-300 flex items-center justify-between gap-2">
             {/* Previous Button */}
             <button
               disabled={previousBtnState}
               onClick={handlePrev}
               aria-label="Previous Page"
-              className="hover:text-primary card flex cursor-pointer items-center gap-2 p-3 disabled:cursor-not-allowed disabled:opacity-50"
+              className="hover:text-primary flex cursor-pointer items-center gap-2 p-3 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              <FaArrowLeft size={14} />
+              Prevoius
             </button>
 
             <div className="bg-grey-50 flex flex-1 items-center justify-center gap-2 rounded-md p-2">
@@ -53,9 +50,9 @@ export default function TablePagination() {
               disabled={nextBtnState}
               onClick={handleNext}
               aria-label="Next Page"
-              className="hover:text-primary card flex cursor-pointer items-center gap-2 p-3 disabled:cursor-not-allowed disabled:opacity-50"
+              className="hover:text-primary flex cursor-pointer items-center gap-2 p-3 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              <FaArrowRight size={14} />
+              Next
             </button>
           </article>
         </nav>
@@ -76,8 +73,8 @@ export function PageNumber({
   return (
     <button
       onClick={() => goToPageNumber(index)}
-      className={`flex size-7 cursor-pointer items-center justify-center rounded-md font-semibold transition-colors ${
-        currentPage === index ? "text-grey-800 bg-white shadow-md" : ""
+      className={`card flex size-7 cursor-pointer items-center justify-center rounded-md font-semibold transition-colors ${
+        currentPage === index ? "bg-primary text-white" : ""
       }`}
     >
       {index}

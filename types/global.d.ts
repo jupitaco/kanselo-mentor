@@ -1,3 +1,23 @@
+export type ActionFormStatus = {
+  error: boolean;
+  message: string;
+};
+
+export type PageParams = {
+  searchParams: Promise<{ tab: string; redirect: string }>;
+};
+
+
+export type SearchPageParams = {
+  tab: string;
+  page: string;
+  search: string;
+};
+
+export type SearchParams = {
+  searchParams: Promise<SearchPageParams>;
+};
+
 export type Mentor = {
   id: string;
   name: string;

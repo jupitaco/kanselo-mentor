@@ -1,14 +1,24 @@
 import { Appointments } from "@/components/main/dashboard/appointments";
 import RecentBookings from "@/components/main/dashboard/recentBookings";
-import { Stats } from "@/components/main/dashboard/stats";
-import { Welcome } from "@/components/main/dashboard/welcome";
+import {
+  Stats,
+  StatsSkeleton,
+  Welcome,
+  WelcomeSkeleton,
+} from "@/components/main/dashboard/welcome";
+import { Suspense } from "react";
 
 export default function Page() {
   return (
     <main className="flex h-[calc(100vh-var(--main-header-height))] flex-wrap overflow-y-auto lg:overflow-hidden">
       <section className="no-scrollbar h-auto flex-1 space-y-8 overflow-y-auto p-5 pb-10 lg:h-screen lg:pb-40">
-        <Welcome />
-        <Stats />
+        <Suspense fallback={<WelcomeSkeleton />}>
+          <Welcome />
+        </Suspense>
+
+        <Suspense fallback={<StatsSkeleton />}>
+          <Stats />
+        </Suspense>
 
         <section className="space-y-6 rounded-xl bg-white p-5">
           <article>

@@ -1,11 +1,13 @@
 import { useTransition } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { TemplateType } from "@/types/template";
+import { PayoutWithdrawalType } from "@/types/payout";
 
 export type UsePaginateData = {
   total: number;
   limit: number;
   page: number;
-  assets: [];
+  assets: TemplateType[] | PayoutWithdrawalType[];
 };
 
 export default function usePagination(data?: UsePaginateData) {

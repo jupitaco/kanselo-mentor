@@ -3,38 +3,44 @@
 import FormInput from "../ui/formInput";
 import Link from "next/link";
 import Button from "../ui/button";
+import { useRouter } from "next/navigation";
+import { ActionFormStatus } from "@/types/global";
+import { UserDataAndAccessToken } from "@/types/auths";
+import { useActionState, useEffect } from "react";
+import { signInAction } from "@/libs/actions/auth.actions";
+import { handleError, handleSuccess } from "@/utils/helper";
 
-const SigninForm = () => {
-  // const { push } = useRouter();
+const SigninForm = ({ redirectPath }: { redirectPath: string }) => {
+  const { push } = useRouter();
   // const { setUserData } = useAuthContext();
 
-  // const initialStatus: ActionFormStatus & { data: UserDataAndAccessToken } = {
-  //   error: false,
-  //   message: "",
-  //   data: {} as UserDataAndAccessToken,
-  // };
+  const initialStatus: ActionFormStatus & { data: UserDataAndAccessToken } = {
+    error: false,
+    message: "",
+    data: {} as UserDataAndAccessToken,
+  };
 
-  // const [state, formAction, isPending] = useActionState(
-  //   signInAction,
-  //   initialStatus,
-  //   "/",
-  // );
+  const [state, formAction, isPending] = useActionState(
+    signInAction,
+    initialStatus,
+    "/",
+  );
 
-  // useEffect(() => {
-  //   if (state?.error) {
-  //     handleError("Login Failed", state?.message);
-  //   } else if (Object.keys(state?.data as UserDataAndAccessToken).length > 0) {
-  //     if (redirectPath) {
-  //       handleSuccess("Success", state?.message, push, redirectPath);
-  //     } else {
-  //       handleSuccess("Success", state?.message, push, "/dashboard");
+  useEffect(() => {
+    if (state?.error) {
+      handleError(state?.message);
+    } else if (Object.keys(state?.data as UserDataAndAccessToken).length > 0) {
+      if (redirectPath) {
+        handleSuccess(state?.message, push, redirectPath);
+      } else {
+        handleSuccess(state?.message, push, "/dashboard");
 
-  //     }
-  //   }
-  // }, [state, push, redirectPath]);
+      }
+    }
+  }, [state, push, redirectPath]);
 
   return (
-    <form action={"formAction"}>
+    <form action={formAction}>
       <section className="space-y-4">
         <FormInput
           id="email"
@@ -68,7 +74,7 @@ const SigninForm = () => {
         <Button
           className="pry-btn w-full"
           type="submit"
-          // loading={isPending}
+          loading={isPending}
         >
           Sign In
         </Button>

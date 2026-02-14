@@ -1,24 +1,44 @@
+import { getCurrentUserApi } from "@/services/apis/auth.api";
+import { ManagePayoutForm } from "./payoutForms";
+import { formatNumInThousands } from "@/utils/helper";
+import EmptyState from "@/components/ui/emptyState";
 
-import { EditPayoutForm } from "./payoutForms";
+export const WalletBalance = async () => {
+  const rsp = await getCurrentUserApi();
 
+  if (!rsp?.ok) {
+    return <EmptyState title="Error" subTitle={rsp?.body?.message} />;
+  }
 
-export const WalletBalance = () => {
+  const { walletBalance, payoutAccount } = rsp?.body?.data;
+
   return (
-    <ul className="grid grid-cols-1  lg:grid-cols-2 justify-between gap-3 ">
-      <li className="bg-white p-5 rounded-2xl">
+    <ul className="grid grid-cols-1 justify-between gap-3 lg:grid-cols-2">
+      <li className="rounded-2xl bg-white p-5">
         <p className="text-grey-400 text-sm">Wallet Balance</p>
-        <h4 className="font-semibold">$20.50</h4>
+        <h4 className="font-semibold">
+          ₦{formatNumInThousands(walletBalance)}
+        </h4>
       </li>
-      <li className="flex justify-between bg-white p-5 rounded-2xl ">
-        <div>
-          <p className="text-grey-400 text-sm">Payout Account</p>
-          <h4 className="font-semibold">0265505279 - GT Bank</h4>
-        </div>
-        <EditPayoutForm />
-      </li>
-
-
+      {payoutAccount ? (
+        <li className="flex justify-between rounded-2xl bg-white p-5">
+          <div>
+            <p className="text-grey-400 text-sm">Payout Account</p>
+            <h4 className="font-semibold">
+              {payoutAccount?.accountNumber} - {payoutAccount?.bankName}
+            </h4>
+          </div>
+          <ManagePayoutForm payout={payoutAccount} />
+        </li>
+      ) : (
+        <li className="flex justify-between rounded-2xl bg-white p-5">
+          <div>
+            <p className="text-grey-400 text-sm">Payout Account</p>
+            <h4 className="font-semibold">-</h4>
+          </div>
+          <ManagePayoutForm />
+        </li>
+      )}
     </ul>
   );
 };
-

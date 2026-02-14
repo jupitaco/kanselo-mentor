@@ -1,3 +1,5 @@
+import { ApiResponse } from "./auths";
+
 export type BookingStatus = "active" | "cancelled";
 
 export type BookingType = {
@@ -32,7 +34,16 @@ export type TimeRange = {
 };
 
 export type OfficeDay = {
-  title: string;
-  checked: boolean;
-  time: TimeRange[];
+  day: string;
+  available: boolean;
+  slots: { start: string; end: string }[];
+};
+
+export type bookingStatsType = ApiResponse & {
+  data: {
+    totalConsultations: number;
+    totalIncome: number;
+    consultationChangePercent: string;
+    incomeChangePercent: string;
+  };
 };

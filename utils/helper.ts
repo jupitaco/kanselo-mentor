@@ -57,12 +57,20 @@ export const formatNumInThousands = (number: number | string) => {
   return formattedVal + "." + Number(decimalPart);
 };
 
-export const formatDate = (date: Date) => {
-  return new Date(date).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+export const formatDate = (date: string, time?: boolean) => {
+  return date && time
+    ? new Date(date).toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      })
+    : date
+      ? new Date(date).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })
+      : "N/A";
 };
 
 export const getStatusColors = (status: string) => {
@@ -96,4 +104,36 @@ export const getStatusColors = (status: string) => {
   }
 
   return "fall-back";
+};
+
+export const queryBuilder = (query: { [key: string]: string }) => {
+  const filteredParams = Object.entries(query).filter(
+    ([_, v]) => v !== undefined && v !== "undefined" && v !== null && v !== "",
+  );
+
+  const params = new URLSearchParams(filteredParams);
+  return params;
+};
+
+export const getMinutes = (time: string): number => {
+  // map.(Number) converts the descructure value to number
+  const [h, m] = time.split(":").map(Number);
+  return h * 60 + m;
+};
+
+export const getDiffrence = (start: string, end: string): number => {
+  return getMinutes(end) - getMinutes(start);
+};
+
+export const formatFileSize = (sizeInBytes: number): string => {
+  const KB = 1024;
+  const MB = KB * 1024;
+
+  if (sizeInBytes < KB) {
+    return `${sizeInBytes} bytes`;
+  } else if (sizeInBytes < MB) {
+    return `${(sizeInBytes / KB).toFixed(2)} KB`;
+  } else {
+    return `${(sizeInBytes / MB).toFixed(2)} MB`;
+  }
 };
