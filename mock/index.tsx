@@ -12,7 +12,7 @@ import { BookingType, OfficeDay } from "@/types/bookings";
 import { Mentor, Review, Template, BookingTime } from "@/types/global";
 import { PayoutWithdrawalType, TransactionType } from "@/types/payout";
 import { TemplateType } from "@/types/template";
-import { formatNumInThousands } from "@/utils/helper";
+import { formatFileSize, formatNumInThousands } from "@/utils/helper";
 import { ReactNode } from "react";
 export const filterData = [
   {
@@ -265,7 +265,11 @@ export const templateColData: Column<TemplateType & { action?: ReactNode }>[] =
       title: "MENTOR",
       key: "title",
       render: (_, record) => (
-        <AvatarCard image={record?.coverImage} label={`${record?.title}`} />
+        <AvatarCard
+          image={record?.coverImage}
+          label={`${record?.title}`}
+          subtext={formatFileSize(parseInt(record?.fileSize) || 0)}
+        />
       ),
     },
     {

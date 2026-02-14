@@ -24,6 +24,7 @@ export const useTemplates = (templateData?: TemplateType) => {
     coverImage: templateData?.coverImage || "",
     title: templateData?.title || "",
     price: templateData?.price || 0,
+    fileSize: templateData?.fileSize || "",
   };
 
   const {
@@ -51,6 +52,7 @@ export const useTemplates = (templateData?: TemplateType) => {
       const imageFIle = files[0];
 
       setFile(files[0]);
+      setValue("fileSize", files[0]?.size?.toString());
 
       try {
         const rsp = await uploadFilesAction(imageFIle);

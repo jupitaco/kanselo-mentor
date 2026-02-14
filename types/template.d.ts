@@ -7,6 +7,7 @@ export type TemplateType = {
   title: string;
   coverImage: string;
   fileUrl: string;
+  fileSize: string;
   totalSold: string;
   createdAt: string;
   updatedAt: string;
@@ -17,6 +18,7 @@ export type CreateTemplateType = {
   title: string;
   coverImage: string;
   fileUrl: string;
+  fileSize: string;
 };
 
 export type TemplateStatType = {

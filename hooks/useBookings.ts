@@ -1,7 +1,8 @@
 import { useAuthContext } from "@/context/authContext";
 import { updateBooingSettingsActions } from "@/libs/actions/bookings.actions";
+import { sessionData } from "@/mock";
 import { AvailableHoursType, MentorAvailableHoursType } from "@/types/auths";
-import { handleError, handleSuccess } from "@/utils/helper";
+import { getDiffrence, handleError, handleSuccess } from "@/utils/helper";
 import { useEffect, useState, useTransition } from "react";
 
 export const useBookings = () => {
@@ -10,6 +11,12 @@ export const useBookings = () => {
   const [officeHoursData, setOfficeHoursData] = useState<AvailableHoursType>(
     {} as AvailableHoursType,
   );
+  const [error, setError] = useState<{ [key: string]: string }>({});
+
+  const sessionTime = sessionData.map((i) => i.value);
+  const lastSessionTime = sessionTime[sessionTime.length - 1];
+  const otherSessionTime = sessionTime.slice(0, -1);
+  const sessionTimeErrorMsg = `${otherSessionTime?.join(", ")} or ${lastSessionTime} minutes`;
 
   const handleOfficeHoursChange = (
     dayTitle: keyof AvailableHoursType,
@@ -41,9 +48,25 @@ export const useBookings = () => {
       const currentDay = prev[dayTitle] as MentorAvailableHoursType;
       const currentSlot = currentDay.slots || [];
 
-      const updatedTime = currentSlot.map((t, i) =>
-        i === timeIndex ? { ...t, [name]: value } : t,
-      );
+      const updatedTime = currentSlot.map((slot, i) => {
+        if (i === timeIndex) {
+          const newSlots = { ...slot, [name]: value };
+          if (newSlots.start && newSlots.end) {
+            const result = getDiffrence(newSlots.start, newSlots.end);
+
+            if (!sessionTime?.includes(result)) {
+              setError({
+                [`${dayTitle}-${timeIndex}`]: `Time difference should be either ${sessionTimeErrorMsg} `,
+              });
+            } else {
+              setError({});
+            }
+          }
+          return newSlots;
+        }
+
+        return slot;
+      });
       return { ...prev, [dayTitle]: { ...currentDay, slots: updatedTime } };
     });
   };
@@ -82,6 +105,8 @@ export const useBookings = () => {
   };
 
   const handleSubmit = () => {
+    if (Object.keys(error)?.length > 0) return;
+
     startTransition(async () => {
       const rsp = await updateBooingSettingsActions(officeHoursData);
 
@@ -112,5 +137,6 @@ export const useBookings = () => {
     isPending,
     handleToggle,
     isClicked,
+    error,
   };
 };

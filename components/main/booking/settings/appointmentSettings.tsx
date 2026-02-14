@@ -1,5 +1,6 @@
 "use client";
 import Button from "@/components/ui/button";
+import ErrorMessage from "@/components/ui/errorMessage";
 import FormInput from "@/components/ui/formInput";
 import { useBookings } from "@/hooks/useBookings";
 import { MentorAvailableHoursType } from "@/types/auths";
@@ -78,6 +79,7 @@ export const EditAppointmentSettings = () => {
     handleSubmit,
     isPending,
     handleToggle,
+    error,
   } = useBookings();
 
   return (
@@ -109,29 +111,35 @@ export const EditAppointmentSettings = () => {
                 <div className="flex flex-1 gap-2">
                   <div className="space-y-2">
                     {slots.map(({ start, end }, i) => (
-                      <div key={i} className="flex items-center gap-3">
-                        <input
-                          id="start"
-                          type="time"
-                          value={start}
-                          onChange={(e) =>
-                            handleTimeChange(day, i, "start", e.target.value)
-                          }
-                          className="form-controls px-2! py-0!"
-                        />
-                        <small>-</small>
-                        <input
-                          id="end"
-                          type="time"
-                          value={end}
-                          onChange={(e) =>
-                            handleTimeChange(day, i, "end", e.target.value)
-                          }
-                          className="form-controls px-2! py-0!"
-                        />
-                        <button onClick={() => removeTimeRange(day, i)}>
-                          <BsX />
-                        </button>
+                      <div key={i}>
+                        <div className="flex items-center gap-3">
+                          <input
+                            id="start"
+                            type="time"
+                            value={start}
+                            onChange={(e) =>
+                              handleTimeChange(day, i, "start", e.target.value)
+                            }
+                            className="form-controls px-2! py-0!"
+                          />
+                          <small>-</small>
+                          <input
+                            id="end"
+                            type="time"
+                            value={end}
+                            onChange={(e) =>
+                              handleTimeChange(day, i, "end", e.target.value)
+                            }
+                            className="form-controls px-2! py-0!"
+                          />
+                          <button onClick={() => removeTimeRange(day, i)}>
+                            <BsX />
+                          </button>
+                        </div>
+
+                        {error[`${day}-${i}`] && (
+                          <ErrorMessage message={error[`${day}-${i}`]} />
+                        )}
                       </div>
                     ))}
                   </div>
@@ -162,6 +170,7 @@ export const EditAppointmentSettings = () => {
             type="button"
             onClick={handleSubmit}
             loading={isPending}
+            disabled={Object.keys(error)?.length > 0}
           >
             Save Changes
           </Button>

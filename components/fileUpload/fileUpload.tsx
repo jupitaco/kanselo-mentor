@@ -4,6 +4,7 @@ import { GoTrash } from "react-icons/go";
 import { useRef, useState, useCallback } from "react";
 import Spinner from "../ui/spinner";
 import { IoCameraOutline } from "react-icons/io5";
+import { formatFileSize } from "@/utils/helper";
 
 export type FileUploadBtnType = {
   uploadChange?: (e: React.ChangeEvent<HTMLInputElement> | DragEvent) => void;
@@ -246,19 +247,6 @@ export const FileField = ({
       </div>
     </div>
   );
-};
-
-export const formatFileSize = (sizeInBytes: number): string => {
-  const KB = 1024;
-  const MB = KB * 1024;
-
-  if (sizeInBytes < KB) {
-    return `${sizeInBytes} bytes`;
-  } else if (sizeInBytes < MB) {
-    return `${(sizeInBytes / KB).toFixed(2)} KB`;
-  } else {
-    return `${(sizeInBytes / MB).toFixed(2)} MB`;
-  }
 };
 
 export const PDFFileIcon = (props: SVGProps<SVGSVGElement>) => (
