@@ -6,23 +6,17 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown/dropdown-menu";
-import ErrorMessage from "@/components/ui/errorMessage";
 import FormInput from "@/components/ui/formInput";
-import {
-  RadioGroup,
-  RadioGroupItem,
-} from "@/components/ui/formInput/radio/radioGroup";
 import Search from "@/components/ui/search";
 import { StarRatings } from "@/components/ui/starRatings";
-import { bookingTimeData, filterData, sessionData } from "@/mock";
-import { BookCallSchema, BookCallTypeValues } from "@/schemas/bookcall.schemas";
+import { useBookingForm } from "@/hooks/useBookingForm";
+import { filterData } from "@/mock";
+import { BookingType } from "@/types/bookings";
 import { Mentor } from "@/types/global";
-import { formatDate, formatNumInThousands } from "@/utils/helper";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { formatNumInThousands } from "@/utils/helper";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
 import { FaChevronDown } from "react-icons/fa6";
 
 export const MentorCard = ({
@@ -136,28 +130,26 @@ export const BookCallBtn = ({ id, name }: Mentor) => {
   );
 };
 
-export const BookCallForm = () => {
+export const BookCallForm = ({ _id, mentorId, userId }: BookingType) => {
   const {
-    formState: { errors },
+    formState: { errors, isSubmitting },
     register,
+    // control,
+    // selectedTime,
+    // availableHoursByDate,
     handleSubmit,
-    control,
-  } = useForm<BookCallTypeValues>({
-    resolver: zodResolver(BookCallSchema),
-    defaultValues: {
-      message: "",
-      session: "30",
-      date: new Date()?.toISOString().split("T").at(0),
-      time: "",
-    },
+    selectedDate,
+    handleDateChange,
+    // sessionPriceList,
+    // handleTimeSelect,
+  } = useBookingForm({
+    menteeId: userId?._id,
+    mentorId: mentorId?._id,
+    bookingId: _id,
   });
 
-  const onSubmit = (data: BookCallTypeValues) => {
-    console.log("book-a-call>>", data);
-  };
-
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+    <form onSubmit={handleSubmit} className="space-y-5">
       <FormInput
         id="message"
         label="Message to Mentor"
@@ -168,73 +160,57 @@ export const BookCallForm = () => {
         {...register("message")}
       />
 
-      <Controller
-        name="session"
-        control={control}
-        render={({ field }) => (
-          <FormInput
-            id="session"
-            type="shadSelect"
-            label="Session"
-            placeholder="Select Session"
-            shadcnSelectData={sessionData}
-            error={errors.session?.message}
-            value={field.value}
-            onSelectItem={field.onChange}
-            inputClassName="rounded!"
-            disabled
-          />
-        )}
-      />
-
       <h4>Available Times</h4>
-      <Controller
-        name="date"
-        control={control}
-        render={({ field }) => (
-          <FormInput
-            id="date"
-            type="date"
-            label="Date"
-            placeholder={formatDate(
-              new Date()?.toISOString()?.split("T")?.at(0) || "",
-            )}
-            error={errors.date?.message}
-            DateTimeValue={field.value ? new Date(field.value) : undefined}
-            onDateChange={(date) => {
-              field.onChange(date?.toISOString().split("T").at(0));
-            }}
-            inputClassName="rounded!"
-          />
-        )}
-      />
 
-      <Controller
-        name="time"
-        control={control}
-        render={({ field }) => (
-          <RadioGroup
-            onValueChange={field.onChange}
-            value={field.value}
-            className="grid grid-cols-1 gap-3 md:grid-cols-2"
-          >
-            {bookingTimeData.map(({ id, time, value }) => (
+      <FormInput
+        id="selectedDate"
+        type="date"
+        label="Date"
+        placeholder={selectedDate}
+        error={errors.selectedDate?.message}
+        DateTimeValue={new Date(selectedDate)}
+        onDateChange={handleDateChange}
+        inputClassName="rounded!"
+      />
+      {/*
+        <RadioGroup
+          value={selectedTime}
+          onValueChange={(value) => {
+            const { start, end } = JSON.parse(value);
+            handleTimeSelect(start, end);
+          }}
+          className="grid grid-cols-1 gap-3 md:grid-cols-2"
+        >
+          {availableHoursByDate?.length === 0 ? (
+            <div className="card col-span-3 space-y-2 p-4 text-center">
+              <h5 className="font-semibold">Mentor is Unavailable</h5>
+              <p className="text-grey-300 text-sm">
+                <b>{fullName}</b> is unavailable on the selected date, <br />
+                please choose a different date
+              </p>
+            </div>
+          ) : (
+            availableHoursByDate?.map(({ start, end }, idx) => (
               <label
-                htmlFor={value}
-                key={id}
-                className={`${errors.time ? "errors" : "border-grey-200"} flex cursor-pointer items-center justify-between gap-4 rounded border p-4`}
+                htmlFor={start}
+                key={idx}
+                className={`${errors.selectedTime ? "errors" : "border-grey-200"} flex cursor-pointer items-center justify-between gap-4 rounded border p-4`}
               >
-                {time}
-
-                <RadioGroupItem value={value} id={value} />
+                {start} - {end}
+                <RadioGroupItem
+                  id={start}
+                  value={JSON.stringify({ start, end })}
+                />
               </label>
-            ))}
-          </RadioGroup>
-        )}
-      />
-      {errors.time && <ErrorMessage message={errors.time.message} />}
+            ))
+          )}
+        </RadioGroup>
 
-      <Button className="pry-btn w-full" type="submit">
+        {errors.selectedTime && (
+          <ErrorMessage message={errors.selectedTime.message} />
+        )} */}
+
+      <Button className="pry-btn w-full" type="submit" loading={isSubmitting}>
         Book Now
       </Button>
     </form>

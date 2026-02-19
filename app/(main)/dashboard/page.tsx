@@ -1,4 +1,8 @@
 import Appointments from "@/components/main/dashboard/appointments";
+import {
+  AppointmentsCalendarWrapper,
+  AppointmentSkeleton,
+} from "@/components/main/dashboard/manageAppointments";
 import RecentBookings from "@/components/main/dashboard/recentBookings";
 import {
   Stats,
@@ -36,7 +40,15 @@ export default function Page({ searchParams }: SearchParams) {
         </section>
       </section>
 
-      <Appointments {...params} />
+      <Suspense
+        fallback={
+          <AppointmentsCalendarWrapper>
+            <AppointmentSkeleton />
+          </AppointmentsCalendarWrapper>
+        }
+      >
+        <Appointments {...params} />
+      </Suspense>
     </main>
   );
 }

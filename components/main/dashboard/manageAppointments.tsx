@@ -7,7 +7,7 @@ import { BookingType } from "@/types/bookings";
 import { formatDateToLocale } from "@/utils/helper";
 import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, { ReactNode, Suspense, useTransition } from "react";
+import React, { ReactNode, useTransition } from "react";
 
 export const AppointmentsCalendarWrapper = ({
   children,
@@ -57,29 +57,27 @@ export const AppointmentsCalendarWrapper = ({
 
 export const AppointmentsCalendar = ({ data }: { data: BookingType[] }) => {
   return (
-    <Suspense>
-      <AppointmentsCalendarWrapper>
-        <ul className="divide-Line space-y-4 divide-y">
-          {data.map((appointment) => (
-            <li key={appointment._id} className="flex items-center gap-4 pb-4">
-              <Image
-                src={appointment.userId?.profilePhoto}
-                alt={appointment.userId?.fullName}
-                className="rounded object-cover"
-                width={48}
-                height={48}
-              />
-              <div className="flex-1">
-                <h5 className="font-medium">{appointment.userId?.fullName}</h5>
-                <p className="text-grey-300 text-xs">
-                  {appointment.selectedTime} - {appointment.selectedEndTime}
-                </p>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </AppointmentsCalendarWrapper>
-    </Suspense>
+    <AppointmentsCalendarWrapper>
+      <ul className="divide-Line space-y-4 divide-y">
+        {data.map((appointment) => (
+          <li key={appointment._id} className="flex items-center gap-4 pb-4">
+            <Image
+              src={appointment.userId?.profilePhoto}
+              alt={appointment.userId?.fullName}
+              className="rounded object-cover"
+              width={48}
+              height={48}
+            />
+            <div className="flex-1">
+              <h5 className="font-medium">{appointment.userId?.fullName}</h5>
+              <p className="text-grey-300 text-xs">
+                {appointment.selectedTime} - {appointment.selectedEndTime}
+              </p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </AppointmentsCalendarWrapper>
   );
 };
 
@@ -89,21 +87,17 @@ export const AppointmentErrorUI = ({
   body: { code: number; message: string };
 }) => {
   return (
-    <Suspense>
-      <AppointmentsCalendarWrapper>
-        <ErrorUI code={body?.code} message={body?.message} />
-      </AppointmentsCalendarWrapper>
-    </Suspense>
+    <AppointmentsCalendarWrapper>
+      <ErrorUI code={body?.code} message={body?.message} />
+    </AppointmentsCalendarWrapper>
   );
 };
 
 export const AppointmentNoDataUI = () => {
   return (
-    <Suspense>
-      <AppointmentsCalendarWrapper>
-        <EmptyState title="No Data" subTitle="No upcoming appointments" />
-      </AppointmentsCalendarWrapper>
-    </Suspense>
+    <AppointmentsCalendarWrapper>
+      <EmptyState title="No Data" subTitle="No upcoming appointments" />
+    </AppointmentsCalendarWrapper>
   );
 };
 

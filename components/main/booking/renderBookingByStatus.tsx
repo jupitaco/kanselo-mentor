@@ -1,7 +1,6 @@
 import React from "react";
 import BookingTable from "./bookingTable";
 import { PaginationProvider } from "@/context/paginateContext";
-import { SearchPageParams } from "@/types/global";
 import { ErrorUI } from "@/components/ui/emptyState";
 import { getAllBookingsApi } from "@/services/apis/bookings.api";
 
@@ -28,7 +27,7 @@ export default async function RenderBookingByStatus({
     limit,
     assets: bookings,
   };
-
+  console.log(">>>>>", bookings);
   return (
     <PaginationProvider data={bookingsData}>
       <BookingTable status={status} />

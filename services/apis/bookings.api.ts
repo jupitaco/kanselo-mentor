@@ -1,12 +1,19 @@
 import { Api } from "./api";
-import { ApiResponse, AuthResponse, AvailableHoursType } from "@/types/auths";
+import {
+  ApiResponse,
+  AuthResponse,
+  AvailableHoursType,
+  UserData,
+} from "@/types/auths";
 import { getUser } from "../session";
 import {
   BookingRsp,
   bookingStatsType,
+  BookingType,
   UpcomingEventsRsp,
 } from "@/types/bookings";
 import { queryBuilder } from "@/utils/helper";
+import { BookCallTypeValues } from "@/schemas/bookcall.schemas";
 
 export const getAllBookingsApi = async ({
   page = "1",
@@ -48,6 +55,13 @@ export const getBookingStatsApi = async () => {
   );
 };
 
+export const getBookingByIdApi = async (bookingId: string) => {
+  return Api.get<ApiResponse & { data: BookingType }>(
+    `/booking/find-booking-by-id/${bookingId}`,
+    true,
+  );
+};
+
 export const updateBooingSettingsApi = async (body: AvailableHoursType) => {
   const rsp = await getUser();
   return Api.patch<AvailableHoursType, AuthResponse>(
@@ -57,14 +71,33 @@ export const updateBooingSettingsApi = async (body: AvailableHoursType) => {
   );
 };
 
-export const cancelBookedSessionApi = async (
+export const rescheduleAppointmentApi = async (
+  menteeId: string,
+  bookingId: string,
+  body: BookCallTypeValues,
+) => {
+  return Api.patch<BookCallTypeValues, ApiResponse>(
+    `/booking/${bookingId}/reschedule/${menteeId}`,
+    body,
+    true,
+  );
+};
+
+export const cancelAppointmentApi = async (
+  menteeId: string,
   bookingId: string,
   body: { reason: string },
 ) => {
-  const user = await getUser();
   return Api.patch<{ reason: string }, ApiResponse>(
-    `/booking/${user?._id}/${bookingId}/cancel`,
+    `/booking/${menteeId}/${bookingId}/cancel`,
     body,
+    true,
+  );
+};
+
+export const getMentorByIdApi = (mentorId: string) => {
+  return Api.get<ApiResponse & { data: UserData }>(
+    `/booking/get-mentor-by-id/${mentorId}`,
     true,
   );
 };

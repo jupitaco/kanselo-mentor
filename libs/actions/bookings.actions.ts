@@ -1,7 +1,9 @@
 "use server";
 
+import { BookCallTypeValues } from "@/schemas/bookcall.schemas";
 import {
-  cancelBookedSessionApi,
+  cancelAppointmentApi,
+  rescheduleAppointmentApi,
   updateBooingSettingsApi,
 } from "@/services/apis/bookings.api";
 import { AvailableHoursType } from "@/types/auths";
@@ -34,12 +36,44 @@ export const updateBooingSettingsActions = async (body: AvailableHoursType) => {
   }
 };
 
-export const cancelBookedSessionAction = async (
+export const rescheduleAppointmentAction = async (
+  menteeId: string,
+  bookingId: string,
+  body: BookCallTypeValues,
+) => {
+  try {
+    const rsp = await rescheduleAppointmentApi(menteeId, bookingId, body);
+
+    if (!rsp.ok) {
+      return {
+        error: true,
+        message: rsp?.body?.message || "Something went wrong",
+      };
+    }
+
+    revalidatePath("/booking-and-scheduling");
+
+    return {
+      error: false,
+      message: rsp?.body?.message || "Session cancelled successfully",
+    };
+  } catch (error) {
+    console.log(error);
+
+    return {
+      error: true,
+      message: "Something went wrong",
+    };
+  }
+};
+
+export const cancelAppointmentAction = async (
+  menteeId: string,
   bookingId: string,
   body: { reason: string },
 ) => {
   try {
-    const rsp = await cancelBookedSessionApi(bookingId, body);
+    const rsp = await cancelAppointmentApi(menteeId, bookingId, body);
 
     if (!rsp.ok) {
       return {

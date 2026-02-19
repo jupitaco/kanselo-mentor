@@ -17,7 +17,6 @@ const tabData = [
 
 export default function Pages({ searchParams }: SearchParams) {
   const { tab, page } = use(searchParams);
-
   const activeTab = tab || "pending";
 
   return (

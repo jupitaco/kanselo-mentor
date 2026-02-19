@@ -6,7 +6,7 @@ import { DialogClose, DialogFooter } from "@/components/ui/modals/dialog";
 import ModalWrapper from "@/components/ui/modals/modalWrapper";
 import { StarRatings } from "@/components/ui/starRatings";
 import { useModalContext } from "@/context/modalContext";
-import { cancelBookedSessionAction } from "@/libs/actions/bookings.actions";
+import { cancelAppointmentAction } from "@/libs/actions/bookings.actions";
 import { callRatings } from "@/mock";
 import { BookingType } from "@/types/bookings";
 import { handleError, handleSuccess } from "@/utils/helper";
@@ -135,7 +135,9 @@ export const CancelBooking = ({
   const handleCancelBooking = (e: SyntheticEvent) => {
     e.preventDefault();
     startTransition(async () => {
-      const rsp = await cancelBookedSessionAction(data?._id, { reason });
+      const rsp = await cancelAppointmentAction(data?.userId?._id, data?._id, {
+        reason,
+      });
       if (rsp?.error) {
         handleError(rsp?.message);
       } else {

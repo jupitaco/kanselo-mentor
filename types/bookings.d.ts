@@ -2,6 +2,16 @@ import { ApiResponse } from "./auths";
 
 export type BookingStatus = "active" | "cancelled";
 
+export type BookedMentorType = {
+  _id: string;
+  fullName: string;
+  profilePhoto: string;
+  city: string;
+  state: string;
+  country: string;
+  bio: string;
+};
+
 export type BookedMenteeType = {
   _id: string;
   fullName: string;
@@ -14,7 +24,7 @@ export type BookedMenteeType = {
 export type BookingType = {
   _id: string;
   userId: BookedMenteeType;
-  mentorId: string;
+  mentorId: BookedMentorType;
   message: string;
   session: number;
   selectedDate: string;
