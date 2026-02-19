@@ -2,21 +2,43 @@ import { ApiResponse } from "./auths";
 
 export type BookingStatus = "active" | "cancelled";
 
+export type BookedMenteeType = {
+  _id: string;
+  fullName: string;
+  profilePhoto: string;
+  city: string;
+  state: string;
+  country: string;
+};
+
 export type BookingType = {
-  id: string;
-  name: string;
-  avatar: string;
-  location: {
-    city: string;
-    country: string;
+  _id: string;
+  userId: BookedMenteeType;
+  mentorId: string;
+  message: string;
+  session: number;
+  selectedDate: string;
+  selectedTime: string;
+  selectedEndTime: string;
+  status: string;
+  ratings: number;
+  totalAmountPaid: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type BookingRsp = ApiResponse & {
+  data: {
+    bookings: BookingType[];
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
   };
-  date: string; // e.g. "03 Jan 2023"
-  time: string; // e.g. "11:30 AM"
-  durationMinutes: number;
-  sessions: string;
-  review: string;
-  status: BookingStatus;
-  rating: number;
+};
+
+export type UpcomingEventsRsp = ApiResponse & {
+  data: BookingType[];
 };
 
 export type DayOfWeek =

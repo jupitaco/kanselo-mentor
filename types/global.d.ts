@@ -7,11 +7,13 @@ export type PageParams = {
   searchParams: Promise<{ tab: string; redirect: string }>;
 };
 
-
 export type SearchPageParams = {
   tab: string;
   page: string;
   search: string;
+  status: string;
+  mentorName: string;
+  industry: string;
 };
 
 export type SearchParams = {
@@ -52,7 +54,7 @@ export type Template = {
   size: string;
   price: number;
   createdAt: string;
-  totalSales: string
+  totalSales: string;
 };
 
 export type BookingTime = {

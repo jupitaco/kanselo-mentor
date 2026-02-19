@@ -6,6 +6,7 @@ import {
   Welcome,
   WelcomeSkeleton,
 } from "@/components/main/dashboard/welcome";
+import TableSkeleton from "@/components/ui/tableComponent/tableSkeleton";
 import { Suspense } from "react";
 
 export default function Page() {
@@ -27,7 +28,9 @@ export default function Page() {
               View your most recent consultations
             </p>
           </article>
-          <RecentBookings />
+          <Suspense fallback={<TableSkeleton />}>
+            <RecentBookings />
+          </Suspense>
         </section>
       </section>
 

@@ -1,29 +1,28 @@
-import RenderBookingByStatus from "@/components/main/booking/completedBooking";
+import RenderBookingByStatus from "@/components/main/booking/renderBookingByStatus";
 import Button from "@/components/ui/button";
+import TableSkeleton from "@/components/ui/tableComponent/tableSkeleton";
+import { SearchParams } from "@/types/global";
 import { Metadata } from "next";
 import Link from "next/link";
-import React, { use } from "react";
+import React, { Suspense, use } from "react";
 import { IoSettingsOutline } from "react-icons/io5";
 
 export const metadata: Metadata = { title: "Appointments" };
 
 const tabData = [
-  { label: "New", path: "all" },
+  { label: "New", path: "pending" },
   { label: "Completed", path: "completed" },
   { label: "Cancelled", path: "cancelled" },
 ];
 
-export default function Pages({
-  searchParams,
-}: {
-  searchParams: Promise<{ tab: string }>;
-}) {
-  const { tab } = use(searchParams);
-  const activeTab = tab || "all";
+export default function Pages({ searchParams }: SearchParams) {
+  const { tab, page } = use(searchParams);
+
+  const activeTab = tab || "pending";
 
   return (
     <main className="space-y-14 p-5">
-      <header className="grid grid-cols-1 lg:grid-cols-3 items-center justify-between gap-4">
+      <header className="grid grid-cols-1 items-center justify-between gap-4 lg:grid-cols-3">
         <article className="flex-1 space-y-2">
           <h4>New appointments</h4>
           <p>Manage your appointments</p>
@@ -34,7 +33,7 @@ export default function Pages({
             <li key={idx}>
               <Link
                 href={`/appointments?tab=${path}`}
-                className={`text-xs font-medium ${activeTab === path ? "bg-primary rounded-lg text-white" : ""} px-4 md:px-7 py-2`}
+                className={`text-xs font-medium ${activeTab === path ? "bg-primary rounded-lg text-white" : ""} px-4 py-2 md:px-7`}
               >
                 {label}
               </Link>
@@ -46,14 +45,17 @@ export default function Pages({
           <Button
             link
             href="/appointments/schedule-settings"
-            className="outline-btn min-h-[38px]! bg-grey-100 text-grey-500! py-0! text-xs! w-full lg:w-fit">
+            className="outline-btn bg-grey-100 text-grey-500! min-h-[38px]! w-full py-0! text-xs! lg:w-fit"
+          >
             <IoSettingsOutline />
             Schedule setting
           </Button>
         </div>
       </header>
 
-      <RenderBookingByStatus />
+      <Suspense fallback={<TableSkeleton />}>
+        <RenderBookingByStatus status={activeTab} page={page} />
+      </Suspense>
     </main>
   );
 }

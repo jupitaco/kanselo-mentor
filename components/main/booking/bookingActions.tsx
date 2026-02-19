@@ -6,10 +6,12 @@ import { DialogClose, DialogFooter } from "@/components/ui/modals/dialog";
 import ModalWrapper from "@/components/ui/modals/modalWrapper";
 import { StarRatings } from "@/components/ui/starRatings";
 import { useModalContext } from "@/context/modalContext";
+import { cancelBookedSessionAction } from "@/libs/actions/bookings.actions";
 import { callRatings } from "@/mock";
 import { BookingType } from "@/types/bookings";
+import { handleError, handleSuccess } from "@/utils/helper";
 import { useSearchParams } from "next/navigation";
-import React, { useState } from "react";
+import React, { SyntheticEvent, useState, useTransition } from "react";
 
 export const BookingActions = ({ data }: { data: BookingType }) => {
   const searchParams = useSearchParams();
@@ -39,32 +41,33 @@ export const AllBookingActions = ({ data }: { data: BookingType }) => {
     <ul className="grid grid-cols-1 gap-1 lg:grid-cols-3">
       <li>
         <Button
-          onClick={() => openModal(data?.id)}
-          className="alt-btn w-full px-2! min-h-9! text-xs! py-0!"
+          onClick={() => openModal(data?._id)}
+          className="alt-btn min-h-9! w-full px-2! py-0! text-xs!"
         >
           Cancel
         </Button>
-        {isOpen[data?.id] && <CancelBooking id={data?.id} data={data} />}
+        {isOpen[data?._id] && <CancelBooking id={data?._id} data={data} />}
       </li>
       <li>
         <Button
           link
-          href={`/reschedule-call/${data?.id}?mentorName=${encodeURIComponent(data?.name)}`}
-          className="alt-btn border-grey-200 w-full border px-2! min-h-9! text-xs! py-0!"
+          href={`/reschedule-call/${data?._id}?mentorName=${encodeURIComponent(data?.userId?.fullName)}`}
+          className="alt-btn border-grey-200 min-h-9! w-full border px-2! py-0! text-xs!"
         >
           Reschedule
         </Button>
       </li>
       <li>
-        <Button className="pry-btn w-full px-2! min-h-9! text-xs! py-0!">Join Call</Button>
+        <Button className="pry-btn min-h-9! w-full px-2! py-0! text-xs!">
+          Join Call
+        </Button>
       </li>
     </ul>
   );
 };
 
 export const CompletedBookingActions = ({ data }: { data: BookingType }) => {
-
-  return (<StarRatings rating={data?.rating} />);
+  return <StarRatings rating={data?.ratings} />;
 };
 
 export const CancelledBookingActions = ({ data }: { data: BookingType }) => {
@@ -72,7 +75,7 @@ export const CancelledBookingActions = ({ data }: { data: BookingType }) => {
     <>
       <Button
         link
-        href={`/mentor/book-a-call/${data?.id}?mentorName=${encodeURIComponent(data?.name)}`}
+        href={`/mentor/book-a-call/${data?._id}?mentorName=${encodeURIComponent(data?.userId?.fullName)}`}
         className="pry-btn w-fit"
       >
         Book Again
@@ -118,7 +121,30 @@ export const RateCall = ({ id }: { id: string; data: BookingType }) => {
   );
 };
 
-export const CancelBooking = ({ id }: { id: string; data: BookingType }) => {
+export const CancelBooking = ({
+  id,
+  data,
+}: {
+  id: string;
+  data: BookingType;
+}) => {
+  const { closeModal } = useModalContext();
+  const [isPending, startTransition] = useTransition();
+  const [reason, setReason] = useState("");
+
+  const handleCancelBooking = (e: SyntheticEvent) => {
+    e.preventDefault();
+    startTransition(async () => {
+      const rsp = await cancelBookedSessionAction(data?._id, { reason });
+      if (rsp?.error) {
+        handleError(rsp?.message);
+      } else {
+        handleSuccess(rsp?.message);
+        closeModal(id);
+      }
+    });
+  };
+
   return (
     <ModalWrapper
       id={id}
@@ -130,13 +156,16 @@ export const CancelBooking = ({ id }: { id: string; data: BookingType }) => {
       headerClass="text-center items-center"
       wrapperClass="max-w-xl!"
     >
-      <form action="">
+      <form onSubmit={handleCancelBooking}>
         <FormInput
           id="reason"
           label="Reason for cancelling"
           type="textarea"
           placeholder="Enter reason"
           inputClassName="rounded-md!"
+          value={reason}
+          onChange={(e) => setReason(e.target.value)}
+          required
         />
 
         <DialogFooter className="mt-6 flex flex-wrap-reverse gap-4">
@@ -145,7 +174,13 @@ export const CancelBooking = ({ id }: { id: string; data: BookingType }) => {
               No, don’t cancel
             </Button>
           </DialogClose>
-          <Button className="pry-btn w-full lg:flex-1">Yes, cancel</Button>
+          <Button
+            type="submit"
+            className="pry-btn w-full lg:flex-1"
+            loading={isPending}
+          >
+            Yes, cancel
+          </Button>
         </DialogFooter>
       </form>
     </ModalWrapper>

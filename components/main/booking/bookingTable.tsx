@@ -1,32 +1,58 @@
 "use client";
-import TableComponent, { Column } from "@/components/ui/tableComponent/tableComponent";
-import { bookingAssets, newBookingColData, completedBookingColData, cancelledBookingColData } from "@/mock";
+import { EmptyState } from "@/components/ui/emptyState";
+import TableComponent, {
+  Column,
+} from "@/components/ui/tableComponent/tableComponent";
+import TablePagination from "@/components/ui/tableComponent/tablePagination";
+import TableSkeleton from "@/components/ui/tableComponent/tableSkeleton";
+import { usePaginationContext } from "@/context/paginateContext";
+import {
+  bookingColData,
+  completedBookingColData,
+  newBookingColData,
+} from "@/mock";
 import { BookingType } from "@/types/bookings";
-import { useSearchParams } from "next/navigation";
 import React from "react";
 
-export default function BookingTable() {
-
-  const searchParams = useSearchParams()
-  const activetab = searchParams.get("tab") || "all"
+export default function BookingTable({ status }: { status: string }) {
+  const { data, isPending } = usePaginationContext();
 
   const colList: {
-    [key: string]: Column<BookingType & {
-      action?: React.ReactNode;
-    }>[]
+    [key: string]: Column<
+      BookingType & {
+        action?: React.ReactNode;
+      }
+    >[];
   } = {
-    all: newBookingColData,
+    pending: newBookingColData,
     completed: completedBookingColData,
-    cancelled: cancelledBookingColData
+    cancelled: bookingColData,
+    recent: bookingColData,
+  };
+
+  if (data?.assets?.length === 0) {
+    return (
+      <EmptyState
+        title="No Data"
+        subTitle={`All ${status} appointments will appear here when they are available.`}
+        className="card py-10"
+      />
+    );
   }
 
   return (
+    <>
+      {isPending ? (
+        <TableSkeleton columns={6} />
+      ) : (
+        <TableComponent
+          title="Booking & Scheduling"
+          columns={colList[status]}
+          data={data?.assets as BookingType[]}
+        />
+      )}
 
-    <TableComponent
-      title="Booking & Scheduling"
-      columns={colList[activetab]}
-      data={bookingAssets}
-    />
-
+      {status !== "recent" && <TablePagination />}
+    </>
   );
 }
