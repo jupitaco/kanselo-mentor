@@ -1,7 +1,11 @@
 import { Api } from "./api";
 import { ApiResponse, AuthResponse, AvailableHoursType } from "@/types/auths";
 import { getUser } from "../session";
-import { BookingRsp, bookingStatsType } from "@/types/bookings";
+import {
+  BookingRsp,
+  bookingStatsType,
+  UpcomingEventsRsp,
+} from "@/types/bookings";
 import { queryBuilder } from "@/utils/helper";
 
 export const getAllBookingsApi = async ({
@@ -30,7 +34,7 @@ export const getRecentBookingsApi = async () => {
 
 export const getUpcomingAppointmentsApi = async (selectedDate: string) => {
   const user = await getUser();
-  return Api.get<BookingRsp>(
+  return Api.get<UpcomingEventsRsp>(
     `/booking/mentor-dashboard/${user?._id}/upcoming-appointments?selectedDate=${selectedDate}`,
     true,
   );

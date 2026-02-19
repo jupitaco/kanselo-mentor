@@ -14,6 +14,7 @@ export type SearchPageParams = {
   status: string;
   mentorName: string;
   industry: string;
+  selectedDate: string;
 };
 
 export type SearchParams = {

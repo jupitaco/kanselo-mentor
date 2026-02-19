@@ -73,6 +73,11 @@ export const formatDate = (date: string, time?: boolean) => {
       : "N/A";
 };
 
+export const formatDateToLocale = (date: Date) => {
+  //  will return the date as YYYY-MM-DD
+  return new Intl.DateTimeFormat("en-CA").format(date);
+};
+
 export const getStatusColors = (status: string) => {
   const statusLower = status?.toLowerCase();
 
