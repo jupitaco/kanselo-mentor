@@ -11,6 +11,7 @@ import {
   bookingStatsType,
   BookingType,
   UpcomingEventsRsp,
+  VideoCallRsp,
 } from "@/types/bookings";
 import { queryBuilder } from "@/utils/helper";
 import { BookCallTypeValues } from "@/schemas/bookcall.schemas";
@@ -98,6 +99,17 @@ export const cancelAppointmentApi = async (
 export const getMentorByIdApi = (mentorId: string) => {
   return Api.get<ApiResponse & { data: UserData }>(
     `/booking/get-mentor-by-id/${mentorId}`,
+    true,
+  );
+};
+
+export const startVideoCallApi = async (
+  bookingId: string,
+  menteeId: string,
+) => {
+  return Api.patch<void, VideoCallRsp>(
+    `/booking/${bookingId}/${menteeId}/agora/token`,
+    undefined,
     true,
   );
 };

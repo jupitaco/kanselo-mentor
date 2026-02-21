@@ -5,6 +5,7 @@ import TableComponent, {
 } from "@/components/ui/tableComponent/tableComponent";
 import TablePagination from "@/components/ui/tableComponent/tablePagination";
 import TableSkeleton from "@/components/ui/tableComponent/tableSkeleton";
+import { BookingsProvider } from "@/context/bookingsContext";
 import { usePaginationContext } from "@/context/paginateContext";
 import {
   bookingColData,
@@ -41,18 +42,20 @@ export default function BookingTable({ status }: { status: string }) {
   }
 
   return (
-    <>
-      {isPending ? (
-        <TableSkeleton columns={6} />
-      ) : (
-        <TableComponent
-          title="Booking & Scheduling"
-          columns={colList[status]}
-          data={data?.assets as BookingType[]}
-        />
-      )}
+    <BookingsProvider>
+      <section>
+        {isPending ? (
+          <TableSkeleton columns={6} />
+        ) : (
+          <TableComponent
+            title="Booking & Scheduling"
+            columns={colList[status]}
+            data={data?.assets as BookingType[]}
+          />
+        )}
 
-      {status !== "recent" && <TablePagination />}
-    </>
+        {status !== "recent" && <TablePagination />}
+      </section>
+    </BookingsProvider>
   );
 }

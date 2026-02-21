@@ -21,6 +21,7 @@
   --color-primary: #0c2a46;
   --color-secondary-25: #efe8e1;
   --color-secondary: #f08e10;
+  --color-accent-400: #0060ff;
   --color-accent-500: #4d67eb;
   --color-accent-600: #5483f9;
   --color-white: #ffffff;
@@ -328,4 +329,13 @@ button:disabled {
 .notActiveTab {
   font-weight: 400;
   font-size: 0.875rem;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+.animate-shimmer {
+  animation: shimmer 1.5s infinite;
 }

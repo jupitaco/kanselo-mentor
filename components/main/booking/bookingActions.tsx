@@ -5,13 +5,18 @@ import FormInput from "@/components/ui/formInput";
 import { DialogClose, DialogFooter } from "@/components/ui/modals/dialog";
 import ModalWrapper from "@/components/ui/modals/modalWrapper";
 import { StarRatings } from "@/components/ui/starRatings";
+import { useBookingsContext } from "@/context/bookingsContext";
 import { useModalContext } from "@/context/modalContext";
 import { cancelAppointmentAction } from "@/libs/actions/bookings.actions";
 import { callRatings } from "@/mock";
 import { BookingType } from "@/types/bookings";
 import { handleError, handleSuccess } from "@/utils/helper";
 import { useSearchParams } from "next/navigation";
-import React, { SyntheticEvent, useState, useTransition } from "react";
+import React, {
+  SyntheticEvent,
+   useState,
+  useTransition,
+} from "react";
 
 export const BookingActions = ({ data }: { data: BookingType }) => {
   const searchParams = useSearchParams();
@@ -36,6 +41,7 @@ export const BookingActions = ({ data }: { data: BookingType }) => {
 
 export const AllBookingActions = ({ data }: { data: BookingType }) => {
   const { isOpen, openModal } = useModalContext();
+  const { join, loading } = useBookingsContext();
 
   return (
     <ul className="grid grid-cols-1 gap-1 lg:grid-cols-3">
@@ -58,7 +64,11 @@ export const AllBookingActions = ({ data }: { data: BookingType }) => {
         </Button>
       </li>
       <li>
-        <Button className="pry-btn min-h-9! w-full px-2! py-0! text-xs!">
+        <Button
+          className="pry-btn min-h-9! w-full px-2! py-0! text-xs!"
+          onClick={() => join(data)}
+          loading={loading[data?._id]}
+        >
           Join Call
         </Button>
       </li>

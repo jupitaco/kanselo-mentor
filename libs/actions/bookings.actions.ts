@@ -4,6 +4,7 @@ import { BookCallTypeValues } from "@/schemas/bookcall.schemas";
 import {
   cancelAppointmentApi,
   rescheduleAppointmentApi,
+  startVideoCallApi,
   updateBooingSettingsApi,
 } from "@/services/apis/bookings.api";
 import { AvailableHoursType } from "@/types/auths";
@@ -87,6 +88,37 @@ export const cancelAppointmentAction = async (
     return {
       error: false,
       message: rsp?.body?.message || "Session cancelled successfully",
+    };
+  } catch (error) {
+    console.log(error);
+
+    return {
+      error: true,
+      message: "Something went wrong",
+    };
+  }
+};
+
+export const startVideoCallAction = async (
+  bookingId: string,
+  menteeId: string,
+) => {
+  try {
+    const rsp = await startVideoCallApi(bookingId, menteeId);
+
+    console.log("mentor-call-rsp>>", rsp);
+
+    if (!rsp.ok) {
+      return {
+        error: true,
+        message: rsp?.body?.message || "Something went wrong",
+      };
+    }
+
+    return {
+      error: false,
+      message: rsp?.body?.message || "Session cancelled successfully",
+      data: rsp?.body?.data,
     };
   } catch (error) {
     console.log(error);

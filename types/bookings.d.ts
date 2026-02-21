@@ -79,3 +79,15 @@ export type bookingStatsType = ApiResponse & {
     incomeChangePercent: string;
   };
 };
+
+export type VideoCallType = {
+  channel: string;
+  token: string;
+  uid: number;
+  role: string;
+  expiresAt: string;
+};
+
+export type VideoCallRsp = ApiResponse & {
+  data: VideoCallType;
+};
