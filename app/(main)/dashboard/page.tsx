@@ -1,4 +1,8 @@
-import { Appointments } from "@/components/main/dashboard/appointments";
+import Appointments from "@/components/main/dashboard/appointments";
+import {
+  AppointmentsCalendarWrapper,
+  AppointmentSkeleton,
+} from "@/components/main/dashboard/manageAppointments";
 import RecentBookings from "@/components/main/dashboard/recentBookings";
 import {
   Stats,
@@ -6,9 +10,12 @@ import {
   Welcome,
   WelcomeSkeleton,
 } from "@/components/main/dashboard/welcome";
-import { Suspense } from "react";
+import TableSkeleton from "@/components/ui/tableComponent/tableSkeleton";
+import { SearchParams } from "@/types/global";
+import { Suspense, use } from "react";
 
-export default function Page() {
+export default function Page({ searchParams }: SearchParams) {
+  const params = use(searchParams);
   return (
     <main className="flex h-[calc(100vh-var(--main-header-height))] flex-wrap overflow-y-auto lg:overflow-hidden">
       <section className="no-scrollbar h-auto flex-1 space-y-8 overflow-y-auto p-5 pb-10 lg:h-screen lg:pb-40">
@@ -27,11 +34,21 @@ export default function Page() {
               View your most recent consultations
             </p>
           </article>
-          <RecentBookings />
+          <Suspense fallback={<TableSkeleton />}>
+            <RecentBookings />
+          </Suspense>
         </section>
       </section>
 
-      <Appointments />
+      <Suspense
+        fallback={
+          <AppointmentsCalendarWrapper>
+            <AppointmentSkeleton />
+          </AppointmentsCalendarWrapper>
+        }
+      >
+        <Appointments {...params} />
+      </Suspense>
     </main>
   );
 }

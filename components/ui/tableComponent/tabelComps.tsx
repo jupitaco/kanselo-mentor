@@ -2,6 +2,7 @@ import Image from "next/image";
 import CopyToClipboardBtn from "../copyToClipboardBtn";
 import { GoDotFill } from "react-icons/go";
 import { formatDate, getStatusColors } from "@/utils/helper";
+import { sessionData } from "@/mock";
 
 export const OrderedID = ({ id }: { id: string }) => {
   return (
@@ -40,6 +41,7 @@ export const TableDate = ({
     </div>
   );
 };
+
 export const TableTime = ({
   date,
   className,
@@ -73,5 +75,11 @@ export const AvatarCard = ({
         <p className="text-grey-300 text-xs font-medium">{subtext}</p>
       </div>
     </div>
+  );
+};
+
+export const TableSession = ({ session }: { session: number }) => {
+  return (
+    <>{sessionData?.find((s) => s.value === session)?.duration} Minutes </>
   );
 };

@@ -5,11 +5,13 @@ import React, { Dispatch, SetStateAction, useEffect } from "react";
 
 const CountDownTimer = ({
   noTitle,
+  title,
   timeLeft,
   setTimeLeft,
   className,
 }: {
   className?: string;
+  title?: string;
   timeLeft: number;
   noTitle?: boolean;
   setTimeLeft: Dispatch<SetStateAction<number>>;
@@ -44,7 +46,7 @@ const CountDownTimer = ({
 
   return (
     <span className={cn("text-sm font-semibold", className)}>
-      {!noTitle && "Resend in "}
+      {!noTitle && `${title || "Resend"} in `}
       {formatTime(timeLeft)}
     </span>
   );

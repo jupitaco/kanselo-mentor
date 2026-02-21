@@ -1,6 +1,6 @@
-import { ResponseType } from '@/types/api';
-import { OptionsType } from '@/types/api';
-import { getUserSession } from '../session';
+import { ResponseType } from "@/types/api";
+import { OptionsType } from "@/types/api";
+import { getUserSession } from "../session";
 
 export class Api {
   static base_url = process.env.BASE_URL!;
@@ -17,22 +17,22 @@ export class Api {
 
   private static async getHeaders({
     auth = false,
-    customHeader = 'application/json',
+    customHeader = "application/json",
   }: {
     auth?: boolean;
     customHeader?: string;
   }): Promise<Record<string, string>> {
     const headers: Record<string, string> = {};
 
-    if (customHeader !== 'multipart/form-data') {
-      headers['Content-Type'] = customHeader;
+    if (customHeader !== "multipart/form-data") {
+      headers["Content-Type"] = customHeader;
     }
-    headers['Accept'] = 'application/json';
+    headers["Accept"] = "application/json";
 
     if (auth) {
       const token = await this.getToken();
       if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
+        headers["Authorization"] = `Bearer ${token}`;
       }
     }
 
@@ -44,18 +44,18 @@ export class Api {
     headers: Record<string, string>,
   ) {
     if (
-      options.method === 'POST' ||
-      options.method === 'PUT' ||
-      options.method === 'PATCH' ||
-      options.method === 'DELETE'
+      options.method === "POST" ||
+      options.method === "PUT" ||
+      options.method === "PATCH" ||
+      options.method === "DELETE"
     ) {
       if (options.body) {
         if (options.body instanceof FormData) {
           // Don't stringify the body, just return it
-          delete headers['Content-Type']; // Let the browser set the correct Content-Type
+          delete headers["Content-Type"]; // Let the browser set the correct Content-Type
           return options.body;
         } else if (
-          headers['Content-Type'] === 'application/x-www-form-urlencoded'
+          headers["Content-Type"] === "application/x-www-form-urlencoded"
         ) {
           return new URLSearchParams(
             options.body as Record<string, string>,
@@ -80,13 +80,13 @@ export class Api {
       };
     } else {
       let errorMessage =
-        response.status === 502 ? 'Bad Gateway' : 'An error occurred';
-      let errorDescription = '';
+        response.status === 502 ? "Bad Gateway" : "An error occurred";
+      let errorDescription = "";
 
       try {
-        const contentType = response.headers.get('content-type');
+        const contentType = response.headers.get("content-type");
 
-        if (contentType && contentType.includes('application/json')) {
+        if (contentType && contentType.includes("application/json")) {
           const errorBody = await response.json();
           errorMessage = errorBody.message || errorMessage;
           errorDescription = errorBody.description || errorDescription;
@@ -95,9 +95,9 @@ export class Api {
         }
       } catch (e) {
         // Handle unexpected errors
-        console.error('Error processing the response:', e);
+        console.error("Error processing the response:", e);
         errorDescription =
-          'An unexpected error occurred while processing the response.';
+          "An unexpected error occurred while processing the response.";
       }
 
       return {
@@ -118,9 +118,9 @@ export class Api {
       status: 500,
       body: {
         code: 500,
-        message: 'Server is unresponsive. Please check internet connection.',
+        message: "Server is unresponsive. Please check internet connection.",
         description:
-          error instanceof Error ? error.toString() : 'Failed to fetch',
+          error instanceof Error ? error.toString() : "Failed to fetch",
       },
     };
   }
@@ -129,13 +129,14 @@ export class Api {
     base_url = this.base_url,
     options,
     auth = false,
-    customHeader = 'application/json',tags
+    customHeader = "application/json",
+    tags,
   }: {
     base_url?: string;
     options: OptionsType<T>;
     auth?: boolean;
     customHeader?: string;
-    tags?:string[]
+    tags?: string[];
   }): Promise<ResponseType<R>> {
     const headers = await this.getHeaders({ auth, customHeader });
     const body = this.getRequestBody(options, headers);
@@ -147,7 +148,7 @@ export class Api {
         method: options.method,
         headers,
         body,
-        next:{tags}
+        next: { tags },
       });
 
       return this.handleResponse<R>(response);
@@ -156,11 +157,11 @@ export class Api {
     }
   }
 
-  static async get<R>(url: string, auth?: boolean, tags?:string[]) {
+  static async get<R>(url: string, auth?: boolean, tags?: string[]) {
     return this.request<void, R>({
-      options: { method: 'GET', url },
+      options: { method: "GET", url },
       auth,
-      tags
+      tags,
     });
   }
 
@@ -171,7 +172,7 @@ export class Api {
     customHeader?: string,
   ) {
     return this.request<T, R>({
-      options: { method: 'POST', url, body },
+      options: { method: "POST", url, body },
       auth,
       customHeader,
     });
@@ -179,7 +180,7 @@ export class Api {
 
   static async delete<T, R>(url: string, body?: T, auth?: boolean) {
     return this.request<T, R>({
-      options: { method: 'DELETE', url, body },
+      options: { method: "DELETE", url, body },
       auth,
     });
   }
@@ -191,7 +192,7 @@ export class Api {
     customHeader?: string,
   ) {
     return this.request<T, R>({
-      options: { method: 'PATCH', url, body },
+      options: { method: "PATCH", url, body },
       auth,
       customHeader,
     });
@@ -204,7 +205,7 @@ export class Api {
     customHeader?: string,
   ) {
     return this.request<T, R>({
-      options: { method: 'PUT', url, body },
+      options: { method: "PUT", url, body },
       auth,
       customHeader,
     });
@@ -214,19 +215,19 @@ export class Api {
     const headers = await this.getHeaders({ auth: true });
 
     const response = await fetch(url, {
-      method: 'GET',
+      method: "GET",
       headers,
     });
 
     if (!response.ok) {
       return {
-        error: response.statusText || 'Failed to fetch image',
+        error: response.statusText || "Failed to fetch image",
         status: response.status,
       };
     }
 
     // Get the content type
-    const contentType = response.headers.get('content-type');
+    const contentType = response.headers.get("content-type");
 
     // Get the image data
     const buffer = await response.arrayBuffer();

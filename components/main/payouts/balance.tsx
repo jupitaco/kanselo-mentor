@@ -1,13 +1,13 @@
 import { getCurrentUserApi } from "@/services/apis/auth.api";
 import { ManagePayoutForm } from "./payoutForms";
 import { formatNumInThousands } from "@/utils/helper";
-import EmptyState from "@/components/ui/emptyState";
+import { ErrorUI } from "@/components/ui/emptyState";
 
 export const WalletBalance = async () => {
   const rsp = await getCurrentUserApi();
 
   if (!rsp?.ok) {
-    return <EmptyState title="Error" subTitle={rsp?.body?.message} />;
+    return <ErrorUI code={rsp?.body?.code} message={rsp?.body?.message} />;
   }
 
   const { walletBalance, payoutAccount } = rsp?.body?.data;

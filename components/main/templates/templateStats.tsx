@@ -1,4 +1,4 @@
-import EmptyState from "@/components/ui/emptyState";
+import { ErrorUI } from "@/components/ui/emptyState";
 import Skeleton from "@/components/ui/skeleton/skeleton";
 import { BalanceIcon, IncomeIcon, UserIcon } from "@/public/svgs/svgs";
 import { getTemplateStats } from "@/services/apis/template.api";
@@ -8,7 +8,7 @@ export const TemplateStats = async () => {
   const rsp = await getTemplateStats();
 
   if (!rsp?.ok) {
-    return <EmptyState title="Error" subTitle={rsp?.body?.message} />;
+    return <ErrorUI code={rsp?.body?.code} message={rsp?.body?.message} />;
   }
 
   const { totalIncome, totalSales, totalTemplates } = rsp?.body?.data;

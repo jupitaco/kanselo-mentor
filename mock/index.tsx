@@ -5,15 +5,21 @@ import {
   AvatarCard,
   OrderStatus,
   TableDate,
+  TableSession,
   TableTime,
 } from "@/components/ui/tableComponent/tabelComps";
 import { Column } from "@/components/ui/tableComponent/tableComponent";
-import { BookingType, OfficeDay } from "@/types/bookings";
+import { BookingType } from "@/types/bookings";
 import { Mentor, Review, Template, BookingTime } from "@/types/global";
 import { PayoutWithdrawalType, TransactionType } from "@/types/payout";
 import { TemplateType } from "@/types/template";
-import { formatFileSize, formatNumInThousands } from "@/utils/helper";
+import {
+  formatDate,
+  formatFileSize,
+  formatNumInThousands,
+} from "@/utils/helper";
 import { ReactNode } from "react";
+
 export const filterData = [
   {
     label: "All",
@@ -216,16 +222,19 @@ export const reviewsData: Review[] = [
 
 export const sessionData = [
   {
+    duration: 30,
     label: "1 (30 minutes - $10)",
-    value: 30,
+    value: 1,
   },
   {
+    duration: 60,
     label: "2 (60 minutes - $20)",
-    value: 60,
+    value: 2,
   },
   {
+    duration: 90,
     label: "3 (90 minutes - $30)",
-    value: 90,
+    value: 3,
   },
 ];
 
@@ -358,7 +367,7 @@ export const bookingTimeData: BookingTime[] = [
   },
 ];
 
-export const bookingAssets: BookingType[] = [
+export const bookingAssets = [
   {
     id: "1",
     name: "Anna Mulana",
@@ -484,43 +493,52 @@ export const bookingAssets: BookingType[] = [
   },
 ];
 
+export const bookingColData: Column<BookingType>[] = [
+  {
+    title: "MENTOR",
+    key: "mentorId",
+    render: (_, record) => (
+      <AvatarCard
+        image={record?.userId?.profilePhoto}
+        label={`${record?.userId?.fullName}`}
+        subtext={`${record?.userId?.city} ${record?.userId?.state}, ${record?.userId?.country}`}
+      />
+    ),
+  },
+  {
+    title: "DATE & TIME",
+    key: "selectedDate",
+    cellClassName: "text-grey-300",
+    render: (_, record) => (
+      <>
+        {formatDate(record.selectedDate)} <br />
+        {record.selectedTime} - {record.selectedEndTime}
+      </>
+    ),
+  },
+
+  {
+    title: "SESSION",
+    key: "session",
+    render: (_, record) => (
+      <>
+        {sessionData?.find((s) => s.value === record?.session)?.duration}{" "}
+        Minutes{" "}
+      </>
+    ),
+  },
+
+  {
+    title: "MESSAGE",
+    key: "message",
+    cellClassName: "min-w-40 max-w-40 text-grey-300",
+    render: (_, record) => <>{record?.message}</>,
+  },
+];
+
 export const newBookingColData: Column<BookingType & { action?: ReactNode }>[] =
   [
-    {
-      title: "MENTOR",
-      key: "name",
-      render: (_, record) => (
-        <AvatarCard
-          image={record?.avatar}
-          label={`${record?.name}`}
-          subtext={`${record?.location?.city} ${record?.location?.country}`}
-        />
-      ),
-    },
-    {
-      title: "DATE & TIME",
-      key: "date",
-      cellClassName: "text-grey-300",
-      render: (_, record) => (
-        <>
-          {record.date} <br />
-          {record.time}
-        </>
-      ),
-    },
-
-    {
-      title: "SESSION",
-      key: "sessions",
-      render: (_, record) => <>{record?.sessions} </>,
-    },
-
-    {
-      title: "MESSAGE",
-      key: "review",
-      cellClassName: "min-w-40 max-w-40 text-grey-300",
-      render: (_, record) => <>{record?.review}</>,
-    },
+    ...bookingColData,
     {
       title: "ACTION",
       key: "action",
@@ -532,114 +550,42 @@ export const newBookingColData: Column<BookingType & { action?: ReactNode }>[] =
 export const completedBookingColData: Column<
   BookingType & { action?: ReactNode }
 >[] = [
-  {
-    title: "MENTOR",
-    key: "name",
-    render: (_, record) => (
-      <AvatarCard
-        image={record?.avatar}
-        label={`${record?.name}`}
-        subtext={`${record?.location?.city} ${record?.location?.country}`}
-      />
-    ),
-  },
-  {
-    title: "DATE & TIME",
-    key: "date",
-    cellClassName: "text-grey-300",
-    render: (_, record) => (
-      <>
-        {record.date} <br />
-        {record.time}
-      </>
-    ),
-  },
-
-  {
-    title: "SESSION",
-    key: "sessions",
-    render: (_, record) => <>{record?.sessions} </>,
-  },
-
-  {
-    title: "MESSAGE",
-    key: "review",
-    cellClassName: "min-w-40 max-w-40 text-grey-300",
-    render: (_, record) => <>{record?.review}</>,
-  },
+  ...bookingColData,
   {
     title: "RATINGS",
-    key: "rating",
-    render: (_, record) => <StarRatings rating={record?.rating} />,
-  },
-];
-
-export const cancelledBookingColData: Column<BookingType>[] = [
-  {
-    title: "MENTOR",
-    key: "name",
-    render: (_, record) => (
-      <AvatarCard
-        image={record?.avatar}
-        label={`${record?.name}`}
-        subtext={`${record?.location?.city} ${record?.location?.country}`}
-      />
-    ),
-  },
-  {
-    title: "DATE & TIME",
-    key: "date",
-    cellClassName: "text-grey-300",
-    render: (_, record) => (
-      <>
-        {record.date} <br />
-        {record.time}
-      </>
-    ),
-  },
-
-  {
-    title: "SESSION",
-    key: "sessions",
-    render: (_, record) => <>{record?.sessions} </>,
-  },
-
-  {
-    title: "MESSAGE",
-    key: "review",
-    cellClassName: "min-w-40 max-w-40 text-grey-300",
-    render: (_, record) => <>{record?.review}</>,
+    key: "ratings",
+    render: (_, record) => <StarRatings rating={record?.ratings} />,
   },
 ];
 
 export const recentBookingColData: Column<BookingType>[] = [
   {
     title: "MENTOR",
-    key: "name",
+    key: "userId",
     render: (_, record) => (
       <AvatarCard
-        image={record?.avatar}
-        label={`${record?.name}`}
-        subtext={`${record?.location?.city} ${record?.location?.country}`}
+        image={record?.userId?.profilePhoto}
+        label={`${record?.userId?.fullName}`}
+        subtext={`${record?.userId?.city} ${record?.userId?.state}, ${record?.userId?.country}`}
       />
     ),
   },
   {
     title: "DATE & TIME",
-    key: "date",
+    key: "selectedDate",
     cellClassName: "text-grey-300",
     render: (_, record) => (
       <>
-        {record.date} <br />
-        {record.time}
+        {formatDate(record.selectedDate)} <br />
+        {record.selectedTime} - {record.selectedEndTime}
       </>
     ),
   },
 
   {
     title: "SESSION",
-    key: "sessions",
-    render: (_, record) => <>{record?.sessions} </>,
+    key: "session",
+    render: (_, record) => <TableSession session={record?.session} />,
   },
 ];
 

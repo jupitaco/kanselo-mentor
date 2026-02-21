@@ -1,5 +1,5 @@
 import { EditTemplate } from "@/components/main/templates/templateForm";
-import EmptyState from "@/components/ui/emptyState";
+import { ErrorUI } from "@/components/ui/emptyState";
 import GoBackBtn from "@/components/ui/goBackBtn";
 import { getTemplateById } from "@/services/apis/template.api";
 import { Metadata } from "next";
@@ -15,7 +15,7 @@ export default async function Page({
   const rsp = await getTemplateById(id);
 
   if (!rsp?.ok) {
-    return <EmptyState title="Error" subTitle={rsp?.body?.message} />;
+    return <ErrorUI code={rsp?.body?.code} message={rsp?.body?.message} />;
   }
 
   const templateData = rsp?.body?.data;
