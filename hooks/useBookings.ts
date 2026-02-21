@@ -31,7 +31,7 @@ export const useBookings = () => {
           slots: checked
             ? currentDay.slots?.length
               ? currentDay?.slots
-              : [{ start: "09:00", end: "12:00" }]
+              : [{ start: "09:00", end: "09:30" }]
             : [],
         },
       };
@@ -79,7 +79,7 @@ export const useBookings = () => {
         ...prev,
         [dayTitle]: {
           ...currentDay,
-          slots: [...currentSlots, { start: "09:00", end: "12:00" }],
+          slots: [...currentSlots, { start: "09:00", end: "09:30" }],
         },
       };
     });
