@@ -13,7 +13,7 @@ export const useBookings = () => {
   );
   const [error, setError] = useState<{ [key: string]: string }>({});
 
-  const sessionTime = sessionData.map((i) => i.value);
+  const sessionTime = sessionData.map((i) => i.duration);
   const lastSessionTime = sessionTime[sessionTime.length - 1];
   const otherSessionTime = sessionTime.slice(0, -1);
   const sessionTimeErrorMsg = `${otherSessionTime?.join(", ")} or ${lastSessionTime} minutes`;
