@@ -2,12 +2,11 @@
 
 import Button from "@/components/ui/button";
 import CountDownTimer from "@/components/ui/countDownTimer";
-import { useBookingsContext } from "@/context/bookingsContext";
+import { Participant, useBookingsContext } from "@/context/bookingsContext";
 import { allImages } from "@/public/images/images";
-import { BookingType } from "@/types/bookings";
 import { formatDate } from "@/utils/helper";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
   IoMicOffOutline,
   IoMicOutline,
@@ -15,22 +14,9 @@ import {
   IoVideocamOutline,
 } from "react-icons/io5";
 import { LuAlarmClock, LuScreenShare, LuScreenShareOff } from "react-icons/lu";
-import { RemoteVideo } from "./remoteVideo";
+import { ParticipantTitle, ScreenSharing } from "./remoteVideo";
 
-export default function VideoCall({
-  expiresAt,
-  appointment,
-}: {
-  expiresAt: string;
-  appointment: BookingType;
-}) {
-  const videoRef = useRef<HTMLDivElement>(null);
-  const [timeLeft, setTimeLeft] = useState(() => {
-    const expiry = new Date(expiresAt).getTime();
-    const now = new Date().getTime();
-    return Math.max(0, Math.floor((expiry - now) / 1000));
-  });
-
+export default function VideoCall() {
   const {
     micOn,
     camOn,
@@ -38,22 +24,29 @@ export default function VideoCall({
     toggleMIC,
     leave,
     joined,
-    localVideoTrack,
+    appointment,
     stopScreenShare,
     startScreenShare,
     screenShare,
-    remoteUsers,
+    expiresAt,
+    participants,
   } = useBookingsContext();
 
-  useEffect(() => {
-    if (localVideoTrack && videoRef.current) {
-      localVideoTrack.play(videoRef.current);
-    }
-  }, [localVideoTrack]);
+  const [timeLeft, setTimeLeft] = useState(() => {
+    const expiry = new Date(expiresAt).getTime();
+    const now = new Date().getTime();
+    return Math.max(0, Math.floor((expiry - now) / 1000));
+  });
+
+  const participantList = Object.values(participants);
+
+  const screenSharer = participantList.find((p) => p.screenTrack);
+
+  const gridUsers = participantList;
 
   return (
-    <section className="no-scrollbar fixed top-0 left-0 z-50 h-screen w-full space-y-5 overflow-y-auto bg-white/80 pb-8 backdrop-blur-xs">
-      <header className="border-grey-100 sticky top-0 left-0 z-50 h-20 border-b py-3">
+    <section className="no-scrollbar fixed top-0 left-0 z-50 h-screen w-full space-y-5 overflow-y-auto bg-black/80 pb-8 backdrop-blur-xs md:overflow-hidden">
+      <header className="border-grey-100 sticky top-0 left-0 z-50 h-20 border-b bg-white/80 py-3 backdrop-blur-xs">
         <div className="flex items-center justify-between px-8">
           <div className="hidden max-w-md md:block">
             <h4 className="text-sm">{appointment?.mentorId?.bio}</h4>
@@ -76,60 +69,58 @@ export default function VideoCall({
               <h5 className="text-sm font-medium">
                 {appointment?.mentorId?.fullName}
               </h5>
-              <small className="text-grey-400">Mentee</small>
+              <small className="text-grey-400">Mentor</small>
             </div>
           </div>
         </div>
       </header>
 
-      <section className="flex h-[calc(100vh-180px)] flex-wrap gap-2 p-5">
-        <div
-          ref={videoRef}
-          className="relative mx-auto h-full flex-1 overflow-hidden rounded-2xl! px-8"
-        />
-
-        <RemoteVideo />
+      <section className="flex h-[calc(100vh-200px)] flex-col gap-2 overflow-y-auto p-5 lg:flex-row">
+        {screenShare && (
+          <ScreenSharing participant={screenSharer as Participant} />
+        )}
+        <ParticipantTitle participant={gridUsers} />
       </section>
 
-      <footer className="h-10">
+      <footer className="border-grey-100 min-h-40 border-t bg-white/80 px-2 py-3 md:min-h-20">
         {joined && (
-          <article className="mx-auto flex max-w-9/12 flex-wrap items-center justify-between gap-4">
+          <article className="mx-auto flex w-full flex-wrap items-center justify-between gap-4 lg:max-w-9/12">
             <ul className="flex flex-1 flex-wrap items-center gap-3">
               <li>
                 {!screenShare ? (
                   <Button
                     onClick={startScreenShare}
-                    className="bg-accent-400 rounded-full! text-white"
+                    className={"bg-secondary rounded-full! text-white"}
                   >
-                    <LuScreenShare size={20} />
+                    <LuScreenShare size={16} />
                   </Button>
                 ) : (
                   <Button
                     onClick={stopScreenShare}
-                    className="bg-accent-400 rounded-full! text-white"
+                    className={"bg-accent-400 rounded-full! text-white"}
                   >
-                    <LuScreenShareOff size={20} />
+                    <LuScreenShareOff size={16} />
                   </Button>
                 )}
               </li>
               <li>
                 <Button
-                  className="bg-accent-400 rounded-full! text-white"
+                  className={`${!micOn ? "bg-secondary" : "bg-accent-400"} rounded-full! text-white`}
                   onClick={toggleMIC}
                 >
-                  {micOn ? (
-                    <IoMicOffOutline size={20} />
+                  {!micOn ? (
+                    <IoMicOffOutline size={16} />
                   ) : (
-                    <IoMicOutline size={20} />
+                    <IoMicOutline size={16} />
                   )}
                 </Button>
               </li>
               <li>
                 <Button
-                  className="bg-accent-400 rounded-full! text-white"
+                  className={`${!camOn ? "bg-secondary" : "bg-accent-400"} rounded-full! text-white`}
                   onClick={toggleCamera}
                 >
-                  {camOn ? (
+                  {!camOn ? (
                     <IoVideocamOffOutline size={20} />
                   ) : (
                     <IoVideocamOutline size={20} />

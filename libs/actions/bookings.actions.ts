@@ -101,10 +101,10 @@ export const cancelAppointmentAction = async (
 
 export const startVideoCallAction = async (
   bookingId: string,
-  menteeId: string,
+  participantId: string,
 ) => {
   try {
-    const rsp = await startVideoCallApi(bookingId, menteeId);
+    const rsp = await startVideoCallApi(bookingId, participantId);
 
     console.log("mentor-call-rsp>>", rsp);
 
