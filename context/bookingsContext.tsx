@@ -18,6 +18,16 @@ import VideoCall from "@/components/main/video/videoCall";
 import { BookingType } from "@/types/bookings";
 import { startVideoCallAction } from "@/libs/actions/bookings.actions";
 
+export type Participant = {
+  uid: number | "local";
+  isLocal: boolean;
+  micOn?: boolean;
+  camOn?: boolean;
+  cameraTrack?: ILocalVideoTrack | IAgoraRTCRemoteUser["videoTrack"];
+  screenTrack?: ILocalVideoTrack | IAgoraRTCRemoteUser["videoTrack"];
+  audioTrack?: IMicrophoneAudioTrack | IAgoraRTCRemoteUser["audioTrack"];
+};
+
 type RemoteUserTracks = {
   uid: number;
   cameraTrack?: IAgoraRTCRemoteUser["videoTrack"];
@@ -38,16 +48,10 @@ type BookingsContextType = {
   micOn: boolean;
   screenShare: boolean;
   expiresAt: string;
+  appointment: BookingType;
   stopScreenShare: () => void;
   startScreenShare: () => void;
-  remoteUsers: Record<
-    number,
-    {
-      uid: number;
-      cameraTrack?: IAgoraRTCRemoteUser["videoTrack"];
-      screenTrack?: IAgoraRTCRemoteUser["videoTrack"];
-    }
-  >;
+  participants: Record<string, Participant>;
 };
 
 const BookingsContext = createContext<BookingsContextType | undefined>(
@@ -57,9 +61,6 @@ const BookingsContext = createContext<BookingsContextType | undefined>(
 export const BookingsProvider: FC<{
   children: ReactNode;
 }> = ({ children }) => {
-  const [remoteUsers, setRemoteUsers] = useState<
-    Record<number, RemoteUserTracks>
-  >({});
   const [{ micOn, camOn, screenShare, expiresAt }, setToggleMedia] = useState<{
     micOn: boolean;
     camOn: boolean;
@@ -75,6 +76,9 @@ export const BookingsProvider: FC<{
   const [appointment, setAppointment] = useState<BookingType>(
     {} as BookingType,
   );
+  const [participants, setParticipants] = useState<Record<string, Participant>>(
+    {},
+  );
   const clientRef = useRef<IAgoraRTCClient | null>(null);
 
   const [joined, setJoined] = useState(false);
@@ -88,11 +92,11 @@ export const BookingsProvider: FC<{
     setAppointment(appointmentData);
 
     const bookingId = appointmentData?._id;
-    const menteeId = appointmentData?.mentorId?._id;
+    const participantId = appointmentData?.mentorId?._id;
     setLoading({ [appointmentData?._id]: true });
     const AgoraRTC = (await import("agora-rtc-sdk-ng")).default;
 
-    const rsp = await startVideoCallAction(bookingId, menteeId);
+    const rsp = await startVideoCallAction(bookingId, participantId);
 
     if (rsp?.error && !rsp?.data) {
       handleError(rsp?.message);
@@ -104,6 +108,8 @@ export const BookingsProvider: FC<{
       setLoading({ [appointmentData?._id]: false });
       setToggleMedia((prev) => ({
         ...prev,
+        camOn: true,
+        micOn: true,
         expiresAt: rsp?.data?.expiresAt,
       }));
 
@@ -129,6 +135,13 @@ export const BookingsProvider: FC<{
 
         if (mediaType === "audio") {
           user.audioTrack?.play();
+          setParticipants((prev) => ({
+            ...prev,
+            [user.uid]: {
+              ...(prev[user.uid] ?? { uid: user.uid, isLocal: false }),
+              audioTrack: user.audioTrack,
+            },
+          }));
           return;
         }
 
@@ -137,10 +150,10 @@ export const BookingsProvider: FC<{
           const label = track.getMediaStreamTrack().label.toLowerCase();
           const isScreen = label.includes("screen");
 
-          setRemoteUsers((prev) => ({
+          setParticipants((prev) => ({
             ...prev,
             [user.uid]: {
-              uid: user.uid,
+              ...(prev[user.uid] ?? { uid: user.uid, isLocal: false }),
               ...(isScreen ? { screenTrack: track } : { cameraTrack: track }),
             },
           }));
@@ -148,35 +161,44 @@ export const BookingsProvider: FC<{
       });
 
       client.on("user-unpublished", (user, mediaType) => {
-        setRemoteUsers((prev) => {
-          const existing = prev[Number(user.uid)];
-          if (!existing) return prev;
+        setParticipants((prev) => {
+          const p = prev[user.uid];
+          if (!p) return prev;
 
-          if (mediaType === "video") {
-            return {
-              ...prev,
-              [user.uid]: {
-                ...existing,
-                screenTrack: undefined,
-                cameraTrack: undefined,
-              },
-            };
-          }
-
-          return prev;
+          return {
+            ...prev,
+            [user.uid]: {
+              ...p,
+              ...(mediaType === "video"
+                ? { cameraTrack: undefined, screenTrack: undefined }
+                : {}),
+            },
+          };
         });
       });
 
       client.on("user-left", (user) => {
-        setRemoteUsers((prev) => {
-          const updated = { ...prev };
-          delete updated[Number(user.uid)];
-          return updated;
+        setParticipants((prev) => {
+          const copy = { ...prev };
+          delete copy[user.uid];
+          return copy;
         });
       });
 
       // 4️⃣ Create tracks
       const [mic, cam] = await AgoraRTC.createMicrophoneAndCameraTracks();
+
+      setParticipants((prev) => ({
+        ...prev,
+        local: {
+          uid: "local",
+          isLocal: true,
+          camOn: cam ? true : false,
+          micOn: mic ? true : false,
+          cameraTrack: cam,
+          audioTrack: mic,
+        },
+      }));
 
       setLocalAudioTrack(mic);
       setLocalVideoTrack(cam);
@@ -201,14 +223,52 @@ export const BookingsProvider: FC<{
   const toggleMIC = async () => {
     if (!localAudioTrack) return;
 
-    await localAudioTrack.setEnabled(!micOn);
-    setToggleMedia((prev) => ({ ...prev, ["micOn"]: !prev["micOn"] }));
+    const next = !micOn;
+    await localAudioTrack.setEnabled(next);
+
+    setToggleMedia((prev) => ({ ...prev, micOn: next }));
+
+    setParticipants((prev) => {
+      const local = prev.local;
+      if (!local) return prev;
+
+      return {
+        ...prev,
+        local: {
+          ...local,
+          micOn: next,
+        },
+      };
+    });
   };
 
   const toggleCamera = async () => {
-    if (!localVideoTrack) return;
-    await localVideoTrack.setEnabled(!camOn);
-    setToggleMedia((prev) => ({ ...prev, ["camOn"]: !prev["camOn"] }));
+    if (!localVideoTrack || !clientRef.current) return;
+
+    const next = !camOn;
+    await localVideoTrack.setEnabled(next);
+
+    // 🔑 If screen sharing, camera is NOT auto-published
+    if (screenShare) {
+      if (next) {
+        // turn camera ON → publish it
+        await clientRef.current.publish(localVideoTrack);
+      } else {
+        // turn camera OFF → unpublish it
+        await clientRef.current.unpublish(localVideoTrack);
+      }
+    }
+
+    setToggleMedia((prev) => ({ ...prev, camOn: next }));
+
+    setParticipants((prev) => ({
+      ...prev,
+      local: {
+        ...prev.local,
+        camOn: next,
+        cameraTrack: localVideoTrack, // keep reference
+      },
+    }));
   };
 
   // 🖥 Start screen share
@@ -229,6 +289,19 @@ export const BookingsProvider: FC<{
       await clientRef.current.unpublish(localVideoTrack);
       localVideoTrack.stop();
     }
+
+    await clientRef.current!.unpublish(localVideoTrack!);
+
+    console.log("screen-track>>>", screenTrack);
+
+    setParticipants((prev) => ({
+      ...prev,
+      local: {
+        ...prev.local,
+        cameraTrack: undefined,
+        screenTrack: screenTrack,
+      },
+    }));
 
     await clientRef.current.publish(screenTrack);
 
@@ -279,12 +352,13 @@ export const BookingsProvider: FC<{
     expiresAt,
     stopScreenShare,
     startScreenShare,
-    remoteUsers,
+    participants,
+    appointment,
   };
   return (
     <BookingsContext.Provider value={value}>
       {children}
-      {joined && <VideoCall appointment={appointment} expiresAt={expiresAt} />}
+      {joined && <VideoCall />}
     </BookingsContext.Provider>
   );
 };

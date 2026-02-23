@@ -142,3 +142,36 @@ export const formatFileSize = (sizeInBytes: number): string => {
     return `${(sizeInBytes / MB).toFixed(2)} MB`;
   }
 };
+
+export const getUserInitials = (name: string | null | undefined) => {
+  if (!name) return "";
+  const splitedValues = name?.split(" ");
+
+  const fName = splitedValues[0] || "";
+  const lName = splitedValues[1] || "";
+
+  return (fName.slice(0, 1) + lName.slice(0, 1)).toUpperCase();
+};
+
+function stringToNumber(str: string) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return Math.abs(hash);
+}
+
+export function getAvatarGradient(name: string) {
+  const hash = stringToNumber(name);
+  const hue = 260;
+
+  const l1 = 40 + (hash % 15);
+  const l2 = l1 + 10;
+
+  return {
+    background: `linear-gradient(135deg,
+      hsl(${hue}, 60%, ${l1}%),
+      hsl(${hue}, 60%, ${l2}%)
+    )`,
+  };
+}

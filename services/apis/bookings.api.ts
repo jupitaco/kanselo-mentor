@@ -105,10 +105,10 @@ export const getMentorByIdApi = (mentorId: string) => {
 
 export const startVideoCallApi = async (
   bookingId: string,
-  menteeId: string,
+  participantId: string,
 ) => {
   return Api.patch<void, VideoCallRsp>(
-    `/booking/${bookingId}/${menteeId}/agora/token`,
+    `/booking/${bookingId}/${participantId}/agora/token`,
     undefined,
     true,
   );
