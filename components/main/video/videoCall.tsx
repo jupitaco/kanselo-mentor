@@ -54,7 +54,7 @@ export default function VideoCall() {
           <div className="flex items-center justify-end gap-2 rounded-full! px-3 py-2">
             <figure className="relative size-12 overflow-hidden rounded-xl">
               <Image
-                src={appointment?.mentorId?.profilePhoto ?? allImages.noAvatar}
+                src={appointment?.userId?.profilePhoto ?? allImages.noAvatar}
                 alt="profile"
                 className="h-full w-full object-cover"
                 fill
@@ -63,9 +63,9 @@ export default function VideoCall() {
             </figure>
             <div className="flex-1">
               <h5 className="text-sm font-medium">
-                {appointment?.mentorId?.fullName}
+                {appointment?.userId?.fullName}
               </h5>
-              <small className="text-grey-400">Mentor</small>
+              <small className="text-grey-400">Mentee</small>
             </div>
           </div>
         </div>
