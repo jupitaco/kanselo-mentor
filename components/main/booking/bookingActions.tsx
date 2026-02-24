@@ -5,6 +5,7 @@ import FormInput from "@/components/ui/formInput";
 import { DialogClose, DialogFooter } from "@/components/ui/modals/dialog";
 import ModalWrapper from "@/components/ui/modals/modalWrapper";
 import { StarRatings } from "@/components/ui/starRatings";
+import { TooltipWrapper } from "@/components/ui/tooltip/tooltipWrapper";
 import { useBookingsContext } from "@/context/bookingsContext";
 import { useModalContext } from "@/context/modalContext";
 import { cancelAppointmentAction } from "@/libs/actions/bookings.actions";
@@ -12,11 +13,8 @@ import { callRatings } from "@/mock";
 import { BookingType } from "@/types/bookings";
 import { handleError, handleSuccess } from "@/utils/helper";
 import { useSearchParams } from "next/navigation";
-import React, {
-  SyntheticEvent,
-   useState,
-  useTransition,
-} from "react";
+import React, { SyntheticEvent, useState, useTransition } from "react";
+import { AiOutlineExclamationCircle } from "react-icons/ai";
 
 export const BookingActions = ({ data }: { data: BookingType }) => {
   const searchParams = useSearchParams();
@@ -43,17 +41,58 @@ export const AllBookingActions = ({ data }: { data: BookingType }) => {
   const { isOpen, openModal } = useModalContext();
   const { join, loading } = useBookingsContext();
 
+  const isMoreThan24Hours = () => {
+    if (!data?.createdAt) return false;
+
+    const now = new Date()?.getTime();
+    const bookingDate = new Date(data?.selectedDate)?.getTime();
+    const diffInHours = (now - bookingDate) / (1000 * 60 * 60);
+
+    return diffInHours > 24;
+  };
+
+  const cancelBtnDisabled = isMoreThan24Hours();
+
   return (
     <ul className="grid grid-cols-1 gap-1 lg:grid-cols-3">
-      <li>
-        <Button
-          onClick={() => openModal(data?._id)}
-          className="alt-btn min-h-9! w-full px-2! py-0! text-xs!"
-        >
-          Cancel
-        </Button>
-        {isOpen[data?._id] && <CancelBooking id={data?._id} data={data} />}
-      </li>
+      {cancelBtnDisabled ? (
+        <li>
+          <TooltipWrapper
+            title={
+              <span
+                className={cancelBtnDisabled ? "inline-block w-full" : "w-full"}
+              >
+                <Button
+                  className="alt-btn min-h-9! w-full! px-2! py-0! text-xs!"
+                  disabled={cancelBtnDisabled}
+                >
+                  Cancel <AiOutlineExclamationCircle />
+                </Button>
+              </span>
+            }
+          >
+            <div>
+              <h4 className="text-sm! font-bold!">Cancel booking</h4>
+              <p className="text-grey-300 text-xs">
+                Appointments cannot be cancelled after 24 hours
+              </p>
+            </div>
+          </TooltipWrapper>
+
+          {isOpen[data?._id] && <CancelBooking id={data?._id} data={data} />}
+        </li>
+      ) : (
+        <li>
+          <Button
+            onClick={() => openModal(data?._id)}
+            className="alt-btn min-h-9! w-full px-2! py-0! text-xs!"
+          >
+            Cancel
+          </Button>
+
+          {isOpen[data?._id] && <CancelBooking id={data?._id} data={data} />}
+        </li>
+      )}
       <li>
         <Button
           link
