@@ -6,7 +6,7 @@ import { Participant, useBookingsContext } from "@/context/bookingsContext";
 import { allImages } from "@/public/images/images";
 import { formatDate } from "@/utils/helper";
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import {
   IoMicOffOutline,
   IoMicOutline,
@@ -28,15 +28,11 @@ export default function VideoCall() {
     stopScreenShare,
     startScreenShare,
     screenShare,
-    expiresAt,
     participants,
+    duration,
   } = useBookingsContext();
 
-  const [timeLeft, setTimeLeft] = useState(() => {
-    const expiry = new Date(expiresAt).getTime();
-    const now = new Date().getTime();
-    return Math.max(0, Math.floor((expiry - now) / 1000));
-  });
+  const [timeLeft, setTimeLeft] = useState(duration * 60);
 
   const participantList = Object.values(participants);
 
@@ -52,7 +48,7 @@ export default function VideoCall() {
             <h4 className="text-sm">{appointment?.mentorId?.bio}</h4>
             <h5 className="text-grey-300 text-xs font-medium">
               {formatDate(appointment?.selectedDate)} |{" "}
-              {formatDate(appointment?.selectedDate, true)}
+              {appointment?.selectedTime}- {appointment?.selectedEndTime}
             </h5>
           </div>
           <div className="flex items-center justify-end gap-2 rounded-full! px-3 py-2">

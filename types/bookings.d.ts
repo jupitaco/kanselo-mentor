@@ -86,6 +86,7 @@ export type VideoCallType = {
   uid: number;
   role: string;
   expiresAt: string;
+  sessionDurationMinutes: number;
 };
 
 export type VideoCallRsp = ApiResponse & {

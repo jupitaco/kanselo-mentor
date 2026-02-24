@@ -5,18 +5,16 @@ import FormInput from "@/components/ui/formInput";
 import { DialogClose, DialogFooter } from "@/components/ui/modals/dialog";
 import ModalWrapper from "@/components/ui/modals/modalWrapper";
 import { StarRatings } from "@/components/ui/starRatings";
+import { TooltipWrapper } from "@/components/ui/tooltip/tooltipWrapper";
 import { useBookingsContext } from "@/context/bookingsContext";
 import { useModalContext } from "@/context/modalContext";
 import { cancelAppointmentAction } from "@/libs/actions/bookings.actions";
 import { callRatings } from "@/mock";
 import { BookingType } from "@/types/bookings";
-import { handleError, handleSuccess } from "@/utils/helper";
+import { formatDate, handleError, handleSuccess } from "@/utils/helper";
 import { useSearchParams } from "next/navigation";
-import React, {
-  SyntheticEvent,
-   useState,
-  useTransition,
-} from "react";
+import React, { SyntheticEvent, useMemo, useState, useTransition } from "react";
+import { AiOutlineExclamationCircle } from "react-icons/ai";
 
 export const BookingActions = ({ data }: { data: BookingType }) => {
   const searchParams = useSearchParams();
@@ -43,34 +41,168 @@ export const AllBookingActions = ({ data }: { data: BookingType }) => {
   const { isOpen, openModal } = useModalContext();
   const { join, loading } = useBookingsContext();
 
+  const isPast48Hours = () => {
+    if (!data?.createdAt) return false;
+
+    const now = new Date()?.getTime();
+    const bookingDate =
+      new Date(data?.createdAt)?.getTime() + 48 * 60 * 60 * 1000;
+
+    return now > bookingDate;
+  };
+
+  const cancelBtnDisabled = isPast48Hours();
+
+  const sessionState = useMemo(() => {
+    if (!data?.selectedDate || !data?.selectedTime) return null;
+
+    const now = new Date();
+    const datePart = data.selectedDate.split("T")[0]; // "2026-02-24"
+
+    const sessionStart = new Date(`${datePart}T${data.selectedTime}`);
+    const sessionEnd = new Date(`${datePart}T${data.selectedEndTime}`);
+
+    if (now < sessionStart) {
+      return {
+        isStarted: false,
+        isEnded: false,
+        tooltip: `Session starts on  ${formatDate(data.selectedDate)} at ${data.selectedTime}`,
+      };
+    }
+
+    if (now >= sessionStart && now <= sessionEnd) {
+      return {
+        isStarted: true,
+        isEnded: false,
+        tooltip: `Session is currently active. Ends at ${data.selectedEndTime}`,
+      };
+    }
+
+    return {
+      isStarted: false,
+      isEnded: true,
+      tooltip: "Session has ended",
+    };
+  }, [data?.selectedDate, data?.selectedTime, data?.selectedEndTime]);
+
   return (
     <ul className="grid grid-cols-1 gap-1 lg:grid-cols-3">
+      {cancelBtnDisabled || sessionState?.isEnded ? (
+        <li>
+          <TooltipWrapper
+            title={
+              <span
+                className={
+                  cancelBtnDisabled || sessionState?.isEnded
+                    ? "inline-block w-full"
+                    : "w-full"
+                }
+              >
+                <Button
+                  className="alt-btn min-h-9! w-full! px-2! py-0! text-xs!"
+                  disabled={cancelBtnDisabled || sessionState?.isEnded}
+                >
+                  Cancel <AiOutlineExclamationCircle />
+                </Button>
+              </span>
+            }
+          >
+            <div>
+              <h4 className="text-sm! font-bold!">Cancel booking</h4>
+              {sessionState?.isEnded ? (
+                <p className="text-grey-300 text-xs">{sessionState?.tooltip}</p>
+              ) : (
+                <p className="text-grey-300 text-xs">
+                  Appointments cannot be cancelled after 48 hours
+                </p>
+              )}
+            </div>
+          </TooltipWrapper>
+
+          {isOpen[data?._id] && <CancelBooking id={data?._id} data={data} />}
+        </li>
+      ) : (
+        <li>
+          <Button
+            onClick={() => openModal(data?._id)}
+            className="alt-btn min-h-9! w-full px-2! py-0! text-xs!"
+          >
+            Cancel
+          </Button>
+
+          {isOpen[data?._id] && <CancelBooking id={data?._id} data={data} />}
+        </li>
+      )}
+      {cancelBtnDisabled || sessionState?.isEnded ? (
+        <li>
+          <TooltipWrapper
+            title={
+              <span
+                className={
+                  cancelBtnDisabled || sessionState?.isEnded
+                    ? "inline-block w-full"
+                    : "w-full"
+                }
+              >
+                <Button
+                  disabled={cancelBtnDisabled || sessionState?.isEnded}
+                  className="alt-btn border-grey-200 min-h-9! w-full border px-2! py-0! text-xs!"
+                >
+                  Reschedule
+                </Button>
+              </span>
+            }
+          >
+            <div>
+              <h4 className="text-sm! font-bold!">Reschedule booking</h4>
+              {sessionState?.isEnded ? (
+                <p className="text-grey-300 text-xs">{sessionState?.tooltip}</p>
+              ) : (
+                <p className="text-grey-300 text-xs">
+                  Appointments cannot be reschedule after 48 hours
+                </p>
+              )}
+            </div>
+          </TooltipWrapper>
+
+          {isOpen[data?._id] && <CancelBooking id={data?._id} data={data} />}
+        </li>
+      ) : (
+        <li>
+          <Button
+            link
+            href={`/reschedule-call/${data?._id}?mentorName=${encodeURIComponent(data?.userId?.fullName)}`}
+            className="alt-btn border-grey-200 min-h-9! w-full border px-2! py-0! text-xs!"
+          >
+            Reschedule
+          </Button>
+        </li>
+      )}
+
       <li>
-        <Button
-          onClick={() => openModal(data?._id)}
-          className="alt-btn min-h-9! w-full px-2! py-0! text-xs!"
+        <TooltipWrapper
+          // Only show the tooltip message if the session hasn't started or has ended
+          title={
+            <span className="inline-block w-full">
+              <Button
+                className="pry-btn min-h-9! w-full px-2! py-0! text-xs!"
+                onClick={() => join(data)}
+                loading={loading[data?._id]}
+                // Disable if it hasn't started OR if it has already ended
+                disabled={!sessionState?.isStarted || sessionState?.isEnded}
+              >
+                Join Call
+              </Button>
+            </span>
+          }
         >
-          Cancel
-        </Button>
-        {isOpen[data?._id] && <CancelBooking id={data?._id} data={data} />}
-      </li>
-      <li>
-        <Button
-          link
-          href={`/reschedule-call/${data?._id}?mentorName=${encodeURIComponent(data?.userId?.fullName)}`}
-          className="alt-btn border-grey-200 min-h-9! w-full border px-2! py-0! text-xs!"
-        >
-          Reschedule
-        </Button>
-      </li>
-      <li>
-        <Button
-          className="pry-btn min-h-9! w-full px-2! py-0! text-xs!"
-          onClick={() => join(data)}
-          loading={loading[data?._id]}
-        >
-          Join Call
-        </Button>
+          {!sessionState?.isStarted || sessionState?.isEnded ? (
+            <div>
+              <h4 className="text-sm! font-bold!">Join Call</h4>
+              <p className="text-grey-300 text-xs">{sessionState?.tooltip}</p>
+            </div>
+          ) : null}
+        </TooltipWrapper>
       </li>
     </ul>
   );

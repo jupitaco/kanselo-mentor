@@ -2,8 +2,7 @@
 
 import { Participant, useBookingsContext } from "@/context/bookingsContext";
 import { getAvatarGradient, getUserInitials } from "@/utils/helper";
-import { IAgoraRTCRemoteUser } from "agora-rtc-sdk-ng";
-import { useEffect, useRef } from "react";
+ import { useEffect, useRef } from "react";
 import {
   IoMicOffOutline,
   IoMicOutline,
