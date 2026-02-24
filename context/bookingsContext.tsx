@@ -48,6 +48,7 @@ type BookingsContextType = {
   micOn: boolean;
   screenShare: boolean;
   expiresAt: string;
+  duration: number;
   appointment: BookingType;
   stopScreenShare: () => void;
   startScreenShare: () => void;
@@ -61,17 +62,20 @@ const BookingsContext = createContext<BookingsContextType | undefined>(
 export const BookingsProvider: FC<{
   children: ReactNode;
 }> = ({ children }) => {
-  const [{ micOn, camOn, screenShare, expiresAt }, setToggleMedia] = useState<{
-    micOn: boolean;
-    camOn: boolean;
-    screenShare: boolean;
-    expiresAt: string;
-  }>({
-    micOn: false,
-    camOn: false,
-    screenShare: false,
-    expiresAt: "",
-  });
+  const [{ micOn, camOn, screenShare, expiresAt, duration }, setToggleMedia] =
+    useState<{
+      micOn: boolean;
+      camOn: boolean;
+      screenShare: boolean;
+      expiresAt: string;
+      duration: number;
+    }>({
+      micOn: false,
+      camOn: false,
+      screenShare: false,
+      expiresAt: "",
+      duration: 0,
+    });
   const [loading, setLoading] = useState<Record<string, boolean>>({});
   const [appointment, setAppointment] = useState<BookingType>(
     {} as BookingType,
@@ -110,6 +114,7 @@ export const BookingsProvider: FC<{
         ...prev,
         camOn: true,
         micOn: true,
+        duration: rsp?.data?.sessionDurationMinutes,
         expiresAt: rsp?.data?.expiresAt,
       }));
 
@@ -354,6 +359,7 @@ export const BookingsProvider: FC<{
     startScreenShare,
     participants,
     appointment,
+    duration,
   };
   return (
     <BookingsContext.Provider value={value}>

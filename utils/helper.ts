@@ -121,8 +121,9 @@ export const queryBuilder = (query: { [key: string]: string }) => {
 };
 
 export const getMinutes = (time: string): number => {
+  if (!time) return 0;
   // map.(Number) converts the descructure value to number
-  const [h, m] = time.split(":").map(Number);
+  const [h, m] = time?.split(":")?.map(Number);
   return h * 60 + m;
 };
 
