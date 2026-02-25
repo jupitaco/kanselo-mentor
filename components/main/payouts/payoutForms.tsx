@@ -39,7 +39,7 @@ export const WithdrawalForm = () => {
   return (
     <>
       <Button className="pry-btn" onClick={() => openModal("withdrawal")}>
-        Withdrawal
+        Withdraw
       </Button>
       {isOpen["withdrawal"] && (
         <ModalWrapper

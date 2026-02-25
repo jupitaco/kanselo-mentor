@@ -87,20 +87,26 @@ export const AllBookingActions = ({ data }: { data: BookingType }) => {
 
   return (
     <ul className="grid grid-cols-1 gap-1 lg:grid-cols-3">
-      {cancelBtnDisabled || sessionState?.isEnded ? (
+      {cancelBtnDisabled || sessionState?.isEnded || sessionState?.isStarted ? (
         <li>
           <TooltipWrapper
             title={
               <span
                 className={
-                  cancelBtnDisabled || sessionState?.isEnded
+                  cancelBtnDisabled ||
+                  sessionState?.isEnded ||
+                  sessionState?.isStarted
                     ? "inline-block w-full"
                     : "w-full"
                 }
               >
                 <Button
                   className="alt-btn min-h-9! w-full! px-2! py-0! text-xs!"
-                  disabled={cancelBtnDisabled || sessionState?.isEnded}
+                  disabled={
+                    cancelBtnDisabled ||
+                    sessionState?.isEnded ||
+                    sessionState?.isStarted
+                  }
                 >
                   Cancel <AiOutlineExclamationCircle />
                 </Button>
@@ -110,6 +116,8 @@ export const AllBookingActions = ({ data }: { data: BookingType }) => {
             <div>
               <h4 className="text-sm! font-bold!">Cancel booking</h4>
               {sessionState?.isEnded ? (
+                <p className="text-grey-300 text-xs">{sessionState?.tooltip}</p>
+              ) : sessionState?.isStarted ? (
                 <p className="text-grey-300 text-xs">{sessionState?.tooltip}</p>
               ) : (
                 <p className="text-grey-300 text-xs">
@@ -133,19 +141,25 @@ export const AllBookingActions = ({ data }: { data: BookingType }) => {
           {isOpen[data?._id] && <CancelBooking id={data?._id} data={data} />}
         </li>
       )}
-      {cancelBtnDisabled || sessionState?.isEnded ? (
+      {cancelBtnDisabled || sessionState?.isEnded || sessionState?.isStarted ? (
         <li>
           <TooltipWrapper
             title={
               <span
                 className={
-                  cancelBtnDisabled || sessionState?.isEnded
+                  cancelBtnDisabled ||
+                  sessionState?.isEnded ||
+                  sessionState?.isStarted
                     ? "inline-block w-full"
                     : "w-full"
                 }
               >
                 <Button
-                  disabled={cancelBtnDisabled || sessionState?.isEnded}
+                  disabled={
+                    cancelBtnDisabled ||
+                    sessionState?.isEnded ||
+                    sessionState?.isStarted
+                  }
                   className="alt-btn border-grey-200 min-h-9! w-full border px-2! py-0! text-xs!"
                 >
                   Reschedule
@@ -156,6 +170,8 @@ export const AllBookingActions = ({ data }: { data: BookingType }) => {
             <div>
               <h4 className="text-sm! font-bold!">Reschedule booking</h4>
               {sessionState?.isEnded ? (
+                <p className="text-grey-300 text-xs">{sessionState?.tooltip}</p>
+              ) : sessionState?.isStarted ? (
                 <p className="text-grey-300 text-xs">{sessionState?.tooltip}</p>
               ) : (
                 <p className="text-grey-300 text-xs">
