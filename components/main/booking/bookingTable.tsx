@@ -13,9 +13,11 @@ import {
   newBookingColData,
 } from "@/mock";
 import { BookingType } from "@/types/bookings";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 export default function BookingTable({ status }: { status: string }) {
+  const { push } = useRouter();
   const { data, isPending } = usePaginationContext();
 
   const colList: {
@@ -51,6 +53,7 @@ export default function BookingTable({ status }: { status: string }) {
             title="Booking & Scheduling"
             columns={colList[status]}
             data={data?.assets as BookingType[]}
+            handleRowClick={() => push("/appointments")}
           />
         )}
 

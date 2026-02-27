@@ -176,3 +176,19 @@ export function getAvatarGradient(name: string) {
     )`,
   };
 }
+
+export const getMinutesUntil = (endTime: string): number => {
+  const now = new Date();
+  const [hours, minutes] = endTime.split(":").map(Number);
+
+  const end = new Date();
+  end.setHours(hours, minutes, 0, 0);
+
+  // Handle next day if time has passed
+  if (end < now) {
+    end.setDate(end.getDate() + 1);
+  }
+
+  const diffMinutes = Math.floor((end.getTime() - now.getTime()) / (1000 * 60));
+  return diffMinutes > 0 ? diffMinutes : 0;
+};

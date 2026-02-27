@@ -212,7 +212,9 @@ export const AllBookingActions = ({ data }: { data: BookingType }) => {
             </span>
           }
         >
-          {!sessionState?.isStarted || sessionState?.isEnded ? (
+          {!sessionState?.isStarted ||
+          sessionState?.isEnded ||
+          sessionState?.isStarted ? (
             <div>
               <h4 className="text-sm! font-bold!">Join Call</h4>
               <p className="text-grey-300 text-xs">{sessionState?.tooltip}</p>
@@ -225,7 +227,7 @@ export const AllBookingActions = ({ data }: { data: BookingType }) => {
 };
 
 export const CompletedBookingActions = ({ data }: { data: BookingType }) => {
-  return <StarRatings rating={data?.ratings} />;
+  return <StarRatings rating={data?.rating?.stars} />;
 };
 
 export const CancelledBookingActions = ({ data }: { data: BookingType }) => {

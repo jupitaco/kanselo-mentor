@@ -4,7 +4,7 @@ import Button from "@/components/ui/button";
 import CountDownTimer from "@/components/ui/countDownTimer";
 import { Participant, useBookingsContext } from "@/context/bookingsContext";
 import { allImages } from "@/public/images/images";
-import { formatDate } from "@/utils/helper";
+import { formatDate, getMinutesUntil } from "@/utils/helper";
 import Image from "next/image";
 import { useState } from "react";
 import {
@@ -29,10 +29,11 @@ export default function VideoCall() {
     startScreenShare,
     screenShare,
     participants,
-    duration,
   } = useBookingsContext();
 
-  const [timeLeft, setTimeLeft] = useState(duration * 60);
+  const [timeLeft, setTimeLeft] = useState(
+    getMinutesUntil(appointment?.selectedEndTime) * 60,
+  );
 
   const participantList = Object.values(participants);
 
@@ -46,7 +47,7 @@ export default function VideoCall() {
         <div className="flex items-center justify-between px-8">
           <div className="hidden max-w-md md:block">
             <h4 className="text-sm">{appointment?.mentorId?.bio}</h4>
-            <h5 className="text-grey-300 text-xs font-medium">
+            <h5 className="text-grey-500 text-xs font-medium">
               {formatDate(appointment?.selectedDate)} |{" "}
               {appointment?.selectedTime}- {appointment?.selectedEndTime}
             </h5>

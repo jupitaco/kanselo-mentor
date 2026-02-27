@@ -2,40 +2,43 @@
 
 import Button from "@/components/ui/button";
 import FormInput from "@/components/ui/formInput";
-import { updateUserAction, } from "@/libs/actions/auth.actions";
-import {  UserDataAndAccessToken } from "@/types/auths";
+import { updateUserAction } from "@/libs/actions/auth.actions";
+import { UserDataAndAccessToken } from "@/types/auths";
 import { ActionFormStatus } from "@/types/global";
 import { handleError, handleSuccess } from "@/utils/helper";
-import React, { FormEvent, useActionState, useEffect, useMemo } from "react";
+import React, {
+  SyntheticEvent,
+  useActionState,
+  useEffect,
+  useMemo,
+} from "react";
 import countries from "@/utils/countriesminified.json";
 import states from "@/utils/statesminified.json";
 import { useSettingsContext } from "@/context/settingsContext";
 
-
 export const Basic = () => {
   const { edit, setEdit, formData, setFormData } = useSettingsContext();
 
-  const handleChange = (
-    e: FormEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
-  ) => {
+  const handleChange = (e: SyntheticEvent) => {
     const { id, value } = e.target as HTMLInputElement;
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
-  const handleSelectChange = (field: 'country' | 'state') => (value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
+  const handleSelectChange =
+    (field: "country" | "state") => (value: string) => {
+      setFormData((prev) => ({ ...prev, [field]: value }));
+    };
 
   const initialStatus: ActionFormStatus & { data: UserDataAndAccessToken } = {
     error: false,
-    message: '',
+    message: "",
     data: {} as UserDataAndAccessToken,
   };
 
   const [state, formAction, isPending] = useActionState(
     updateUserAction,
     initialStatus,
-    '/',
+    "/",
   );
 
   useEffect(() => {
@@ -48,7 +51,6 @@ export const Basic = () => {
       }, 10);
     }
   }, [state, edit, setEdit]);
-
 
   const modifiedCountries = useMemo(
     () =>
@@ -78,19 +80,14 @@ export const Basic = () => {
     return stateData;
   }, [formData?.country]);
 
-
   return (
-    <form
-      action={formAction}
-      className="w-full space-y-4"
-    >
+    <form action={formAction} className="w-full space-y-4">
       <section className="space-y-4">
         <FormInput
           id="profilePhoto"
           name="profilePhoto"
           type="hidden"
           value={formData?.profilePhoto}
-
         />
         <FormInput
           id="fullName"
@@ -132,7 +129,7 @@ export const Basic = () => {
           placeholder="Select"
           value={formData?.country}
           shadcnSelectData={modifiedCountries}
-          onSelectItem={handleSelectChange('country')}
+          onSelectItem={handleSelectChange("country")}
           disabled={!edit}
         />
 
@@ -144,7 +141,7 @@ export const Basic = () => {
           placeholder="Select"
           value={formData?.state}
           shadcnSelectData={stateList}
-          onSelectItem={handleSelectChange('state')}
+          onSelectItem={handleSelectChange("state")}
           disabled={!edit}
         />
         <FormInput
@@ -168,11 +165,7 @@ export const Basic = () => {
               >
                 Cancel
               </Button>
-              <Button
-                className="pry-btn"
-                type="submit"
-                loading={isPending}
-              >
+              <Button className="pry-btn" type="submit" loading={isPending}>
                 Save Changes
               </Button>
             </div>

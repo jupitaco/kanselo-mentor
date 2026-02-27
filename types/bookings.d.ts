@@ -31,7 +31,7 @@ export type BookingType = {
   selectedTime: string;
   selectedEndTime: string;
   status: string;
-  ratings: number;
+  rating: { ratingText: string; stars: 3; _id: string };
   totalAmountPaid: number;
   createdAt: string;
   updatedAt: string;
