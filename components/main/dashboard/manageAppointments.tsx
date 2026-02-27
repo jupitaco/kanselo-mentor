@@ -6,6 +6,7 @@ import Skeleton from "@/components/ui/skeleton/skeleton";
 import { BookingType } from "@/types/bookings";
 import { formatDateToLocale } from "@/utils/helper";
 import Image from "next/image";
+import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { ReactNode, useTransition } from "react";
 
@@ -60,20 +61,22 @@ export const AppointmentsCalendar = ({ data }: { data: BookingType[] }) => {
     <AppointmentsCalendarWrapper>
       <ul className="divide-Line space-y-4 divide-y">
         {data.map((appointment) => (
-          <li key={appointment._id} className="flex items-center gap-4 pb-4">
-            <Image
-              src={appointment.userId?.profilePhoto}
-              alt={appointment.userId?.fullName}
-              className="rounded object-cover"
-              width={48}
-              height={48}
-            />
-            <div className="flex-1">
-              <h5 className="font-medium">{appointment.userId?.fullName}</h5>
-              <p className="text-grey-300 text-xs">
-                {appointment.selectedTime} - {appointment.selectedEndTime}
-              </p>
-            </div>
+          <li key={appointment._id}>
+            <Link href="/appointments" className="flex items-center gap-4 pb-4">
+              <Image
+                src={appointment.userId?.profilePhoto}
+                alt={appointment.userId?.fullName}
+                className="rounded object-cover"
+                width={48}
+                height={48}
+              />
+              <div className="flex-1">
+                <h5 className="font-medium">{appointment.userId?.fullName}</h5>
+                <p className="text-grey-300 text-xs">
+                  {appointment.selectedTime} - {appointment.selectedEndTime}
+                </p>
+              </div>
+            </Link>
           </li>
         ))}
       </ul>

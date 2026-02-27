@@ -553,8 +553,8 @@ export const completedBookingColData: Column<
   ...bookingColData,
   {
     title: "RATINGS",
-    key: "ratings",
-    render: (_, record) => <StarRatings rating={record?.ratings} />,
+    key: "rating",
+    render: (_, record) => <StarRatings rating={record?.rating?.stars} />,
   },
 ];
 
