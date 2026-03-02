@@ -2,7 +2,20 @@ import { BookCallForm } from "@/components/main/booking/bookingsComponents";
 import { ErrorUI } from "@/components/ui/emptyState";
 import GoBackBtn from "@/components/ui/goBackBtn";
 import { getBookingByIdApi } from "@/services/apis/bookings.api";
+import { SearchPageParams } from "@/types/global";
 import React from "react";
+
+export const generateMetadata = async ({
+  searchParams,
+}: {
+  searchParams: Promise<SearchPageParams>;
+}) => {
+  const p = await searchParams;
+
+  return {
+    title: p.mentorName,
+  };
+};
 
 export default async function Page({
   params,

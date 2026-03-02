@@ -17,12 +17,12 @@ export interface IFormInputProps extends React.InputHTMLAttributes<
   value?: string | number | readonly string[] | undefined;
   DateTimeValue?: Date | undefined;
   type?:
-  | React.HTMLInputTypeAttribute
-  | "textarea"
-  | "select"
-  | "shadSelect"
-  | "date"
-  | "time";
+    | React.HTMLInputTypeAttribute
+    | "textarea"
+    | "select"
+    | "shadSelect"
+    | "date"
+    | "time";
   inputClassName?: string;
   labelClassName?: string;
   className?: string;
@@ -36,6 +36,7 @@ export interface IFormInputProps extends React.InputHTMLAttributes<
   icon?: JSX.Element | string;
   required?: boolean;
   disabled?: boolean;
+  disabledPrevDates?: boolean;
   shadcnSelectData?: ItemsType[];
 }
 
@@ -60,6 +61,7 @@ const FormInput = ({
   checkValue,
   DateTimeValue,
   shadcnSelectData,
+  disabledPrevDates,
   ...rest
 }: IFormInputProps) => {
   const [openDate, setOpenDate] = React.useState(false);
@@ -108,6 +110,7 @@ const FormInput = ({
           className={`m-0! w-full ${inputClassName}`}
           disabled={Boolean(disabled)}
           required={required}
+          disabledPrevDates={disabledPrevDates}
           error={error}
         />
       ) : type === "textarea" ? (
@@ -157,8 +160,9 @@ const FormInput = ({
             name={name}
             type={showPassword[id] ? "text" : "password"}
             onChange={onChange}
-            className={`${error ? "errors" : ""
-              } form-controls ${inputClassName}`}
+            className={`${
+              error ? "errors" : ""
+            } form-controls ${inputClassName}`}
             placeholder={placeholder}
             value={value}
             disabled={disabled}

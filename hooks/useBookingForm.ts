@@ -120,7 +120,7 @@ export const useBookingForm = ({
         label: `${idx + 1} (${session?.duration} minutes $${consultationFee * (idx + 1)})`,
       };
     });
-  }, []);
+  }, [consultationFee]);
 
   const handleDateChange = (date: Date | undefined) => {
     if (date) {
@@ -129,13 +129,19 @@ export const useBookingForm = ({
   };
 
   useEffect(() => {
-    if (selectedDate && availableHoursByDate?.length === 0) {
+    if (!selectedDate) {
+      return;
+    }
+
+    if (availableHoursByDate?.length === 0) {
       setError("selectedDate", {
         message:
           "Mentor not available on the selected day, please choose a different day",
       });
+    } else {
+      setError("selectedDate", { message: "" });
     }
-  }, [availableHoursByDate, selectedDate]);
+  }, [availableHoursByDate, selectedDate, setError]);
 
   const onSubmit = async (data: BookCallTypeValues) => {
     const rsp = await rescheduleAppointmentAction(menteeId, bookingId, data);

@@ -187,7 +187,7 @@ export const AllBookingActions = ({ data }: { data: BookingType }) => {
         <li>
           <Button
             link
-            href={`/reschedule-call/${data?._id}?mentorName=${encodeURIComponent(data?.userId?.fullName)}`}
+            href={`/reschedule-call/${data?._id}?mentorName=${encodeURIComponent(data?.mentorId?.fullName)}`}
             className="alt-btn border-grey-200 min-h-9! w-full border px-2! py-0! text-xs!"
           >
             Reschedule

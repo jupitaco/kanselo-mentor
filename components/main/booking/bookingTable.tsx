@@ -53,7 +53,9 @@ export default function BookingTable({ status }: { status: string }) {
             title="Booking & Scheduling"
             columns={colList[status]}
             data={data?.assets as BookingType[]}
-            handleRowClick={() => push("/appointments")}
+            handleRowClick={() =>
+              status === "recent" ? push("/appointments") : {}
+            }
           />
         )}
 

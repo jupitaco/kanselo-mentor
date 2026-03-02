@@ -171,6 +171,7 @@ export const BookCallForm = ({ _id, mentorId, userId }: BookingType) => {
         DateTimeValue={new Date(selectedDate)}
         onDateChange={handleDateChange}
         inputClassName="rounded!"
+        disabledPrevDates
       />
       {/*
         <RadioGroup
