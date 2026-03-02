@@ -13,7 +13,7 @@ export default async function RenderBookingByStatus({
 }) {
   const rsp = await getAllBookingsApi({
     page: page || "1",
-    status: status === "all" ? "" : status?.toUpperCase(),
+    status: status?.toUpperCase(),
   });
 
   if (!rsp?.ok) {

@@ -198,10 +198,6 @@ button:disabled {
   color: var(--color-primary);
 }
 
-.sidebarActive span svg {
-  stroke: transparent;
-}
-
 .sidebarNotActive {
   color: var(--color-grey-400);
 }
@@ -211,12 +207,6 @@ button:disabled {
   padding: 1em 1.3em 1em;
   border-radius: 10px;
   font-weight: 600;
-}
-
-.sidebarNotActive span svg {
-  color: transparent !important;
-  stroke: var(--color-grey-400);
-  stroke-width: 1.5px;
 }
 
 .closeSidebar {

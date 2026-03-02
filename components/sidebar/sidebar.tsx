@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import BrandLogo from "../ui/brandLogo";
 import { useModalContext } from "@/context/modalContext";
 import Logout from "../logout/logout";
-import { HelpCenter } from "./helpCenter";
 import { FaChevronDown } from "react-icons/fa6";
 import { Fragment, ReactNode, useState } from "react";
 
@@ -22,8 +21,6 @@ const Sidebar = () => {
 
           <Logout />
         </ul>
-
-        <HelpCenter />
       </article>
     </section>
   );
@@ -34,12 +31,9 @@ export default Sidebar;
 type sidebarTypes = {
   icon: ReactNode;
   title: string;
+  lineIcon: ReactNode;
   url: string;
-  childRoutes?: {
-    icon: ReactNode;
-    title: string;
-    url: string;
-  }[];
+  childRoutes?: sidebarTypes[];
 };
 
 export const SidebarLink = ({ linkList }: { linkList: sidebarTypes[] }) => {
@@ -49,70 +43,74 @@ export const SidebarLink = ({ linkList }: { linkList: sidebarTypes[] }) => {
   const [isClicked, setIsClicked] = useState(false);
   return (
     <>
-      {linkList.map(({ url, icon, title, childRoutes }, idx) => (
-        <Fragment key={idx}>
-          {childRoutes ? (
-            <div className="w-full">
-              <button
-                key={idx}
-                className={`${currentPath.includes(url)
-                    ? "sidebarActive"
-                    : "sidebarNotActive"
+      {linkList.map(({ url, icon, lineIcon, title, childRoutes }, idx) => {
+        const isActive = currentPath.includes(url);
+
+        return (
+          <Fragment key={idx}>
+            {childRoutes ? (
+              <div className="w-full">
+                <button
+                  key={idx}
+                  className={`${
+                    currentPath.includes(url)
+                      ? "sidebarActive"
+                      : "sidebarNotActive"
                   } flex w-full items-center justify-between`}
-                onClick={() => setIsClicked(!isClicked)}
+                  onClick={() => setIsClicked(!isClicked)}
+                >
+                  <span className="flex items-center gap-2 text-sm">
+                    {isActive ? icon : lineIcon}
+                    {title}
+                  </span>
+
+                  <FaChevronDown
+                    className={
+                      isClicked
+                        ? "rotate-180 transition-transform ease-in-out"
+                        : "rotate-0 transition-transform ease-in-out"
+                    }
+                  />
+                </button>
+
+                {isClicked && (
+                  <ul className="flex flex-col gap-3">
+                    {childRoutes.map(({ url, icon, title }, idx) => (
+                      <Link
+                        key={idx}
+                        href={url}
+                        className={`${
+                          currentPath.includes(url)
+                            ? "sidebarActive bg-[#F9F9FB]!"
+                            : "sidebarNotActive"
+                        } px-10!`}
+                        onClick={() => setToggle(false)}
+                      >
+                        <span className="flex items-center gap-2 text-sm">
+                          {isActive ? icon : lineIcon}
+                          {title}
+                        </span>
+                      </Link>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ) : (
+              <Link
+                key={idx}
+                href={url}
+                className={`${isActive ? "sidebarActive" : "sidebarNotActive"}`}
+                onClick={() => setToggle(false)}
               >
                 <span className="flex items-center gap-2 text-sm">
-                  {icon}
+                  {isActive ? icon : lineIcon}
                   {title}
                 </span>
-
-                <FaChevronDown
-                  className={
-                    isClicked
-                      ? "rotate-180 transition-transform ease-in-out"
-                      : "rotate-0 transition-transform ease-in-out"
-                  }
-                />
-              </button>
-
-              {isClicked && (
-                <ul className="flex flex-col gap-3">
-                  {childRoutes.map(({ url, icon, title }, idx) => (
-                    <Link
-                      key={idx}
-                      href={url}
-                      className={`${currentPath.includes(url)
-                          ? "sidebarActive bg-[#F9F9FB]!"
-                          : "sidebarNotActive"
-                        } px-10!`}
-                      onClick={() => setToggle(false)}
-                    >
-                      <span className="flex items-center gap-2 text-sm">
-                        {icon}
-                        {title}
-                      </span>
-                    </Link>
-                  ))}
-                </ul>
-              )}
-            </div>
-          ) : (
-            <Link
-              key={idx}
-              href={url}
-              className={
-                currentPath.includes(url) ? "sidebarActive" : "sidebarNotActive"
-              }
-              onClick={() => setToggle(false)}
-            >
-              <span className="flex items-center gap-2 text-sm">
-                {icon}
-                {title}
-              </span>
-            </Link>
-          )}
-        </Fragment>
-      ))}
+              </Link>
+            )}
+          </Fragment>
+        );
+      })}
     </>
   );
 };
