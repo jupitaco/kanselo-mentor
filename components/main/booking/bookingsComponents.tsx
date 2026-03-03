@@ -130,7 +130,12 @@ export const BookCallBtn = ({ id, name }: Mentor) => {
   );
 };
 
-export const BookCallForm = ({ _id, mentorId, userId }: BookingType) => {
+export const BookCallForm = ({
+  _id,
+  mentorId,
+  userId,
+  selectedDate: bookingDate,
+}: BookingType) => {
   const {
     formState: { errors, isSubmitting },
     register,
@@ -146,6 +151,7 @@ export const BookCallForm = ({ _id, mentorId, userId }: BookingType) => {
     menteeId: userId?._id,
     mentorId: mentorId?._id,
     bookingId: _id,
+    bookingDate,
   });
 
   return (
@@ -211,7 +217,12 @@ export const BookCallForm = ({ _id, mentorId, userId }: BookingType) => {
           <ErrorMessage message={errors.selectedTime.message} />
         )} */}
 
-      <Button className="pry-btn w-full" type="submit" loading={isSubmitting}>
+      <Button
+        className="pry-btn w-full"
+        type="submit"
+        disabled={errors?.selectedDate?.message !== ""}
+        loading={isSubmitting}
+      >
         Book Now
       </Button>
     </form>
