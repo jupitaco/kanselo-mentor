@@ -13,6 +13,7 @@ const tabData = [
   { label: "New", path: "pending" },
   { label: "Completed", path: "completed" },
   { label: "Cancelled", path: "cancelled" },
+  { label: "Expired", path: "expired" },
 ];
 
 export default function Pages({ searchParams }: SearchParams) {

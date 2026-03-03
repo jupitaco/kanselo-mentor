@@ -45,10 +45,12 @@ export const useBookingForm = ({
   menteeId,
   mentorId,
   bookingId,
+  bookingDate,
 }: {
   menteeId: string;
   mentorId: string;
   bookingId: string;
+  bookingDate: string;
 }) => {
   const { push } = useRouter();
   const {
@@ -133,7 +135,11 @@ export const useBookingForm = ({
       return;
     }
 
-    if (availableHoursByDate?.length === 0) {
+    if (selectedDate === formatDateToLocale(new Date(bookingDate))) {
+      setError("selectedDate", {
+        message: "You can not rebook the same date",
+      });
+    } else if (availableHoursByDate?.length === 0) {
       setError("selectedDate", {
         message:
           "Mentor not available on the selected day, please choose a different day",
@@ -141,7 +147,7 @@ export const useBookingForm = ({
     } else {
       setError("selectedDate", { message: "" });
     }
-  }, [availableHoursByDate, selectedDate, setError]);
+  }, [availableHoursByDate, selectedDate, bookingDate, setError]);
 
   const onSubmit = async (data: BookCallTypeValues) => {
     const rsp = await rescheduleAppointmentAction(menteeId, bookingId, data);
