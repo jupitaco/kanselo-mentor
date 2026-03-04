@@ -29,12 +29,11 @@ const SigninForm = ({ redirectPath }: { redirectPath: string }) => {
   useEffect(() => {
     if (state?.error) {
       handleError(state?.message);
-    } else if (Object.keys(state?.data as UserDataAndAccessToken).length > 0) {
+    } else if (!state?.error && state?.message !== "") {
       if (redirectPath) {
         handleSuccess(state?.message, push, redirectPath);
       } else {
         handleSuccess(state?.message, push, "/dashboard");
-
       }
     }
   }, [state, push, redirectPath]);
@@ -71,11 +70,7 @@ const SigninForm = ({ redirectPath }: { redirectPath: string }) => {
       </section>
 
       <section className="mt-10 mb-3">
-        <Button
-          className="pry-btn w-full"
-          type="submit"
-          loading={isPending}
-        >
+        <Button className="pry-btn w-full" type="submit" loading={isPending}>
           Sign In
         </Button>
       </section>
