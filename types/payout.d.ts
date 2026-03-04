@@ -1,12 +1,3 @@
-export type TransactionType = {
-  id: string;
-  date: string;
-  time: string;
-  type: string;
-  status: string;
-  amount: number;
-};
-
 export type PayoutWithdrawalType = {
   _id: string;
   userId: string;
@@ -25,10 +16,33 @@ export type PayoutType = {
 
 export type PayoutRsp = ApiResponse & {
   data: {
-    page: 1;
-    limit: 10;
-    total: 3;
-    totalPages: 1;
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
     withdrawals: PayoutWithdrawalType[];
+  };
+};
+
+export type TransactionType = {
+  _id: string;
+  userId: UserData;
+  type: string;
+  category: string;
+  amount: number;
+  description: string;
+  relatedUserId: UserData;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type TransactionRsp = ApiResponse & {
+  data: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    transactions: TransactionType[];
   };
 };
