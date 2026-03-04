@@ -2,13 +2,13 @@
 
 import { Participant, useBookingsContext } from "@/context/bookingsContext";
 import { getAvatarGradient, getUserInitials } from "@/utils/helper";
- import { useEffect, useRef } from "react";
-import {
-  IoMicOffOutline,
-  IoMicOutline,
-  IoVideocamOffOutline,
-  IoVideocamOutline,
-} from "react-icons/io5";
+import { useEffect, useRef } from "react";
+// import {
+//   IoMicOffOutline,
+//   IoMicOutline,
+//   IoVideocamOffOutline,
+//   IoVideocamOutline,
+// } from "react-icons/io5";
 
 export function ParticipantTitle({
   participant,
@@ -25,27 +25,27 @@ export function ParticipantTitle({
           key={user.uid}
           className={`bg-grey-200 relative p-1 ${screenShare ? "h-20 w-20 rounded-full lg:h-40 lg:w-42" : "h-60 w-full rounded-md lg:h-full lg:w-full lg:flex-1!"} lg:rounded-md`}
         >
-          <div className="absolute right-1 z-100 flex items-center justify-end">
+          {/* <div className="absolute right-1 z-100 flex items-center justify-end">
             <div
-              className={`${!user?.micOn ? "bg-secondary" : "bg-accent-400"} rounded-full! p-1 text-white`}
+              className={`${!user?.audioTrack ? "bg-secondary" : "bg-accent-400"} rounded-full! p-1 text-white`}
             >
-              {!user?.micOn ? (
+              {!user?.audioTrack ? (
                 <IoMicOffOutline size={16} />
               ) : (
                 <IoMicOutline size={16} />
               )}
             </div>
             <div
-              className={`${!user?.camOn ? "bg-secondary" : "bg-accent-400"} rounded-full! p-1 text-white`}
+              className={`${!user?.cameraTrack ? "bg-secondary" : "bg-accent-400"} rounded-full! p-1 text-white`}
             >
-              {!user?.camOn ? (
+              {!user?.cameraTrack ? (
                 <IoVideocamOffOutline size={16} />
               ) : (
                 <IoVideocamOutline size={16} />
               )}
             </div>
-          </div>
-          {user?.camOn ? (
+          </div> */}
+          {user?.cameraTrack ? (
             <RemoteCamera
               track={user.cameraTrack}
               className={`${screenShare ? "rounded-full lg:rounded-md" : "rounded-md"}`}

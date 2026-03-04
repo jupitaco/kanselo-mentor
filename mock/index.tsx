@@ -617,7 +617,7 @@ export const callRatings = [
   },
 ];
 
-export const transactionAssets: TransactionType[] = [
+export const transactionAssets = [
   {
     id: "1",
     date: "03 Jan 2023",
@@ -700,7 +700,7 @@ export const transactionAssets: TransactionType[] = [
   },
 ];
 
-export const transactionolData: Column<TransactionType>[] = [
+export const transactioncolData: Column<TransactionType>[] = [
   {
     title: "AMOUNT",
     key: "amount",
@@ -713,13 +713,13 @@ export const transactionolData: Column<TransactionType>[] = [
   },
   {
     title: "DATE",
-    key: "date",
-    render: (_, record) => <>{record.date}</>,
+    key: "createdAt",
+    render: (_, record) => <>{formatDate(record.createdAt)}</>,
   },
   {
     title: "TIME",
-    key: "time",
-    render: (_, record) => <>{record.time}</>,
+    key: "updatedAt",
+    render: (_, record) => <>{formatDate(record.createdAt, true)}</>,
   },
   {
     title: "TYPE",

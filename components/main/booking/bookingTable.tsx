@@ -30,6 +30,7 @@ export default function BookingTable({ status }: { status: string }) {
     pending: newBookingColData,
     completed: completedBookingColData,
     cancelled: bookingColData,
+    expired: bookingColData,
     recent: bookingColData,
   };
 

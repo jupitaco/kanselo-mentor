@@ -13,7 +13,7 @@ import {
   IoVideocamOffOutline,
   IoVideocamOutline,
 } from "react-icons/io5";
-import { LuAlarmClock, LuScreenShare, LuScreenShareOff } from "react-icons/lu";
+import { LuAlarmClock } from "react-icons/lu";
 import { ParticipantTitle, ScreenSharing } from "./remoteVideo";
 
 export default function VideoCall() {
@@ -25,8 +25,8 @@ export default function VideoCall() {
     leave,
     joined,
     appointment,
-    stopScreenShare,
-    startScreenShare,
+    // stopScreenShare,
+    // startScreenShare,
     screenShare,
     participants,
   } = useBookingsContext();
@@ -83,7 +83,7 @@ export default function VideoCall() {
         {joined && (
           <article className="mx-auto flex w-full flex-wrap items-center justify-between gap-4 lg:max-w-9/12">
             <ul className="flex flex-1 flex-wrap items-center gap-3">
-              <li>
+              {/* <li>
                 {!screenShare ? (
                   <Button
                     onClick={startScreenShare}
@@ -99,7 +99,7 @@ export default function VideoCall() {
                     <LuScreenShareOff size={16} />
                   </Button>
                 )}
-              </li>
+              </li> */}
               <li>
                 <Button
                   className={`${!micOn ? "bg-secondary" : "bg-accent-400"} rounded-full! text-white`}

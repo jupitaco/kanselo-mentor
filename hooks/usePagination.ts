@@ -1,14 +1,18 @@
 import { useTransition } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { TemplateType } from "@/types/template";
-import { PayoutWithdrawalType } from "@/types/payout";
+import { PayoutWithdrawalType, TransactionType } from "@/types/payout";
 import { BookingType } from "@/types/bookings";
 
 export type UsePaginateData = {
   total: number;
   limit: number;
   page: number;
-  assets: TemplateType[] | PayoutWithdrawalType[] | BookingType[];
+  assets:
+    | TemplateType[]
+    | PayoutWithdrawalType[]
+    | BookingType[]
+    | TransactionType[];
 };
 
 export default function usePagination(data?: UsePaginateData) {

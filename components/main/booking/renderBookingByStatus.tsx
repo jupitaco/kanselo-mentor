@@ -27,6 +27,7 @@ export default async function RenderBookingByStatus({
     limit,
     assets: bookings,
   };
+  console.log("first>>>", bookings);
   return (
     <PaginationProvider data={bookingsData}>
       <BookingTable status={status} />

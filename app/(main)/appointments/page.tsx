@@ -33,7 +33,7 @@ export default function Pages({ searchParams }: SearchParams) {
             <li key={idx}>
               <Link
                 href={`/appointments?tab=${path}`}
-                className={`text-xs font-medium ${activeTab === path ? "bg-primary rounded-lg text-white" : ""} px-4 py-2 md:px-7`}
+                className={`text-xs font-medium ${activeTab === path ? "bg-primary rounded-lg text-white" : ""} px-4 py-2`}
               >
                 {label}
               </Link>
