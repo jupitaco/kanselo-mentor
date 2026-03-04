@@ -17,7 +17,7 @@ export const WalletBalance = async () => {
       <li className="rounded-2xl bg-white p-5">
         <p className="text-grey-400 text-sm">Wallet Balance</p>
         <h4 className="font-semibold">
-          ₦{formatNumInThousands(walletBalance)}
+          ${formatNumInThousands(walletBalance)}
         </h4>
       </li>
       {payoutAccount ? (
