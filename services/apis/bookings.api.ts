@@ -35,7 +35,7 @@ export const getAllBookingsApi = async ({
 export const getRecentBookingsApi = async () => {
   const user = await getUser();
   return Api.get<BookingRsp>(
-    `/booking/mentor-dashboard/${user?._id}/recent-consultations?${queryBuilder({ page: "1", limit: "10" })}`,
+    `/booking/mentor-dashboard/${user?._id}/recent-consultations?${queryBuilder({ page: "1", limit: "5" })}`,
     true,
   );
 };
