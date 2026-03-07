@@ -1,5 +1,10 @@
 import { toast } from "@/hooks/useToast";
 import { NavigateOptions } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+
+// Extend Day.js with the relativeTime plugin
+dayjs.extend(relativeTime);
 
 export const handleSuccess = (
   message: string,
@@ -191,4 +196,8 @@ export const getMinutesUntil = (endTime: string): number => {
 
   const diffMinutes = Math.floor((end.getTime() - now.getTime()) / (1000 * 60));
   return diffMinutes > 0 ? diffMinutes : 0;
+};
+
+export const formatDateAgo = (date: string) => {
+  return dayjs(date).fromNow();
 };

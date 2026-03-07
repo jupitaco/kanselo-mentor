@@ -8,6 +8,24 @@ import { RenderNotifs } from "./notifications/notifications";
 import { useAuthContext } from "@/context/authContext";
 import { useEffect } from "react";
 import { UserData } from "@/types/auths";
+import { NotificationRsp } from "@/types/notifications";
+import { useQuery } from "@tanstack/react-query";
+
+export type QueryResponse = {
+  status: number;
+  data: NotificationRsp;
+};
+
+const getNotifications = async () => {
+  const rsp = await fetch(`/api/notification`);
+  const result = await rsp.json();
+
+  if ("error" in result) {
+    throw new Error(result.error);
+  }
+
+  return result?.data as QueryResponse;
+};
 
 const TopBar = ({ user }: { user: UserData }) => {
   const { setCurrentUserData } = useAuthContext();
@@ -29,6 +47,14 @@ const TopBar = ({ user }: { user: UserData }) => {
     setCurrentUserData(user);
   }, [user]);
 
+  const { data, isLoading } = useQuery({
+    queryKey: ["notifications"],
+    queryFn: () => getNotifications(),
+    refetchInterval: 60000, // Refetch every 60 seconds
+    refetchIntervalInBackground: true, // Continue refetching even when tab is in background
+    staleTime: 5000, // Consider data fresh for 5 seconds (optional)
+  });
+
   return (
     <>
       <header className="border-grey-100 sticky top-0 left-0 hidden min-h-(--main-header-height) items-center justify-center border-b bg-white lg:flex">
@@ -37,7 +63,11 @@ const TopBar = ({ user }: { user: UserData }) => {
             <h2 className="font-bold capitalize">{title}</h2>
           </article>
           <article className="hidden flex-1 items-center justify-end gap-2 lg:flex">
-            <RenderNotifs />
+            <RenderNotifs
+              unreadCount={data?.data?.unreadCount}
+              notifsData={data?.data?.notifications}
+              isLoading={isLoading}
+            />
 
             <div className="flex items-center justify-end gap-2 rounded-full! px-3 py-2">
               <figure className="relative size-12 overflow-hidden rounded-xl">

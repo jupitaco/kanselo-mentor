@@ -131,12 +131,14 @@ export class Api {
     auth = false,
     customHeader = "application/json",
     tags,
+    revalidateTime,
   }: {
     base_url?: string;
     options: OptionsType<T>;
     auth?: boolean;
     customHeader?: string;
     tags?: string[];
+    revalidateTime?: number;
   }): Promise<ResponseType<R>> {
     const headers = await this.getHeaders({ auth, customHeader });
     const body = this.getRequestBody(options, headers);
@@ -148,7 +150,7 @@ export class Api {
         method: options.method,
         headers,
         body,
-        next: { tags },
+        next: { revalidate: revalidateTime, tags },
       });
 
       return this.handleResponse<R>(response);
@@ -157,11 +159,17 @@ export class Api {
     }
   }
 
-  static async get<R>(url: string, auth?: boolean, tags?: string[]) {
+  static async get<R>(
+    url: string,
+    auth?: boolean,
+    tags?: string[],
+    revalidateTime?: number,
+  ) {
     return this.request<void, R>({
       options: { method: "GET", url },
       auth,
       tags,
+      revalidateTime,
     });
   }
 
