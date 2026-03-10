@@ -16,7 +16,7 @@ export default function AuthLayout({
 
         <footer>
           <small className="text-grey-300">
-            @2025 Kanselo All Right Reserved.
+            Copyright © {new Date().getFullYear()} Kanselo All Right Reserved.
           </small>
         </footer>
       </main>
