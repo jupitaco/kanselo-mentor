@@ -36,7 +36,7 @@ export const Stats = async () => {
         <div className="space-y-3">
           <small className="text-grey-300">Total Income</small>
           <h4 className="font-semibold">
-            ${formatNumInThousands(statsData?.totalConsultations || 0)}
+            ${formatNumInThousands(statsData?.totalIncome || 0)}
           </h4>
         </div>
       </li>
