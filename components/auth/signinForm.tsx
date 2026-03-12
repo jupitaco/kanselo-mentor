@@ -5,19 +5,22 @@ import Link from "next/link";
 import Button from "../ui/button";
 import { useRouter } from "next/navigation";
 import { ActionFormStatus } from "@/types/global";
-import { UserDataAndAccessToken } from "@/types/auths";
+import { UserData, UserDataAndAccessToken } from "@/types/auths";
 import { useActionState, useEffect } from "react";
 import { signInAction } from "@/libs/actions/auth.actions";
 import { handleError, handleSuccess } from "@/utils/helper";
+import { useAuthContext } from "@/context/authContext";
 
 const SigninForm = ({ redirectPath }: { redirectPath: string }) => {
   const { push } = useRouter();
-  // const { setUserData } = useAuthContext();
+  const { setCurrentUserData } = useAuthContext();
 
-  const initialStatus: ActionFormStatus & { data: UserDataAndAccessToken } = {
+  const initialStatus: ActionFormStatus & {
+    data: { user: UserData };
+  } = {
     error: false,
     message: "",
-    data: {} as UserDataAndAccessToken,
+    data: {} as { user: UserData },
   };
 
   const [state, formAction, isPending] = useActionState(
@@ -30,6 +33,9 @@ const SigninForm = ({ redirectPath }: { redirectPath: string }) => {
     if (state?.error) {
       handleError(state?.message);
     } else if (!state?.error && state?.message !== "") {
+      if (state?.data?.user) {
+        setCurrentUserData(state?.data?.user as UserDataAndAccessToken["user"]);
+      }
       if (redirectPath) {
         handleSuccess(state?.message, push, redirectPath);
       } else {

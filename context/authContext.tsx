@@ -1,5 +1,8 @@
 "use client";
 import { UserData } from "@/types/auths";
+import { IPInforType } from "@/types/global";
+import { fetchIPInfo } from "@/utils/helper";
+import { useQuery } from "@tanstack/react-query";
 import {
   createContext,
   FC,
@@ -23,6 +26,7 @@ type AuthContextType = {
   setCurrentUserData: React.Dispatch<React.SetStateAction<UserData>>;
   isClicked: boolean;
   handleToggle: () => void;
+  ipInfoData: IPInforType | undefined | null;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -32,6 +36,10 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
     {} as UserData,
   );
   const [isClicked, setIsClicked] = useState(false);
+  const { data: rspIp, isLoading } = useQuery({
+    queryKey: ["ipinfo"],
+    queryFn: () => fetchIPInfo(),
+  });
 
   const [userData, setUserData] = useState<userDataType>(() => {
     // Load user data from localStorage if available
@@ -49,6 +57,8 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
     setIsClicked(!isClicked);
   };
 
+  const ipInfoData = rspIp;
+
   return (
     <AuthContext.Provider
       value={{
@@ -58,6 +68,7 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setCurrentUserData,
         isClicked,
         handleToggle,
+        ipInfoData,
       }}
     >
       {children}

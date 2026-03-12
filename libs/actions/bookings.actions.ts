@@ -2,6 +2,7 @@
 
 import { BookCallTypeValues } from "@/schemas/bookcall.schemas";
 import {
+  acceptBookingReqApi,
   cancelAppointmentApi,
   rescheduleAppointmentApi,
   startVideoCallApi,
@@ -88,6 +89,33 @@ export const cancelAppointmentAction = async (
     return {
       error: false,
       message: rsp?.body?.message || "Session cancelled successfully",
+    };
+  } catch (error) {
+    console.log(error);
+
+    return {
+      error: true,
+      message: "Something went wrong",
+    };
+  }
+};
+
+export const acceptBookingReqAction = async (bookingId: string) => {
+  try {
+    const rsp = await acceptBookingReqApi(bookingId);
+
+    if (!rsp.ok) {
+      return {
+        error: true,
+        message: rsp?.body?.message || "Something went wrong",
+      };
+    }
+
+    revalidatePath("/booking-and-scheduling");
+
+    return {
+      error: false,
+      message: rsp?.body?.message || "Booking accepted successfully",
     };
   } catch (error) {
     console.log(error);

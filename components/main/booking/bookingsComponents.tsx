@@ -11,7 +11,7 @@ import Search from "@/components/ui/search";
 import { StarRatings } from "@/components/ui/starRatings";
 import { useBookingForm } from "@/hooks/useBookingForm";
 import { filterData } from "@/mock";
-import { BookingType } from "@/types/bookings";
+import { BookedMenteeType, BookingType } from "@/types/bookings";
 import { Mentor } from "@/types/global";
 import { formatNumInThousands } from "@/utils/helper";
 import Image from "next/image";
@@ -88,21 +88,29 @@ export const SearchMentor = () => {
   );
 };
 
-export const MenteeAvatar = ({ image, name, location }: Mentor) => {
+export const MenteeAvatar = ({
+  profilePhoto,
+  fullName,
+  state,
+  city,
+  country,
+}: BookedMenteeType) => {
+  // const location = `${city} ${state}, ${country}`;
+
   return (
     <div className="flex items-center gap-4 space-y-3 overflow-hidden bg-white">
-      <figure className="relative size-26! w-full overflow-hidden">
+      <figure className="relative size-26! w-full overflow-hidden rounded-lg">
         <Image
-          src={image}
-          alt={name}
+          src={profilePhoto}
+          alt={fullName}
           fill
           sizes="100%"
           className="object-cover"
         />
       </figure>
       <div className="flex-1 space-y-2 p-4">
-        <h5 className="font-semibold">{name}</h5>
-        <small className="text-grey-300 font-medium">{location}</small>
+        <h5 className="font-semibold">{fullName}</h5>
+        {/* <small className="text-grey-300 font-medium">{location}</small> */}
       </div>
     </div>
   );

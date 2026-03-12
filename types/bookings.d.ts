@@ -37,6 +37,23 @@ export type BookingType = {
   updatedAt: string;
 };
 
+export type QuickBookingType = {
+  bookingId: string;
+  mentee: BookedMenteeType;
+  mentorId: BookedMentorType;
+  message: string;
+  session: number;
+  selectedDate: string;
+  selectedTime: string;
+  selectedEndTime: string;
+  status: string;
+  rating: { ratingText: string; stars: 3; _id: string };
+  totalAmountPaid: number;
+  createdAt: string;
+  updatedAt: string;
+  sessionDurationMinutes: number;
+};
+
 export type BookingRsp = ApiResponse & {
   data: {
     bookings: BookingType[];
