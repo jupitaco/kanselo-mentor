@@ -80,6 +80,7 @@ export type AvailableHoursType = {
 
 export type UserData = {
   _id: string;
+  isOnline: boolean;
   fullName: string;
   email: string;
   phoneNumber: string;

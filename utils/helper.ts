@@ -2,6 +2,7 @@ import { toast } from "@/hooks/useToast";
 import { NavigateOptions } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { IPInforType } from "@/types/global";
 
 // Extend Day.js with the relativeTime plugin
 dayjs.extend(relativeTime);
@@ -200,4 +201,26 @@ export const getMinutesUntil = (endTime: string): number => {
 
 export const formatDateAgo = (date: string) => {
   return dayjs(date).fromNow();
+};
+
+export const fetchIPInfo = async (): Promise<IPInforType | null> => {
+  try {
+    const res = await fetch("https://ipwho.is/");
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    const data = await res.json();
+
+    // Basic validation - check if we got the expected structure
+    if (data && typeof data === "object" && data.ip && data.country) {
+      return data as IPInforType;
+    } else {
+      throw new Error("Invalid response structure from IP API");
+    }
+  } catch (err) {
+    console.log("Failed to fetch IP info from ipwho:", err);
+    return null; // Return null instead of empty object
+  }
 };
