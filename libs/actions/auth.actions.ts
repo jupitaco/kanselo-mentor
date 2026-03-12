@@ -91,6 +91,7 @@ export const signInAction = async (_: ActionFormStatus, body: FormData) => {
     return {
       error: false,
       message: "You have successfully logged in",
+      data: { user },
     };
   } catch (error) {
     console.log(error);
