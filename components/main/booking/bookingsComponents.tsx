@@ -95,11 +95,11 @@ export const MenteeAvatar = ({
   city,
   country,
 }: BookedMenteeType) => {
-  const location = `${city} ${state}, ${country}`;
+  // const location = `${city} ${state}, ${country}`;
 
   return (
     <div className="flex items-center gap-4 space-y-3 overflow-hidden bg-white">
-      <figure className="relative size-26! w-full overflow-hidden">
+      <figure className="relative size-26! w-full overflow-hidden rounded-lg">
         <Image
           src={profilePhoto}
           alt={fullName}
@@ -110,7 +110,7 @@ export const MenteeAvatar = ({
       </figure>
       <div className="flex-1 space-y-2 p-4">
         <h5 className="font-semibold">{fullName}</h5>
-        <small className="text-grey-300 font-medium">{location}</small>
+        {/* <small className="text-grey-300 font-medium">{location}</small> */}
       </div>
     </div>
   );

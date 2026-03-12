@@ -113,3 +113,13 @@ export const startVideoCallApi = async (
     true,
   );
 };
+
+export const acceptBookingReqApi = async (bookingId: string) => {
+  const user = await getUser();
+
+  return Api.patch<void, VideoCallRsp>(
+    `/booking/book-now/${user?._id}/accept/${bookingId}`,
+    undefined,
+    true,
+  );
+};

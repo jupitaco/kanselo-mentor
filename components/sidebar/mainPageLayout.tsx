@@ -12,8 +12,6 @@ export default async function MainPageLayout({
   const rsp = await getCurrentUserApi();
   const currentUser = rsp?.ok ? rsp?.body?.data : ({} as UserData);
 
-  console.log("user>>", currentUser);
-
   return (
     <main className="flex h-screen">
       <RenderSidebar />
