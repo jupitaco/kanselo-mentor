@@ -497,6 +497,7 @@ export const bookingColData: Column<BookingType>[] = [
   {
     title: "MENTOR",
     key: "mentorId",
+    cellClassName: "min-w-50 ",
     render: (_, record) => (
       <AvatarCard
         image={record?.userId?.profilePhoto}
@@ -508,7 +509,7 @@ export const bookingColData: Column<BookingType>[] = [
   {
     title: "DATE & TIME",
     key: "selectedDate",
-    cellClassName: "text-grey-300",
+    cellClassName: "text-grey-300 min-w-30",
     render: (_, record) => (
       <>
         {formatDate(record.selectedDate)} <br />
@@ -532,6 +533,7 @@ export const bookingColData: Column<BookingType>[] = [
     title: "MESSAGE",
     key: "message",
     cellClassName: "min-w-40 max-w-40 text-grey-300",
+    noMobile: true,
     render: (_, record) => <>{record?.message}</>,
   },
 ];
@@ -714,11 +716,13 @@ export const transactioncolData: Column<TransactionType>[] = [
   {
     title: "DATE",
     key: "createdAt",
+    cellClassName: "min-w-40",
     render: (_, record) => <>{formatDate(record.createdAt)}</>,
   },
   {
     title: "TIME",
     key: "updatedAt",
+    cellClassName: "min-w-40",
     render: (_, record) => <>{formatDate(record.createdAt, true)}</>,
   },
   {

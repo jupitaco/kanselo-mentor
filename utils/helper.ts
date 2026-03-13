@@ -205,13 +205,19 @@ export const formatDateAgo = (date: string) => {
 
 export const fetchIPInfo = async (): Promise<IPInforType | null> => {
   try {
-    const res = await fetch("https://ipwho.is/");
+    const res = await fetch("https://ipwho.is/", { cache: "no-store" });
 
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }
 
     const data = await res.json();
+
+    // ipwho.is returns success:false on rate limit / blocked requests
+    if (data && typeof data === "object" && data.success === false) {
+      console.log("IP API rejected request:", data?.message);
+      return null;
+    }
 
     // Basic validation - check if we got the expected structure
     if (data && typeof data === "object" && data.ip && data.country) {
