@@ -21,6 +21,7 @@
   --color-primary: #0c2a46;
   --color-secondary-25: #efe8e1;
   --color-secondary: #f08e10;
+  --color-accent-400: #0060ff;
   --color-accent-500: #4d67eb;
   --color-accent-600: #5483f9;
   --color-white: #ffffff;
@@ -78,13 +79,13 @@
   }
 
   textarea,
-  input {
-    @apply text-grey-500 text-sm;
+  input::placeholder {
+    @apply text-grey-300 text-sm;
   }
 
   textarea,
-  input::placeholder {
-    @apply text-grey-300 text-sm;
+  input {
+    @apply text-grey-500 text-sm;
   }
 
   h1 {
@@ -157,7 +158,8 @@
   letter-spacing: 0.112px;
 }
 
-.btn:disabled {
+.btn:disabled,
+button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
@@ -182,6 +184,11 @@
   color: var(--color-primary);
 }
 
+.delete-btn {
+  background: var(--color-error-300);
+  color: var(--color-white);
+}
+
 /* ====Btns==== */
 
 /* ====SIDEBAR ==== */
@@ -189,11 +196,10 @@
 .sidebarActive {
   background: var(--color-white);
   color: var(--color-primary);
-  border-left: solid 1px var(--color-white);
 }
 
 .sidebarNotActive {
-  color: var(--color-grey-400) !important;
+  color: var(--color-grey-400);
 }
 
 .sidebarActive,
@@ -313,4 +319,13 @@
 .notActiveTab {
   font-weight: 400;
   font-size: 0.875rem;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+.animate-shimmer {
+  animation: shimmer 1.5s infinite;
 }

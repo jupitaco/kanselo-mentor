@@ -4,9 +4,7 @@ import { useState } from "react";
 export const useModal = () => {
   const [isOpen, setIsOpen] = useState<{ [key: string]: boolean }>({});
   const [itemId, setItemId] = useState<string>("");
-  const [getData, setGetData] = useState<{
-    [key: string]: string | number;
-  }>({});
+  const [getData, setGetData] = useState<Record<string, unknown>>({});
 
   const openModal = (id: string) => {
     setIsOpen((prev) => ({ ...prev, [id]: true }));

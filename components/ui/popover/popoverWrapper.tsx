@@ -5,18 +5,21 @@ import { FaChevronDown } from "react-icons/fa6";
 const PopoverWrapper = ({
   icon,
   triggerChildren,
+  contentClassName,
+  className,
   align = "center",
   children,
 }: {
   icon?: React.ReactNode;
   triggerChildren?: ReactNode;
+  contentClassName?: string
   className?: string;
   children: ReactNode;
   align?: "start" | "center" | "end";
 }) => {
   return (
     <Popover>
-      <PopoverTrigger asChild>
+      <PopoverTrigger asChild className={className}>
         {triggerChildren ? (
           triggerChildren
         ) : (
@@ -26,7 +29,7 @@ const PopoverWrapper = ({
         )}
       </PopoverTrigger>
 
-      <PopoverContent align={align} className="w-full bg-white">
+      <PopoverContent align={align} className={`${contentClassName} bg-white`}>
         {children}
       </PopoverContent>
     </Popover>

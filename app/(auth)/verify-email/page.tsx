@@ -1,6 +1,6 @@
 import React from "react";
 import { Metadata } from "next";
-import VerifyEmail from "@/components/auth/verifyEmail";
+import { VerifyEmail } from "@/components/auth/verifyEmail";
 import GoBackBtn from "@/components/ui/goBackBtn";
 
 export const metadata: Metadata = {
@@ -23,7 +23,7 @@ export default async function page({
         We sent a code {email ? <b>to your {email}</b> : "to your email"}{" "}
       </h5>
 
-      <VerifyEmail routePath="/dashboard" />
+      <VerifyEmail />
     </section>
   );
 }

@@ -1,12 +1,14 @@
 import SigninForm from "@/components/auth/signinForm";
+import { PageParams } from "@/types/global";
 import { Metadata } from "next";
-import { Suspense } from "react";
+import { Suspense, use } from "react";
 
 export const metadata: Metadata = {
   title: "Login",
 };
 
-export default async function page() {
+export default function Page(props: PageParams) {
+  const { redirect } = use(props.searchParams);
   return (
     <section className="space-y-10">
       <hgroup className="space-y-6">
@@ -15,7 +17,7 @@ export default async function page() {
       </hgroup>
 
       <Suspense>
-        <SigninForm />
+        <SigninForm redirectPath={redirect} />
       </Suspense>
     </section>
   );

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
-import "animate.css";
 import "./globals.css";
 import { Providers } from "@/context/providers";
 import { Toaster } from "@/components/ui/toast/toaster";
@@ -30,7 +29,6 @@ export default function RootLayout({
           <ScrollToTop />
           {children}
           <NextTopLoader showSpinner={false} />
-
           <Toaster />
         </Providers>
       </body>

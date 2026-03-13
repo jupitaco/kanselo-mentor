@@ -1,173 +1,175 @@
-'use client'
-import ImageContainer from '@/components/cloudinary/imageContainer'
-import Button from '@/components/ui/button';
-import FormInput from '@/components/ui/formInput';
-import { useGlobalHooks } from '@/hooks/globalHooks';
-import { templateData } from '@/mock';
-import React from 'react'
+"use client";
+import {
+  FileUpload,
+  ImageFileUpload,
+} from "@/components/fileUpload/fileUpload";
+import Button from "@/components/ui/button";
+import ErrorMessage from "@/components/ui/errorMessage";
+import FormInput from "@/components/ui/formInput";
+import { useTemplates } from "@/hooks/useTemplates";
+import { TemplateType } from "@/types/template";
+import React from "react";
 
 export const CreateTemplate = () => {
-    const { loading } = useGlobalHooks();
+  const {
+    formState: { errors, isSubmitting },
+    register,
+    watch,
+    handleSubmit,
+    loading,
+    handleUploadFiles,
+    removeUploadedFile,
+    file,
+  } = useTemplates();
 
-    return (
-        <form className='max-w-md mx-auto space-y-8'>
+  const coverImage = watch("coverImage");
+  const fileUrl = watch("fileUrl");
 
-            <article className="flex w-full flex-col gap-3">
-                <h5 className="text-grey-500 text-sm font-medium">
-                    Cover Image
-                </h5>
-                <ImageContainer
-                    id="profileImg"
-                    loading={loading}
-                    // uploadFiles={(e) => handleUploadFiles(e, "storeImageUrl")}
-                    // images={values?.storeImageUrl}
-                    singleImage
-                // removeImage={() => {
-                //   handleChange({
-                //     target: {
-                //       name: "storeImageUrl",
-                //       value: "",
-                //     },
-                //   });
-                // }}
-                />
-                {/*
-        {customErrors?.error && (
-          <ErrorMessage message={customErrors?.errMessage} />
-        )} */}
-            </article>
+  return (
+    <form onSubmit={handleSubmit} className="mx-auto max-w-md space-y-8">
+      <article className="flex w-full flex-col gap-3">
+        <h5 className="text-grey-500 text-sm font-medium">Cover Image</h5>
 
-            <FormInput
-                id="title"
-                type="text"
-                label="Title"
-                placeholder="Enter title"
-                className="w-full"
+        <ImageFileUpload
+          id="coverImage"
+          loading={loading}
+          uploadFiles={(e) => handleUploadFiles(e, "coverImage")}
+          uploaddedFileUrl={coverImage}
+          removeFile={() => removeUploadedFile("coverImage")}
+          imgClassName="object-cover"
+          singleUpload
+        />
 
-            />
+        {errors?.coverImage?.message && (
+          <ErrorMessage message={errors?.coverImage?.message} />
+        )}
+      </article>
 
-            <FormInput
-                id="price"
-                type="number"
-                label="Price"
-                placeholder="Enter price"
-                className="w-full"
-                min={0}
-            />
+      <FormInput
+        id="title"
+        type="text"
+        label="Title"
+        placeholder="Enter title"
+        className="w-full"
+        {...register("title")}
+        error={errors?.title?.message}
+      />
 
-            <article className="flex w-full flex-col gap-3">
-                <h5 className="text-grey-500 text-sm font-medium">
-                    Upload File (PDF)
-                </h5>
-                <ImageContainer
-                    id="profileImg"
-                    loading={loading}
-                    // uploadFiles={(e) => handleUploadFiles(e, "storeImageUrl")}
-                    // images={values?.storeImageUrl}
-                    singleImage
-                // removeImage={() => {
-                //   handleChange({
-                //     target: {
-                //       name: "storeImageUrl",
-                //       value: "",
-                //     },
-                //   });
-                // }}
-                />
-                {/*
-        {customErrors?.error && (
-          <ErrorMessage message={customErrors?.errMessage} />
-        )} */}
-            </article>
+      <FormInput
+        id="price"
+        type="number"
+        label="Price"
+        placeholder="Enter price"
+        className="w-full"
+        step="0.01"
+        {...register("price", { valueAsNumber: true })}
+        error={errors?.price?.message}
+      />
 
+      <article className="flex w-full flex-col gap-3">
+        <h5 className="text-grey-500 text-sm font-medium">Upload File (PDF)</h5>
+        <FileUpload
+          id="fileUrl"
+          loading={loading}
+          uploaddedFileUrl={fileUrl}
+          uploadFiles={(e) => handleUploadFiles(e, "fileUrl")}
+          removeFile={() => removeUploadedFile("fileUrl")}
+          title={file?.name}
+          fileSize={file?.size}
+        />
 
-            <Button className='pry-btn w-full'>Save Template</Button>
-        </form>
-    )
-}
+        {errors?.fileUrl?.message && (
+          <ErrorMessage message={errors?.fileUrl?.message} />
+        )}
+      </article>
 
-export const EditTemplate = ({ id }: { id: string }) => {
-    const { loading } = useGlobalHooks();
+      <Button type="submit" loading={isSubmitting} className="pry-btn w-full">
+        Save Template
+      </Button>
+    </form>
+  );
+};
 
+export const EditTemplate = ({
+  templateData,
+}: {
+  templateData: TemplateType;
+}) => {
+  const {
+    formState: { errors, isSubmitting },
+    register,
+    watch,
+    handleSubmitUpdate,
+    loading,
+    handleUploadFiles,
+    removeUploadedFile,
+    file,
+  } = useTemplates(templateData);
 
-    const temp = templateData?.find((i) => i.id === id)
+  const coverImage = watch("coverImage");
+  const fileUrl = watch("fileUrl");
 
-    return (
-        <form className='max-w-md mx-auto space-y-8'>
+  return (
+    <form onSubmit={handleSubmitUpdate} className="mx-auto max-w-md space-y-8">
+      <article className="flex w-full flex-col gap-3">
+        <h5 className="text-grey-500 text-sm font-medium">Cover Image</h5>
 
-            <article className="flex w-full flex-col gap-3">
-                <h5 className="text-grey-500 text-sm font-medium">
-                    Cover Image
-                </h5>
-                <ImageContainer
-                    id="profileImg"
-                    loading={loading}
-                    // uploadFiles={(e) => handleUploadFiles(e, "storeImageUrl")}
-                    // images={values?.storeImageUrl}
-                    singleImage
-                // removeImage={() => {
-                //   handleChange({
-                //     target: {
-                //       name: "storeImageUrl",
-                //       value: "",
-                //     },
-                //   });
-                // }}
-                />
-                {/*
-        {customErrors?.error && (
-          <ErrorMessage message={customErrors?.errMessage} />
-        )} */}
-            </article>
+        <ImageFileUpload
+          id="coverImage"
+          loading={loading}
+          uploadFiles={(e) => handleUploadFiles(e, "coverImage")}
+          uploaddedFileUrl={coverImage}
+          removeFile={() => removeUploadedFile("coverImage")}
+          imgClassName="object-cover"
+          singleUpload
+        />
 
-            <FormInput
-                id="title"
-                type="text"
-                label="Title"
-                placeholder="Enter title"
-                className="w-full"
-                value={temp?.title}
+        {errors?.coverImage?.message && (
+          <ErrorMessage message={errors?.coverImage?.message} />
+        )}
+      </article>
 
-            />
+      <FormInput
+        id="title"
+        type="text"
+        label="Title"
+        placeholder="Enter title"
+        className="w-full"
+        {...register("title")}
+        error={errors?.title?.message}
+      />
 
-            <FormInput
-                id="price"
-                type="number"
-                label="Price"
-                placeholder="Enter price"
-                className="w-full"
-                value={temp?.price}
+      <FormInput
+        id="price"
+        type="number"
+        label="Price"
+        placeholder="Enter price"
+        className="w-full"
+        step="0.01"
+        {...register("price", { valueAsNumber: true })}
+        error={errors?.price?.message}
+      />
 
-                min={0}
-            />
+      <article className="flex w-full flex-col gap-3">
+        <h5 className="text-grey-500 text-sm font-medium">Upload File (PDF)</h5>
+        <FileUpload
+          id="fileUrl"
+          loading={loading}
+          uploaddedFileUrl={fileUrl}
+          uploadFiles={(e) => handleUploadFiles(e, "fileUrl")}
+          removeFile={() => removeUploadedFile("fileUrl")}
+          title={file?.name}
+          fileSize={file?.size}
+        />
 
-            <article className="flex w-full flex-col gap-3">
-                <h5 className="text-grey-500 text-sm font-medium">
-                    Upload File (PDF)
-                </h5>
-                <ImageContainer
-                    id="profileImg"
-                    loading={loading}
-                    // uploadFiles={(e) => handleUploadFiles(e, "storeImageUrl")}
-                    // images={values?.storeImageUrl}
-                    singleImage
-                // removeImage={() => {
-                //   handleChange({
-                //     target: {
-                //       name: "storeImageUrl",
-                //       value: "",
-                //     },
-                //   });
-                // }}
-                />
-                {/*
-        {customErrors?.error && (
-          <ErrorMessage message={customErrors?.errMessage} />
-        )} */}
-            </article>
+        {errors?.fileUrl?.message && (
+          <ErrorMessage message={errors?.fileUrl?.message} />
+        )}
+      </article>
 
-
-            <Button className='pry-btn w-full'>Save Template</Button>
-        </form>
-    )
-}
+      <Button type="submit" loading={isSubmitting} className="pry-btn w-full">
+        Save Template
+      </Button>
+    </form>
+  );
+};

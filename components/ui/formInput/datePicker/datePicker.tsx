@@ -23,6 +23,7 @@ type DatePickrProps = Omit<
   openDate?: boolean;
   setOpenDate?: React.Dispatch<React.SetStateAction<boolean>>;
   className?: string;
+  disabledPrevDates?: boolean;
   error?: string;
 };
 
@@ -38,6 +39,7 @@ export function DatePicker({
   setOpenDate,
   className,
   error,
+  disabledPrevDates,
   ...rest
 }: DatePickrProps) {
   return (
@@ -53,7 +55,7 @@ export function DatePicker({
           >
             {value ? (
               <>
-                {formatDate(value)}
+                {formatDate(value?.toISOString())}
                 <BsCalendar3 size={18} />
               </>
             ) : (
@@ -74,7 +76,7 @@ export function DatePicker({
             captionLayout="dropdown"
             onSelect={onSelect}
             className="border-grey-100 rounded-md border bg-white shadow-sm"
-            disabled={disabled}
+            disabled={disabledPrevDates ? { before: new Date() } : disabled}
             {...rest}
           />
         </PopoverContent>

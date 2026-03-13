@@ -12,11 +12,11 @@ export default function AuthLayout({
     <main className="grid grid-cols-1 lg:grid-cols-2">
       <main className="no-scrollbar mx-auto flex h-screen w-full max-w-xl flex-col items-center justify-between gap-8 overflow-y-auto py-7">
         <BrandLogo />
-        <section className="max-w-md flex-1 px-2">{children}</section>
+        <section className="w-full flex-1 px-2 lg:max-w-md">{children}</section>
 
         <footer>
           <small className="text-grey-300">
-            @2025 Kanselo All Right Reserved.
+            Copyright © {new Date().getFullYear()} Kanselo All Right Reserved.
           </small>
         </footer>
       </main>

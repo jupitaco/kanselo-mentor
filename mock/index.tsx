@@ -4,13 +4,22 @@ import { StarRatings } from "@/components/ui/starRatings";
 import {
   AvatarCard,
   OrderStatus,
+  TableDate,
+  TableSession,
+  TableTime,
 } from "@/components/ui/tableComponent/tabelComps";
 import { Column } from "@/components/ui/tableComponent/tableComponent";
-import { BookingType, } from "@/types/booking";
+import { BookingType } from "@/types/bookings";
 import { Mentor, Review, Template, BookingTime } from "@/types/global";
-import { TransactionType } from "@/types/payout";
-import { formatNumInThousands } from "@/utils/helper";
+import { PayoutWithdrawalType, TransactionType } from "@/types/payout";
+import { TemplateType } from "@/types/template";
+import {
+  formatDate,
+  formatFileSize,
+  formatNumInThousands,
+} from "@/utils/helper";
 import { ReactNode } from "react";
+
 export const filterData = [
   {
     label: "All",
@@ -213,16 +222,19 @@ export const reviewsData: Review[] = [
 
 export const sessionData = [
   {
+    duration: 30,
     label: "1 (30 minutes - $10)",
-    value: 30,
+    value: 1,
   },
   {
+    duration: 60,
     label: "2 (60 minutes - $20)",
-    value: 60,
+    value: 2,
   },
   {
+    duration: 90,
     label: "3 (90 minutes - $30)",
-    value: 90,
+    value: 3,
   },
 ];
 
@@ -234,7 +246,7 @@ export const templateData: Template[] = [
     size: "12 MB",
     price: 20,
     createdAt: "03 Jan 2023",
-    totalSales: "25"
+    totalSales: "25",
   },
   {
     id: "2",
@@ -243,7 +255,7 @@ export const templateData: Template[] = [
     size: "5MB",
     price: 20,
     createdAt: "03 Jan 2023",
-    totalSales: "25"
+    totalSales: "25",
   },
   {
     id: "3",
@@ -252,53 +264,54 @@ export const templateData: Template[] = [
     size: "3MB",
     price: 20,
     createdAt: "03 Jan 2023",
-    totalSales: "25"
+    totalSales: "25",
   },
 ];
 
-export const templateColData: Column<Template & { action?: ReactNode }>[] = [
-  {
-    title: "MENTOR",
-    key: "title",
-    render: (_, record) => (
-      <AvatarCard
-        image={record?.image}
-        label={`${record?.title}`}
-      />
-    ),
-  },
-  {
-    title: "DATE ADDED",
-    key: "createdAt",
-    cellClassName: "text-grey-300",
-    render: (_, record) => (
-      <>
-        {record.createdAt} <br />
+export const templateColData: Column<TemplateType & { action?: ReactNode }>[] =
+  [
+    {
+      title: "MENTOR",
+      key: "title",
+      render: (_, record) => (
+        <AvatarCard
+          image={record?.coverImage}
+          label={`${record?.title}`}
+          subtext={formatFileSize(parseInt(record?.fileSize) || 0)}
+        />
+      ),
+    },
+    {
+      title: "DATE ADDED",
+      key: "createdAt",
+      cellClassName: "text-grey-300",
+      render: (_, record) => (
+        <>
+          {record.createdAt} <br />
+        </>
+      ),
+    },
 
-      </>
-    ),
-  },
+    {
+      title: "PRICE",
+      key: "price",
+      render: (_, record) => <>${formatNumInThousands(record?.price)} </>,
+    },
 
-  {
-    title: "PRICE",
-    key: "price",
-    render: (_, record) => <>${formatNumInThousands(record?.price)} </>,
-  },
+    {
+      title: "AMOUNT SOLD",
+      key: "totalSold",
+      cellClassName: " text-center",
 
-  {
-    title: "AMOUNT SOLD",
-    key: "totalSales",
-    cellClassName: " text-center",
-
-    render: (_, record) => <>{record?.totalSales}</>,
-  },
-  {
-    title: "ACTION",
-    key: "action",
-    cellClassName: "min-w-40 max-w-80 text-grey-300",
-    render: (_, record) => <TemplateAction data={record} />,
-  },
-];
+      render: (_, record) => <>{record?.totalSold}</>,
+    },
+    {
+      title: "ACTION",
+      key: "action",
+      cellClassName: "min-w-40 max-w-80 text-grey-300",
+      render: (_, record) => <TemplateAction data={record} />,
+    },
+  ];
 
 export const bookingTimeData: BookingTime[] = [
   {
@@ -354,7 +367,7 @@ export const bookingTimeData: BookingTime[] = [
   },
 ];
 
-export const bookingAssets: BookingType[] = [
+export const bookingAssets = [
   {
     id: "1",
     name: "Anna Mulana",
@@ -480,165 +493,103 @@ export const bookingAssets: BookingType[] = [
   },
 ];
 
-export const newBookingColData: Column<BookingType & { action?: ReactNode }>[] = [
+export const bookingColData: Column<BookingType>[] = [
   {
     title: "MENTOR",
-    key: "name",
+    key: "mentorId",
+    cellClassName: "min-w-50 ",
     render: (_, record) => (
       <AvatarCard
-        image={record?.avatar}
-        label={`${record?.name}`}
-        subtext={`${record?.location?.city} ${record?.location?.country}`}
+        image={record?.userId?.profilePhoto}
+        label={`${record?.userId?.fullName}`}
+        subtext={`${record?.userId?.city} ${record?.userId?.state}, ${record?.userId?.country}`}
       />
     ),
   },
   {
     title: "DATE & TIME",
-    key: "date",
-    cellClassName: "text-grey-300",
+    key: "selectedDate",
+    cellClassName: "text-grey-300 min-w-30",
     render: (_, record) => (
       <>
-        {record.date} <br />
-        {record.time}
+        {formatDate(record.selectedDate)} <br />
+        {record.selectedTime} - {record.selectedEndTime}
       </>
     ),
   },
 
   {
     title: "SESSION",
-    key: "sessions",
-    render: (_, record) => <>{record?.sessions} </>,
+    key: "session",
+    render: (_, record) => (
+      <>
+        {sessionData?.find((s) => s.value === record?.session)?.duration}{" "}
+        Minutes{" "}
+      </>
+    ),
   },
 
   {
     title: "MESSAGE",
-    key: "review",
+    key: "message",
     cellClassName: "min-w-40 max-w-40 text-grey-300",
-    render: (_, record) => <>{record?.review}</>,
-  },
-  {
-    title: "ACTION",
-    key: "action",
-    cellClassName: "min-w-40 max-w-80 text-grey-300",
-    render: (_, record) => <BookingActions data={record} />,
+    noMobile: true,
+    render: (_, record) => <>{record?.message}</>,
   },
 ];
 
-export const completedBookingColData: Column<BookingType & { action?: ReactNode }>[] = [
-  {
-    title: "MENTOR",
-    key: "name",
-    render: (_, record) => (
-      <AvatarCard
-        image={record?.avatar}
-        label={`${record?.name}`}
-        subtext={`${record?.location?.city} ${record?.location?.country}`}
-      />
-    ),
-  },
-  {
-    title: "DATE & TIME",
-    key: "date",
-    cellClassName: "text-grey-300",
-    render: (_, record) => (
-      <>
-        {record.date} <br />
-        {record.time}
-      </>
-    ),
-  },
+export const newBookingColData: Column<BookingType & { action?: ReactNode }>[] =
+  [
+    ...bookingColData,
+    {
+      title: "ACTION",
+      key: "action",
+      cellClassName: "min-w-40 max-w-80 text-grey-300",
+      render: (_, record) => <BookingActions data={record} />,
+    },
+  ];
 
-  {
-    title: "SESSION",
-    key: "sessions",
-    render: (_, record) => <>{record?.sessions} </>,
-  },
-
-  {
-    title: "MESSAGE",
-    key: "review",
-    cellClassName: "min-w-40 max-w-40 text-grey-300",
-    render: (_, record) => <>{record?.review}</>,
-  },
+export const completedBookingColData: Column<
+  BookingType & { action?: ReactNode }
+>[] = [
+  ...bookingColData,
   {
     title: "RATINGS",
     key: "rating",
-    render: (_, record) => <StarRatings rating={record?.rating} />,
+    render: (_, record) => <StarRatings rating={record?.rating?.stars} />,
   },
 ];
-
-export const cancelledBookingColData: Column<BookingType>[] = [
-  {
-    title: "MENTOR",
-    key: "name",
-    render: (_, record) => (
-      <AvatarCard
-        image={record?.avatar}
-        label={`${record?.name}`}
-        subtext={`${record?.location?.city} ${record?.location?.country}`}
-      />
-    ),
-  },
-  {
-    title: "DATE & TIME",
-    key: "date",
-    cellClassName: "text-grey-300",
-    render: (_, record) => (
-      <>
-        {record.date} <br />
-        {record.time}
-      </>
-    ),
-  },
-
-  {
-    title: "SESSION",
-    key: "sessions",
-    render: (_, record) => <>{record?.sessions} </>,
-  },
-
-  {
-    title: "MESSAGE",
-    key: "review",
-    cellClassName: "min-w-40 max-w-40 text-grey-300",
-    render: (_, record) => <>{record?.review}</>,
-  },
-
-];
-
 
 export const recentBookingColData: Column<BookingType>[] = [
   {
     title: "MENTOR",
-    key: "name",
+    key: "userId",
     render: (_, record) => (
       <AvatarCard
-        image={record?.avatar}
-        label={`${record?.name}`}
-        subtext={`${record?.location?.city} ${record?.location?.country}`}
+        image={record?.userId?.profilePhoto}
+        label={`${record?.userId?.fullName}`}
+        subtext={`${record?.userId?.city} ${record?.userId?.state}, ${record?.userId?.country}`}
       />
     ),
   },
   {
     title: "DATE & TIME",
-    key: "date",
+    key: "selectedDate",
     cellClassName: "text-grey-300",
     render: (_, record) => (
       <>
-        {record.date} <br />
-        {record.time}
+        {formatDate(record.selectedDate)} <br />
+        {record.selectedTime} - {record.selectedEndTime}
       </>
     ),
   },
 
   {
     title: "SESSION",
-    key: "sessions",
-    render: (_, record) => <>{record?.sessions} </>,
+    key: "session",
+    render: (_, record) => <TableSession session={record?.session} />,
   },
-
-
-]
+];
 
 export const callRatings = [
   {
@@ -668,7 +619,7 @@ export const callRatings = [
   },
 ];
 
-export const transactionAssets: TransactionType[] = [
+export const transactionAssets = [
   {
     id: "1",
     date: "03 Jan 2023",
@@ -751,29 +702,28 @@ export const transactionAssets: TransactionType[] = [
   },
 ];
 
-export const transactionolData: Column<TransactionType>[] = [
+export const transactioncolData: Column<TransactionType>[] = [
   {
     title: "AMOUNT",
     key: "amount",
-    render: (_, record) => <>{record?.type === "withdrawl" ? "-" : "+"}${formatNumInThousands(record?.amount)}</>,
+    render: (_, record) => (
+      <>
+        {record?.type === "withdrawl" ? "-" : "+"}$
+        {formatNumInThousands(record?.amount)}
+      </>
+    ),
   },
   {
     title: "DATE",
-    key: "date",
-    render: (_, record) => (
-      <>
-        {record.date}
-      </>
-    ),
+    key: "createdAt",
+    cellClassName: "min-w-40",
+    render: (_, record) => <>{formatDate(record.createdAt)}</>,
   },
   {
     title: "TIME",
-    key: "time",
-    render: (_, record) => (
-      <>
-        {record.time}
-      </>
-    ),
+    key: "updatedAt",
+    cellClassName: "min-w-40",
+    render: (_, record) => <>{formatDate(record.createdAt, true)}</>,
   },
   {
     title: "TYPE",
@@ -785,7 +735,39 @@ export const transactionolData: Column<TransactionType>[] = [
     key: "status",
     render: (_, record) => <OrderStatus status={record?.status} />,
   },
+];
 
+export const payoutColData: Column<PayoutWithdrawalType>[] = [
+  {
+    title: "AMOUNT",
+    key: "amount",
+    render: (_, record) => (
+      <>
+        {record?.type === "WALLET" ? "-" : "+"}$
+        {formatNumInThousands(record?.amount)}
+      </>
+    ),
+  },
+  {
+    title: "DATE",
+    key: "createdAt",
+    render: (_, record) => <TableDate date={record.createdAt} />,
+  },
+  {
+    title: "TIME",
+    key: "updatedAt",
+    render: (_, record) => <TableTime date={record.createdAt} />,
+  },
+  {
+    title: "TYPE",
+    key: "type",
+    render: (_, record) => <>{record?.type}</>,
+  },
+  {
+    title: "STATUS",
+    key: "status",
+    render: (_, record) => <OrderStatus status={record?.status} />,
+  },
 ];
 
 export const walletFilterData = [
@@ -793,3 +775,57 @@ export const walletFilterData = [
   { label: "Last 30 days", value: "last30days" },
 ];
 
+export const WeeklyHours = [
+  {
+    day: "Sunday",
+    time: [],
+  },
+  {
+    day: "Monday",
+    time: ["09:00 - 12:00", "13:00 - 17:00"],
+  },
+  {
+    day: "Tuesday",
+    time: ["09:00 - 12:00", "13:00 - 17:00"],
+  },
+  {
+    day: "Wednesday",
+    time: ["09:00 - 12:00", "13:00 - 17:00"],
+  },
+  {
+    day: "Thursday",
+    time: ["09:00 - 12:00", "13:00 - 17:00"],
+  },
+  {
+    day: "Friday",
+    time: ["09:00 - 12:00", "13:00 - 17:00"],
+  },
+  {
+    day: "Saturday",
+    time: [],
+  },
+];
+
+// export const officeHours: OfficeDay[] = [
+//   {
+//     title: "Sunday", checked: false, time: []
+//   },
+//   {
+//     title: "Monday", checked: true, time: [{ startTime: "09:00", endTime: "12:00" }, { startTime: "09:00", endTime: "12:00" }]
+//   },
+//   {
+//     title: "Tuesday", checked: true, time: [{ startTime: "09:00", endTime: "12:00" }]
+//   },
+//   {
+//     title: "Wednesday", checked: true, time: [{ startTime: "09:00", endTime: "12:00" }]
+//   },
+//   {
+//     title: "Thursday", checked: true, time: [{ startTime: "09:00", endTime: "12:00" }]
+//   },
+//   {
+//     title: "Friday", checked: true, time: [{ startTime: "09:00", endTime: "12:00" }]
+//   },
+//   {
+//     title: "Saturday", checked: false, time: []
+//   },
+// ];
