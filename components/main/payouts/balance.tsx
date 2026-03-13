@@ -21,7 +21,7 @@ export const WalletBalance = async () => {
         </h4>
       </li>
       {payoutAccount ? (
-        <li className="flex justify-between rounded-2xl bg-white p-5">
+        <li className="flex flex-wrap justify-between gap-4 rounded-2xl bg-white p-5">
           <div>
             <p className="text-grey-400 text-sm">Payout Account</p>
             <h4 className="font-semibold">
@@ -31,7 +31,7 @@ export const WalletBalance = async () => {
           <ManagePayoutForm payout={payoutAccount} />
         </li>
       ) : (
-        <li className="flex justify-between rounded-2xl bg-white p-5">
+        <li className="flex flex-wrap justify-between gap-4 rounded-2xl bg-white p-5">
           <div>
             <p className="text-grey-400 text-sm">Payout Account</p>
             <h4 className="font-semibold">-</h4>

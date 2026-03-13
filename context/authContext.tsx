@@ -39,6 +39,8 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const { data: rspIp, isLoading } = useQuery({
     queryKey: ["ipinfo"],
     queryFn: () => fetchIPInfo(),
+    retry: false,
+    staleTime: 5 * 60 * 1000,
   });
 
   const [userData, setUserData] = useState<userDataType>(() => {

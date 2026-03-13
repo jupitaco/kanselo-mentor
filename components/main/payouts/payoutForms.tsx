@@ -38,7 +38,10 @@ export const WithdrawalForm = () => {
 
   return (
     <>
-      <Button className="pry-btn" onClick={() => openModal("withdrawal")}>
+      <Button
+        className="pry-btn w-full md:w-fit"
+        onClick={() => openModal("withdrawal")}
+      >
         Withdraw
       </Button>
       {isOpen["withdrawal"] && (
@@ -105,11 +108,17 @@ export const ManagePayoutForm = ({ payout }: { payout?: PayoutType }) => {
   return (
     <>
       {payout ? (
-        <Button className="alt-btn" onClick={() => openModal("payout")}>
+        <Button
+          className="alt-btn w-full md:w-fit"
+          onClick={() => openModal("payout")}
+        >
           Edit
         </Button>
       ) : (
-        <Button className="pry-btn" onClick={() => openModal("payout")}>
+        <Button
+          className="pry-btn w-full md:w-fit"
+          onClick={() => openModal("payout")}
+        >
           Add Account
         </Button>
       )}

@@ -188,11 +188,11 @@ export const AvailableDateCard = ({
   slots: { start: string; end: string }[];
 }) => {
   return (
-    <li className="flex justify-between">
-      <p className="w-50 font-medium capitalize">{day}</p>
+    <li className="flex justify-between gap-4">
+      <p className="w-fit font-medium capitalize md:w-50">{day}</p>
       <div className="flex-1">
         {slots?.length > 0 ? (
-          <ul className="text-grey-400 flex flex-wrap gap-3">
+          <ul className="text-grey-400 flex flex-wrap justify-end gap-3 md:justify-normal">
             {slots.map(({ start, end }, index) => (
               <li key={index} className="w-fit">
                 {start} - {end}
@@ -201,7 +201,7 @@ export const AvailableDateCard = ({
             ))}
           </ul>
         ) : (
-          <p className="text-grey-400">Unavailable</p>
+          <p className="text-grey-400 text-end md:text-start">Unavailable</p>
         )}
       </div>
     </li>

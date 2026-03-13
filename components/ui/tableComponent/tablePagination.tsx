@@ -29,13 +29,13 @@ export default function TablePagination() {
           Page {currentPage} of {totalPages}
         </p>
         <nav aria-label="Pagination" className="w-full max-w-xs">
-          <article className="text-grey-300 flex items-center justify-between gap-2">
+          <article className="text-grey-300 flex flex-wrap items-center justify-between gap-2">
             {/* Previous Button */}
             <button
               disabled={previousBtnState}
               onClick={handlePrev}
               aria-label="Previous Page"
-              className="hover:text-primary flex cursor-pointer items-center gap-2 p-3 disabled:cursor-not-allowed disabled:opacity-50"
+              className="hover:text-primary hidden cursor-pointer items-center gap-2 p-3 disabled:cursor-not-allowed disabled:opacity-50 md:flex"
             >
               Prevoius
             </button>
@@ -50,7 +50,7 @@ export default function TablePagination() {
               disabled={nextBtnState}
               onClick={handleNext}
               aria-label="Next Page"
-              className="hover:text-primary flex cursor-pointer items-center gap-2 p-3 disabled:cursor-not-allowed disabled:opacity-50"
+              className="hover:text-primary hidden cursor-pointer items-center gap-2 p-3 disabled:cursor-not-allowed disabled:opacity-50 md:flex"
             >
               Next
             </button>

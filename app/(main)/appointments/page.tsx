@@ -28,7 +28,7 @@ export default function Pages({ searchParams }: SearchParams) {
           <p>Manage your appointments</p>
         </article>
 
-        <ul className="card flex min-h-10 w-full items-center justify-between gap-1 p-1 lg:w-fit">
+        <ul className="card flex min-h-10 w-full items-center justify-between gap-1 overflow-y-auto p-1 lg:w-fit">
           {tabData.map(({ label, path }, idx) => (
             <li key={idx}>
               <Link
