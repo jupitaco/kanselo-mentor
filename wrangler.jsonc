@@ -10,5 +10,9 @@
   },
   "vars": {
     // Add your environment variables here
+    "BASE_URL": "https://kanselo-v1-76e625771f1e.herokuapp.com",
+    "SECRET_KEY": "BbnCPEwQ+uxzS9SUU2tWKXDC2cZe6ZN8mwwx2ZXvbTQ=",
+    "NEXT_PUBLIC_AGORA_APP_ID": "478a2128200a4d4fbb6fa5be35bf2599",
+    "DISABLE_AUTO_LOGOUT": "true",
   },
 }
